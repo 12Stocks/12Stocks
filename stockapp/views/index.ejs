@@ -5,16 +5,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>index</title>
+    <title>Main page</title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer"
+    />
 </head>
 
 <body>
-    <h1>Stock Trading Plaform</h1>
-    <h2>Home Page</h2>
-    <a href="/markets">시장</a><br>
-    <a href="/login">로그인</a><br>
-    <a href="/portfolios">포트폴리오</a><br>
-    <a href="/forums">게시판</a><br>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navigation">
+                <div class="logo">
+                    <a href="/index">Stock Trading</a>
+                </div>
+                <div class="navbar-nav">
+                    <a href="/markets">시장</a>
+                    <a href="/portfolios">포트폴리오</a>
+                    <a href="/forums">게시판</a>
+                    <a href="/login">로그인</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <! - End of navbar -->
+
+    <form>
+        <input type="text" placeholder="enter stock name" class="search-input">
+        <button class="search-btn">
+            <i class="fas fa-search"></i>
+        </button>
+    </form>
+    <p style="font-size:18px;">
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptate perspiciatis ducimus aliquam architecto possimus. Voluptatum?</p>
+    <a href="#" class="btn btn-hero py-2 px-3">View all</a>
     <img src="/images/home.jpg" style="width:500px; display:block;">
 </body>
 

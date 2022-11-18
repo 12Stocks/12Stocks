@@ -2,11 +2,14 @@
 <html>
 
 <head>
+    <%-include('base/header.ejs') %>
+
     <title>login</title>
 </head>
 
 <body>
-    
+    <%-include('base/navbarTop.ejs')-%>
+
     <h2>Login Form</h2>
 
     <img src="/images/user_icon.png" style="width:250px; display:block;">
@@ -22,6 +25,8 @@
 
         <p>Don't have an account? <a href="">Sign Up</a><br></p>
     </form>
+    <%-include('base/footer.ejs')%>
+
 </body>
 
 </html>

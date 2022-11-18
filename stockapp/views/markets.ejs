@@ -2,6 +2,8 @@
 <html>
 
 <head>
+    <%-include('base/header.ejs') %>
+
     <style>
         table,
         th,
@@ -13,16 +15,20 @@
 </head>
 
 <body>
+    <%-include('base/navbarTop.ejs')-%>
+
     <h1>금융 시장</h1>
+    <table>
+        <tr>
+            <th>종목</th>
+            <th>종가</th>
+            <th>고가</th>
+            <th>저가</th>
+            <th>거래량</th>
+        </tr>
+    </table>
+    <%-include('base/footer.ejs')%>
+
 </body>
-<table>
-    <tr>
-        <th>종목</th>
-        <th>종가</th>
-        <th>고가</th>
-        <th>저가</th>
-        <th>거래량</th>
-    </tr>
-</table>
 
 </html>

@@ -39,14 +39,6 @@ app.use(session({
 app.use(flash());
 var passport = require('./lib/passport')(app);
 
-// app.post('/auth/login_process',
-//   passport.authenticate('local', {
-//     successRedirect: '/',
-//     failureRedirect: '/auth/login',
-//     failureFlash: true,
-//     successFlash: true
-//   }));
-
 app.post('/auth/login_process', function (req, res, next) {
     passport.authenticate('local', function (err, user, info) {
         if (err) {
@@ -54,10 +46,10 @@ app.post('/auth/login_process', function (req, res, next) {
         }
         if (!user) {
             console.log('info', info.message);
-            req.flash('message', info.message);
+            req.flash('login', info.message);
             res.redirect('/auth/login');
         }
-        req.logIn(user, function (err) {
+        req.login(user, function (err) {
             if (err) { return next(err); }
             req.session.save(function () {
                 res.redirect('/');
@@ -93,8 +85,8 @@ app.use(function(err, req, res, next) {
 
 const port = process.env.APP_PORT || 3000;
 
-// app.listen(port, function() {
-//     console.log('Example app listening on port ' + port);
-// });
+app.listen(port, function() {
+    console.log('Example app listening on port ' + port);
+});
 
 module.exports = app;

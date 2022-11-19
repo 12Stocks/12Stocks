@@ -15,8 +15,8 @@
     <img src="/images/user_icon.png" style="width:250px; display:block;">
 
     <form action="/auth/login_process" method="post">
-        <label for="uname"><b>Username</b></label>
-        <input type="text" placeholder="Enter Username" name="uname" required><br>
+        <label for="userId"><b>UserId</b></label>
+        <input type="text" placeholder="Enter UserId" name="userId" required><br>
 
         <label for="psw"><b>Password</b></label>
         <input type="password" placeholder="Enter Password" name="psw" required><br>
@@ -24,7 +24,7 @@
         <button type="submit">Login</button><br>
         <div style="color:red;"><p><%= feedback %></p></div>
 
-        <p>Don't have an account? <a href="">Sign Up</a><br></p>
+        <p>Don't have an account? <a href="/auth/register">Sign Up</a><br></p>
     </form>
     <%-include('base/footer.ejs')%>
 

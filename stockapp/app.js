@@ -4,11 +4,14 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const express = require('express');
 const app = express();
+var session = require('express-session')
+var FileStore = require('session-file-store')(session)
+var flash = require('connect-flash');
 
 // Routers
-const indexRouter = require('./routes/index');
+const indexRouter = require('./routes');
 const usersRouter = require('./routes/users');
-const loginRouter = require('./routes/login');
+const authRouter = require('./routes/auth');
 const portfoliosRouter = require('./routes/portfolios');
 const forumsRouter = require('./routes/forums');
 const marketsRouter = require('./routes/markets');
@@ -23,9 +26,51 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(session({
+    // secret : 다른 사람에게 노출되면 안됨
+    // resave : false, session data가 바뀌기 전까지 session 저장소에 저장하지 않는다
+    // saveUninitialized : session이 필요하기 전까지는 session을 구동하지 않는다.
+    secret: 'asdfasdfasdf',
+    resave: false,
+    saveUninitialized: true,
+    store: new FileStore()
+}))
+
+app.use(flash());
+var passport = require('./lib/passport')(app);
+
+// app.post('/auth/login_process',
+//   passport.authenticate('local', {
+//     successRedirect: '/',
+//     failureRedirect: '/auth/login',
+//     failureFlash: true,
+//     successFlash: true
+//   }));
+
+app.post('/auth/login_process', function (req, res, next) {
+    passport.authenticate('local', function (err, user, info) {
+        if (err) {
+            return next(err);
+        }
+        if (!user) {
+            console.log('info', info.message);
+            req.flash('message', info.message);
+            res.redirect('/auth/login');
+        }
+        req.logIn(user, function (err) {
+            if (err) { return next(err); }
+            req.session.save(function () {
+                res.redirect('/');
+                return;
+            });
+        });
+    })(req, res, next);
+});
+
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/login', loginRouter);
+app.use('/auth', authRouter);
 app.use('/portfolios', portfoliosRouter);
 app.use('/forums', forumsRouter);
 app.use('/markets', marketsRouter);
@@ -46,10 +91,10 @@ app.use(function(err, req, res, next) {
     res.render('error');
 });
 
-// const port = process.env.APP_PORT || 3000;
+const port = process.env.APP_PORT || 3000;
 
 // app.listen(port, function() {
-  //   console.log('Example app listening on port ' + port);
+//     console.log('Example app listening on port ' + port);
 // });
 
 module.exports = app;

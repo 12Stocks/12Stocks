@@ -1,29 +1,27 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const createError = require('http-errors');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const express = require('express');
+const app = express();
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var loginRouter = require('./routes/login.js');
-var portfoliosRouter = require('./routes/portfolios.js');
-var forumsRouter = require('./routes/forums.js');
-var marketsRouter = require('./routes/markets.js');
-
-var app = express();
+// Routers
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');
+const loginRouter = require('./routes/login');
+const portfoliosRouter = require('./routes/portfolios');
+const forumsRouter = require('./routes/forums');
+const marketsRouter = require('./routes/markets');
 
 // view engine setup
+app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-app.set('views', './views');
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
-app.use('/node_modules', express.static(path.join(__dirname, '/node_modules')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
@@ -48,8 +46,10 @@ app.use(function(err, req, res, next) {
     res.render('error');
 });
 
-app.listen(3000, function() {
-    console.log('Example app listening on port 3000!');
-});
+// const port = process.env.APP_PORT || 3000;
+
+// app.listen(port, function() {
+  //   console.log('Example app listening on port ' + port);
+// });
 
 module.exports = app;

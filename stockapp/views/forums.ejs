@@ -2,6 +2,8 @@
 <html>
 
 <head>
+    <%-include('base/header.ejs') %>
+
     <style>
         table,
         th,
@@ -13,8 +15,9 @@
 </head>
 
 <body>
+    <%-include('base/navbarTop.ejs')-%>
+
     <h1>게시판</h1>
-</body>
 <table>
     <tr>
         <th>글 번호</th>
@@ -37,4 +40,8 @@
         <td>author3</td>
     </tr>
 </table>
+<%-include('base/footer.ejs')%>
+
+</body>
+
 </html>

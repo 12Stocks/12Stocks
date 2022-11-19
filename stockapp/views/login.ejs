@@ -4,29 +4,33 @@
 <head>
     <%-include('base/header.ejs') %>
 
-    <title>login</title>
 </head>
 
 <body>
     <%-include('base/navbarTop.ejs')-%>
-
-    <h2>Login Form</h2>
-
-    <img src="/images/user_icon.png" style="width:250px; display:block;">
-
-    <form action="/user/login" method="post">
-        <label for="uname"><b>Username</b></label>
-        <input type="text" placeholder="Enter Username" name="uname" required><br>
-
-        <label for="psw"><b>Password</b></label>
-        <input type="password" placeholder="Enter Password" name="psw" required><br>
-
-        <button type="submit">Login</button><br>
-
-        <p>Don't have an account? <a href="">Sign Up</a><br></p>
-    </form>
-    <%-include('base/footer.ejs')%>
-
+        <div class="text-center center-div" id="login">
+            <div class="container w-25 border py-5" style="width: 120px; background-color: rgb(255, 255, 255)">
+                <div class="title bp-5">
+                    <h2 class="font-weight-bold">로그인</h2>
+                    <small class="form-text text-muted">선택하신 서비스는 로그인 후 이용할 수 있습니다.</small>
+                </div>
+                <form action="#">
+                    <p>
+                        <div class="form-group">
+                            <input type="username" class="form-control" placeholder="ID 이름" name="username">
+                    </p>
+                    </div>
+                    <p>
+                        <div class="form-group">
+                            <input type="password" class="form-control" placeholder="비밀번호" name="password">
+                    </p>
+                    </div>
+                    <button type="submit" class="btn btn-success">로그인</button>
+                </form>
+            </div>
+            <small class="form-text text-muted">아이드가 없는 경우 회원가입해주세요. </small><a href="">회원가입</a>
+        </div>
+        <%-include('base/footer.ejs')%>
 </body>
 
 </html>

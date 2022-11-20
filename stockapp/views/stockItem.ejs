@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <%-include('base/header.ejs') %>
+
+        <title>stockItem</title>
+</head>
+
+<body>
+    <%-include('base/navbarTop.ejs')-%>
+    <h1><%= name %></h1>
+    <p>현재가 : <%= now %></p>
+    <p>전일 종가 : <%= closed %></p>
+    <p>시가 : <%= open %></p>
+    <p>고가 : <%= high %></p>
+    <p>저가 : <%= low %></p>
+    <p>거래량 : <%= vol %></p>
+    <p>거래대금 : <%= val %></p>
+    <%-include('base/footer.ejs')%>
+</body>
+</html>

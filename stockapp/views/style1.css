@@ -16,7 +16,7 @@
 
 body {
     line-height: 1.4;
-    color: var(--dark);
+    color: #000000;
 }
 
 img {
@@ -36,7 +36,7 @@ img {
 header {
     height: 100vh;
     background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4));
-    background-image: url(../images/backph.jpg);
+    background-image: url("backph.jpg");
 }
 
 .navbar {
@@ -47,47 +47,4 @@ header {
 .navigation {
     display: flex;
     justify-content: space-between;
-}
-
-.navigation .logo a {
-    color: #ffff;
-    font-size: 2rem;
-    display: block;
-    text-decoration: none;
-    font-family: var (--Playfair);
-    letter-spacing: 1px;
-}
-
-.navbar-nav {
-    padding: 0.8rem 0 0.2rem 0;
-}
-
-.navbar-nav a {
-    text-transform: uppercase;
-    font-family: var(--Roboto);
-    letter-spacing: 3px;
-    font-weight: 500;
-    color: #ffff;
-    text-decoration: none;
-    display: inline-block;
-    padding-right: 1rem;
-    padding-left: 1rem;
-    transition: opacity 0.5s ease;
-}
-
-.navbar-nav a:hover {
-    opacity: 0.7;
-}
-
-.form {
-    background: #ffff;
-    border-radius: 2rem;
-    padding: 0.6rem 1rem;
-    display: flex;
-    justify-content: space-between;
-    margin-top: 1.4rem;
-    width: 80%;
-}
-
-
 }

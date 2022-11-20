@@ -91,7 +91,23 @@ router.get('/:item_code', function (req, res) {
             let vol = $($vol).text();
             let val = $($val).text();
 
-            res.render('stockItem', { name: name, now: now, closed: closed, open: open, high: high, low: low, vol: vol, val: val });
+            var item_info = {
+                name : name,
+                now : now,
+                closed: closed,
+                open: open,
+                high: high,
+                low: low,
+                vol: vol,
+                val: val
+            }
+
+            if (auth.isOwner(req, res)) {
+                res.render('stockItem', { userId: req.user.user_id, item: item_info });
+            }
+            else {
+                res.render('stockItem', { item: item_info });;
+            }
         } catch (err) {
             console.error(err);
         }

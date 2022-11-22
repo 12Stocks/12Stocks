@@ -115,7 +115,7 @@ router.get('/:item_code', function (req, res) {
                 })
             }
             else {
-                res.render('stockItem', { item: item_info });;
+                res.render('stockItem', { item: item_info, text: "관심 목록에 추가", disabled: "" });;
             }
         } catch (err) {
             console.error(err);
@@ -124,9 +124,13 @@ router.get('/:item_code', function (req, res) {
 });
 
 router.get('/:item_code/add_to_watchlist', function (req, res) {
-    watchListController.AddToWatchList(req.user.id, req.params.item_code, 1, function() {
-        res.redirect(`/markets/${req.params.item_code}`);
-    });
+    if (req.user) {
+        watchListController.AddToWatchList(req.user.id, req.params.item_code, 1, function () {
+            res.redirect(`/markets/${req.params.item_code}`);
+        });
+    } else {
+        res.redirect("/auth/loginRequired");
+    }
 });
 
 module.exports = router;

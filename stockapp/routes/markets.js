@@ -1,6 +1,7 @@
 var express = require('express')
 var router = express.Router();
 var auth = require('../lib/auth');
+var watchListController = require('../controllers/watchListController'); 
 const axios = require('axios');
 const cheerio = require('cheerio');
 const iconv = require('iconv-lite');
@@ -63,6 +64,7 @@ router.get('/', function (req, res) {
     }
 });
 
+
 router.get('/:item_code', function (req, res) {
     axios({
         url: 'https://finance.naver.com/item/main.naver?code=' + req.params.item_code,
@@ -92,8 +94,9 @@ router.get('/:item_code', function (req, res) {
             let val = $($val).text();
 
             var item_info = {
-                name : name,
-                now : now,
+                code: req.params.item_code,
+                name: name,
+                now: now,
                 closed: closed,
                 open: open,
                 high: high,
@@ -103,7 +106,13 @@ router.get('/:item_code', function (req, res) {
             }
 
             if (auth.isOwner(req, res)) {
-                res.render('stockItem', { userId: req.user.user_id, item: item_info });
+                watchListController.FindInWatchList(req.user.id, req.params.item_code, 1, (found) => {
+                    if (found) { // watchlist에 이미 있음
+                        res.render('stockItem', { userId: req.user.user_id, item: item_info, text: "관심목록에 추가됨", disabled: "disabled" });
+                    } else { // watchlist에 없음
+                        res.render('stockItem', { userId: req.user.user_id, item: item_info, text: "관심 목록에 추가", disabled: "" });
+                    } 
+                })
             }
             else {
                 res.render('stockItem', { item: item_info });;
@@ -112,7 +121,12 @@ router.get('/:item_code', function (req, res) {
             console.error(err);
         }
     })
+});
 
+router.get('/:item_code/add_to_watchlist', function (req, res) {
+    watchListController.AddToWatchList(req.user.id, req.params.item_code, 1, function() {
+        res.redirect(`/markets/${req.params.item_code}`);
+    });
 });
 
 module.exports = router;

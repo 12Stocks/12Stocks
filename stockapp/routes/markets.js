@@ -6,10 +6,14 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 const iconv = require('iconv-lite');
 
-router.get('/', function (req, res) {
+const sorting = async (array) => {
+    return await array.sort((a, b) => b.total_val - a.total_val);
+}
+
+router.get('/', async function (req, res) {
     var results = [];
     for (let i = 1; i < 21; i++) {
-        axios({
+        await axios({
             url: 'https://finance.naver.com/sise/entryJongmok.naver?&page=' + i,
             method: 'GET',
             responseType: 'arraybuffer',
@@ -49,18 +53,21 @@ router.get('/', function (req, res) {
 
                 results = results.filter(n => n.code);
                 console.log(results.length);
-                if (results.length == 200) {
-                    if (auth.isOwner(req, res)) {
-                        res.render('markets', { userId: req.user.user_id, stocks: results });
-                    }
-                    else {
-                        res.render('markets', { stocks: results });
-                    }
-                }
             } catch (err) {
                 console.error(err);
             }
         })
+    }
+
+    if (results.length == 200) {
+        var rows = await sorting(results);
+        
+        if (auth.isOwner(req, res)) {
+            res.render('markets', { userId: req.user.user_id, stocks: rows });
+        }
+        else {
+            res.render('markets', { stocks: rows });
+        }
     }
 });
 

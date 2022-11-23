@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<!-- 페이지 기초 템플릿, 복사해서 사용 -->
+<html>
+
+<head>
+  <%-include('../base/header.ejs') %>
+  <style>
+    .subTitle {
+      font-size: 25px;
+    }
+  </style>
+  <title>markets</title>
+</head>
+
+<body>
+  <%-include('../base/navbarTop.ejs')-%>
+
+  <!-- 메인 컨테이너 -->
+  <div class="container mb-3" style="width: 800px;">
+
+    <!-- 작업 트리 -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb p-1 pl-2 pr-2">
+        <li class="breadcrumb-item"><a href="/">홈</a></li>
+        <li class="breadcrumb-item"><a href="/forums">게시판</a></li>
+        <li class="breadcrumb-item active" aria-current="page">글쓰기</li>
+      </ol>
+    </nav>
+
+    <!-- 작성 내용 -->
+    <div class="container mb-3 card py-3 shadow">
+      <form>
+        <div class="mb-3">
+          <label for="title" class="form-label subTitle">제목</label>
+          <input type="text" class="form-control" id="title" aria-describedby="titleHelp">
+          <div id="titleHelp" class="form-text">제목을 입력해 주세요.</div>
+        </div>
+        <div class="mb-3">
+          <label for="textA" class="form-label subTitle">내용</label>
+          <textarea class="form-control" id="textA"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary shadow">Submit</button>
+      </form>
+    </div>
+  </div>
+
+  <%-include('../base/footer.ejs')%>
+</body>
+
+</html>

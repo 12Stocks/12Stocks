@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- 헤더 -->
+  <%-include('../base/header.ejs') %> 
+  <style>
+    .subTitle {
+      font-size: 25px;
+    }
+  </style>
+  <title>markets</title>
+</head>
+
+<body>
+  <!-- 네비게이션바 -->
+  <%-include('../base/navbarTop.ejs')-%>
+
+  <% 
+  let titleA = "이전 제목" 
+  let contentA = "이전 내용" 
+  %> 
+
+  <!-- 메인 컨테이너 -->
+  <div class="container mb-3" style="width: 800px;">
+
+    <!-- 작업 트리 -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb p-1 pl-2 pr-2">
+        <li class="breadcrumb-item"><a href="/">홈</a></li>
+        <li class="breadcrumb-item"><a href="/forums">게시판</a></li>
+        <li class="breadcrumb-item active" aria-current="page">글 수정</li>
+      </ol>
+    </nav>
+
+    <!-- 작성 내용 -->
+    <div class="container mb-3 card py-3 shadow">
+      <form>
+        <div class="mb-3">
+          <label for="title" class="form-label subTitle">제목</label>
+          <input type="text" class="form-control" id="title" aria-describedby="titleHelp" value="<%= titleA %>" >
+        </div>
+        <div class="mb-3">
+          <label for="textA" class="form-label subTitle">내용</label>
+          <textarea class="form-control" id="textA"><%= contentA %></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary shadow">Submit</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 하단바 -->
+  <%-include('../base/footer.ejs')%>
+</body>
+
+</html>

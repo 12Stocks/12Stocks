@@ -9,6 +9,40 @@
 <body>
   <%-include('../base/navbarTop.ejs')-%>
 
+  <% 
+  let title = "이전 제목" 
+  let content = "이전 내용" 
+  %> 
+
+  <!-- 메인 컨테이너 -->
+  <div class="container mb-3">
+
+    <!-- 작업 트리 -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb p-1 pl-2 pr-2">
+        <li class="breadcrumb-item"><a href="/">홈</a></li>
+        <li class="breadcrumb-item"><a href="/forums">게시판</a></li>
+        <li class="breadcrumb-item active" aria-current="page">글 수정</li>
+      </ol>
+    </nav>
+
+    <div class="row justify-content-center mb-5">
+      <div class="col-8 py-3">
+        <!-- 작성 내용 -->
+        <div class="container card mb-5 py-3">
+          <div class="mb-3">
+            <label for="title" class="form-label subTitle">제목</label>
+            <input type="text" class="form-control" id="title" name="title" aria-describedby="titleHelp" value="<%= title %>" readonly>
+          </div>
+          <div class="mb-3">
+            <label for="content" class="form-label subTitle">내용</label>
+            <textarea class="form-control"id="content" name="content" style="height: 300px;" readonly><%= content %></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
     
   <%-include('../base/footer.ejs')%>
 

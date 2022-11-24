@@ -16,7 +16,7 @@
   <%-include('../base/navbarTop.ejs')-%>
 
   <!-- 메인 컨테이너 -->
-  <div class="container mb-3" style="width: 800px;">
+  <div class="container mb-3">
 
     <!-- 작업 트리 -->
     <nav aria-label="breadcrumb">
@@ -28,19 +28,23 @@
     </nav>
 
     <!-- 작성 내용 -->
-    <div class="container mb-3 card py-3 shadow">
-      <form>
-        <div class="mb-3">
-          <label for="title" class="form-label subTitle">제목</label>
-          <input type="text" class="form-control" id="title" aria-describedby="titleHelp">
-          <div id="titleHelp" class="form-text">제목을 입력해 주세요.</div>
-        </div>
-        <div class="mb-3">
-          <label for="textA" class="form-label subTitle">내용</label>
-          <textarea class="form-control" id="textA"></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary shadow">Submit</button>
-      </form>
+    <div class="row justify-content-center mb-5">
+      <div class="col-8 card shadow py-3 green bg-opacity-10">
+        <form method="post">
+          <div class="mb-3">
+            <label for="title" class="form-label subTitle">제목</label>
+            <input type="text" class="form-control" id="title" name="title" aria-describedby="titleHelp" required>
+            <div id="titleHelp" class="form-text">제목을 입력해 주세요.</div>
+          </div>
+          <div class="mb-3">
+            <label for="content" class="form-label subTitle">내용</label>
+            <textarea class="form-control" id="content" name="content" style="height: 300px;" required></textarea>
+          </div>
+          <div class="d-grid gap-2 d-md-flex justify-content-md-end">  
+            <button type="submit" formaction="/forums/new" class="btn btn-primary shadow">제출</button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 

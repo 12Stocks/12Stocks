@@ -11,12 +11,17 @@ router.get('/new', function (req, res) {
     res.render('forums/new');
 });
 router.post('/new', function (req, res) {
-    // res.render('forums/new');
+    console.log(req.body);
+    res.redirect("/forums");
 });
 router.get('/edit', function (req, res) {
     res.render('forums/edit');
 });
 router.post('/edit', function (req, res) {
+    console.log(req.body);
+    res.redirect("/");
+});
+router.post('/delete', function (req, res) {
     // res.render('forums/edit');
 });
 

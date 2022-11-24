@@ -17,12 +17,12 @@
   <%-include('../base/navbarTop.ejs')-%>
 
   <% 
-  let titleA = "이전 제목" 
-  let contentA = "이전 내용" 
+  let title = "이전 제목" 
+  let content = "이전 내용" 
   %> 
 
   <!-- 메인 컨테이너 -->
-  <div class="container mb-3" style="width: 800px;">
+  <div class="container mb-3">
 
     <!-- 작업 트리 -->
     <nav aria-label="breadcrumb">
@@ -33,19 +33,28 @@
       </ol>
     </nav>
 
-    <!-- 작성 내용 -->
-    <div class="container mb-3 card py-3 shadow">
-      <form>
-        <div class="mb-3">
-          <label for="title" class="form-label subTitle">제목</label>
-          <input type="text" class="form-control" id="title" aria-describedby="titleHelp" value="<%= titleA %>" >
-        </div>
-        <div class="mb-3">
-          <label for="textA" class="form-label subTitle">내용</label>
-          <textarea class="form-control" id="textA"><%= contentA %></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary shadow">Submit</button>
-      </form>
+    <div class="row justify-content-center mb-5">
+      <div class="col-8 py-3">
+        <!-- 작성 내용 -->
+        <form method="post">
+          <div class="d-grid gap-2 d-md-flex justify-content-md-end m-3"> 
+            <button type="submit" formaction="/forums/delete" class="btn btn-danger shadow">글 삭제</button>
+          </div> 
+          <div class="container card mb-5 py-3 shadow">
+            <div class="mb-3">
+              <label for="title" class="form-label subTitle">제목</label>
+              <input type="text" class="form-control" id="title" name="title" aria-describedby="titleHelp" value="<%= title %>" required>
+            </div>
+            <div class="mb-3">
+              <label for="content" class="form-label subTitle">내용</label>
+              <textarea class="form-control"id="content" name="content" style="height: 300px;" required><%= content %></textarea>
+            </div>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">  
+              <button type="submit" formaction="/forums/edit" class="btn btn-primary shadow">제출</button>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 

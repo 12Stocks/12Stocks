@@ -71,4 +71,9 @@ router.get('/logout', function (req, res) {
     });
 });
 
+
+router.get('/loginRequired', function (req, res) {
+    res.render('loginRequired');
+});
+
 module.exports = router;

@@ -16,7 +16,7 @@ module.exports = function (app) {
         if(user)
         {
             // 2번째 인자로 사용자 식별자를 받음, session data의 passport안에 user의 값으로 들어감
-            console.log('serializeUser', user);
+            // console.log('serializeUser', user);
             done(null, user.user_id);
         }
     });
@@ -35,7 +35,7 @@ module.exports = function (app) {
                 var json = JSON.stringify(results[0]);
                 user = JSON.parse(json);
 
-                console.log('deserializeUser', id, user);
+                // console.log('deserializeUser', id, user);
                 done(null, user); 
             }
         });

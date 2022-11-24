@@ -4,12 +4,9 @@ var auth = require('../lib/auth');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  if (auth.isOwner(req, res)) 
-  {
+  if (auth.isOwner(req, res)) {
     res.render('index', { userId: req.user.user_id });
-  }
-  else
-  {
+  } else {
     res.render('index');
   }
 });

@@ -55,6 +55,54 @@ module.exports = {
                     }
                 })
         }
-    }
+    },
 
+    ItemPrice: function(req, res, next) {
+        axios({
+            url: 'https://finance.naver.com/item/main.naver?code=' + req.params.item_code,
+            method: 'GET',
+            responseType: 'arraybuffer',
+        })
+        .then(response => {
+            try {
+                const content = iconv.decode(response.data, 'EUC-KR');
+                const $ = cheerio.load(content);
+
+                const $now = $("#chart_area > div.rate_info > div > p.no_today > em").children("span")[0];
+                const $closed = $("#chart_area > div.rate_info > table > tbody > tr:nth-child(1) > td.first > em").children("span")[0];
+                const $open = $("#chart_area > div.rate_info > table > tbody > tr:nth-child(2) > td.first > em").children("span")[0];
+                const $high = $("#chart_area > div.rate_info > table > tbody > tr:nth-child(1) > td:nth-child(2) > em").children("span")[0];
+                const $low = $("#chart_area > div.rate_info > table > tbody > tr:nth-child(2) > td:nth-child(2) > em:nth-child(2)").children("span")[0];
+                const $vol = $("#chart_area > div.rate_info > table > tbody > tr:nth-child(1) > td:nth-child(3) > em").children("span")[0];
+                const $val = $("#chart_area > div.rate_info > table > tbody > tr:nth-child(2) > td:nth-child(3) > em").children("span")[0];
+
+                let name = $("#middle > div.h_company > div.wrap_company > h2 > a").text();
+                let now = $($now).text();
+                let closed = $($closed).text();
+                let open = $($open).text();
+                let high = $($high).text();
+                let low = $($low).text();
+                let vol = $($vol).text();
+                let val = $($val).text();
+
+                var item_info = {
+                    code: req.params.item_code,
+                    name: name,
+                    now: now,
+                    closed: closed,
+                    open: open,
+                    high: high,
+                    low: low,
+                    vol: vol,
+                    val: val
+                }
+
+                req.itemInfo = item_info;
+                next();
+                
+            } catch (err) {
+                console.error(err);
+            }
+        })
+    }
 }

@@ -8,6 +8,7 @@
             border: 1px solid black;
         }
     </style>
+    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
     <link rel="stylesheet" href="/stylesheets/tab.css">
     <title>order</title>
 </head>
@@ -33,34 +34,44 @@
 
         <div style="width:200px;">
             <select>
-                <option selected>지정가</option>
+                <option selected>보통가(지정가)</option>
                 <option>시장가</option>
             </select>
         </div><br>
 
         <label>수량</label>
-        <input type="text"><br>
+        <input type="number" step="1" value="0" id="bq"><br>
         <label>가격</label>
-        <input type="text"><br><br>
-        <p>주문 금액 : </p>
+        <input type="number" step="10" value="0" id="bp"><br><br>
+        <p>주문 금액 : <span id="buyOrderAmount"></span></p>
         <button >매수</button><br><br>
+        <script>
+            $('#bq, #bp').bind('keyup input', function () {
+                $('#buyOrderAmount').text($('#bq').val() *  $('#bp').val());
+            });
+        </script>
     </div>
 
     <div id="sell" class="tab1content">
         <div style="width:200px;">
             <select>
-                <option selected>지정가</option>
+                <option selected>보통가(지정가)</option>
                 <option>시장가</option>
             </select>
         </div><br>
 
         <label>수량</label>
-        <input type="text"><br>
+        <input type="number" step="1" value="0" id="sq"><br>
         <label>가격</label>
-        <input type="text"><br><br>
-        <p>주문 금액 : </p>
+        <input type="number" step="10" value="0" id="sp"><br><br>
+        <p>주문 금액 : <span id="sellOrderAmount"></span></p>
         <button>매도</button><br><br>
-    </div>
+        <script>
+            $('#sq, #sp').bind('keyup input', function () {
+                $('#sellOrderAmount').text($('#sq').val() * $('#sp').val());
+            });
+        </script>
+    </div><br>
     
     <!-- 실시간 주문 창 예시 -->
     <div>
@@ -125,7 +136,7 @@
 
     <div id="nonTrading" class="tab2content">
         <P>미체결 주문</P>
-    </div>
+    </div><br>
 
     <%-include('base/footer.ejs')%>
 </body>

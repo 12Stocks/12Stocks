@@ -69,7 +69,7 @@
                             <h2 class="card-title">최근 조회 종목</h2>
                             <hr>
                             <% for( var i in recentItems ) { %>
-                            <a class="card-text" href="/markets/<%= recentItems[i] %>"><%= recentItems[i] %></a><br>
+                            <a class="card-text" href="/markets/<%= recentItems[i].stock_code %>"><%= recentItems[i].stock_name %></a><br>
                             <% } %> 
                         </div>
                         <div class="card-footer"><a class="btn btn-primary btn-sm" href="#!">More Info</a></div>

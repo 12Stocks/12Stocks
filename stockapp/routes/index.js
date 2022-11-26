@@ -12,29 +12,34 @@ router.get('/', function(req, res, next) {
   var recentItemArr = [];
 
   if (cookies.recent_items == undefined) {
-    res.cookie('recent_items', req.params.item_code, { maxAge: 900000 });
+    if (auth.isOwner(req, res)) {
+      res.render('index', { userId: req.user.user_id, recentItems: undefined });
+    } else {
+      res.render('index', { recentItems: undefined });
+    }
   }
   else {
     var recentItems = cookies.recent_items;
     recentItemArr = recentItems.split(',');
-  }
 
-  // TODO : refactoring ex. getStockNameWithCode
-  var recentItemNames = [];
-  for(var i =0; i < recentItemArr.length; i++) {
-    var sql = "SELECT stock_name from stocks WHERE stock_code = ?";
-    db.query(sql, recentItemArr[i], function(err, recentItem) {
-      if (err) throw err;
+    var rItems = [];
+    for (var i = 0; i < recentItemArr.length; i++) {
+      var sql = "SELECT stock_code, stock_name from stocks WHERE stock_code = ?";
+      db.query(sql, recentItemArr[i], function (err, recentItem) {
+        if (err) throw err;
 
-      recentItemNames.push(recentItem[0].stock_name);
-      if (recentItemNames.length == recentItemArr.length) {
-        if (auth.isOwner(req, res)) {
-          res.render('index', { userId: req.user.user_id, recentItems: recentItemNames });
-        } else {
-          res.render('index', { recentItems: recentItemNames });
+        rItems.push({ stock_code: recentItem[0].stock_code, stock_name: recentItem[0].stock_name});
+        console.log(rItems);
+        
+        if (rItems.length == recentItemArr.length) {
+          if (auth.isOwner(req, res)) {
+            res.render('index', { userId: req.user.user_id, recentItems: rItems });
+          } else {
+            res.render('index', { recentItems: rItems });
+          }
         }
-      }
-    })
+      })
+    }
   }
 });
 

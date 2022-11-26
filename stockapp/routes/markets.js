@@ -5,72 +5,21 @@ var watchListController = require('../controllers/watchListController');
 const axios = require('axios');
 const cheerio = require('cheerio');
 const iconv = require('iconv-lite');
+var cookie = require('cookie');
+var crawling = require('../crawling/crawling');
 
-const sorting = async (array) => {
-    return await array.sort((a, b) => b.total_val - a.total_val);
-}
+const MAX_RECENT_ITEMS = 5;
 
-router.get('/', async function (req, res) {
-    var results = [];
-    for (let i = 1; i < 21; i++) {
-        await axios({
-            url: 'https://finance.naver.com/sise/entryJongmok.naver?&page=' + i,
-            method: 'GET',
-            responseType: 'arraybuffer',
-        })
-        .then(response => {
-            try {
-                const content = iconv.decode(response.data, 'EUC-KR');
-                const $ = cheerio.load(content);
-                const $bodyList = $("div.box_type_m table.type_1 tbody").children('tr');
-
-                $bodyList.each(function (i, elm) {
-                    let c_name = $(this).find('td.ctg').text();
-                    let link = $(this).find('td.ctg').find('a').attr('href');
-                    let now = $(this).find('td.number_2')[0];
-                    let s = $(this).find('td.rate_down2').find('img').attr('alt') == "상승" ? 1 : 0;
-                    let chg = $(this).find('td.rate_down2 span').text();
-                    let chgp = $(this).find('td.number_2')[1];
-                    let vol = $(this).find('td.number').text();
-                    let trading_val = $(this).find('td.number_2')[2];
-                    let total_val = $(this).find('td.number_2')[3];
-
-                    if (typeof (link) == 'string')
-                        link = link.split('=')[1];
-
-                    results.push({
-                        name: c_name,
-                        code: link,
-                        now_val: $(now).text(),
-                        s: s,
-                        chg: chg.replace(/["\t", "\n"]/g, ''),
-                        chgp: $(chgp).text().replace(/["\t", "\n"]/g, ''),
-                        vol: vol,
-                        trading_val: $(trading_val).text(),
-                        total_val: $(total_val).text()
-                    });
-                });
-
-                results = results.filter(n => n.code);
-                console.log(results.length);
-            } catch (err) {
-                console.error(err);
-            }
-        })
-    }
-
-    if (results.length == 200) {
-        var rows = await sorting(results);
-        
+router.get('/', function (req, res) {
+    crawling.KOSPI200(req, res, function() {
         if (auth.isOwner(req, res)) {
-            res.render('markets', { userId: req.user.user_id, stocks: rows });
+            res.render('markets', { userId: req.user.user_id, stocks: req.kospi200 });
         }
         else {
-            res.render('markets', { stocks: rows });
+            res.render('markets', { stocks: req.kospi200 });
         }
-    }
+    })
 });
-
 
 router.get('/:item_code', function (req, res) {
     axios({
@@ -112,9 +61,35 @@ router.get('/:item_code', function (req, res) {
                 val: val
             }
 
+            /// 최근 조회 목록을 cookie값으로 저장, TODO : Refactoring ex. cookieController.js
+            if (req.headers.cookie !== undefined) {
+                var cookies = cookie.parse(req.headers.cookie);
+                if(cookies.recent_items == undefined) {
+                    res.cookie('recent_items', req.params.item_code, { maxAge: 900000 });
+                }
+                else {
+
+                    var recentItems = cookies.recent_items;
+                    var recentItemArr = recentItems.split(',');
+
+                    recentItemArr = recentItemArr.filter(item => item != req.params.item_code);
+                    
+                    if(recentItemArr.length == 0) {
+                        recentItems = req.params.item_code;
+                    }
+                    else {
+                        if (recentItemArr.length >= MAX_RECENT_ITEMS) recentItemArr.pop();
+                        recentItems = req.params.item_code + ',' + recentItemArr.join(',');
+                    }
+
+                    res.cookie('recent_items', recentItems, { maxAge: 900000 });
+                }
+            }
+            ///
+
             if (auth.isOwner(req, res)) {
-                watchListController.FindInWatchList(req.user.id, req.params.item_code, 1, (found) => {
-                    if (found) { // watchlist에 이미 있음
+                watchListController.FindInWatchList(req.user.id, req.params.item_code, 1, (exist) => {
+                    if (exist) { // watchlist에 이미 있음
                         res.render('stockItem', { userId: req.user.user_id, item: item_info, text: "관심목록에 추가됨", disabled: "disabled" });
                     } else { // watchlist에 없음
                         res.render('stockItem', { userId: req.user.user_id, item: item_info, text: "관심 목록에 추가", disabled: "" });

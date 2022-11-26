@@ -3,7 +3,6 @@
 
 <head>
     <%-include('base/header.ejs') %>
-
     <style>
         table, th, td {
             border: 1px solid black;
@@ -41,10 +40,11 @@
                 <td><%= stocks[i].trading_val %></td>
                 <td><%= stocks[i].total_val %></td>
             </tr>
-            <% } %>
+        <% } %>
     </table>
-    <%-include('base/footer.ejs')%>
 
+    <%-include('base/footer.ejs')%>
+    
 </body>
 
 </html>

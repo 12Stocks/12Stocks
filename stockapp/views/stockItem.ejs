@@ -5,7 +5,6 @@
     <%-include('base/header.ejs') %>
 
     <title>stockItem</title>
-
 </head>
 
 <body>
@@ -19,6 +18,22 @@
     <p>거래량 : <%= item.vol %></p>
     <p>거래대금 : <%= item.val %></p>
     <button type='button' onclick="location.href='/markets/<%= item.code %>/add_to_watchlist'" <%= disabled %>><%= text %></button>
+    <!-- 시간별 시세, 일별 시세 보여주는 탭  -->
+    <button type='button' onclick="">시세</button>
+    <button type='button' onclick="">차트</button>
+    <button type='button' onclick="">뉴스</button>
+    <button type='button' onclick="">기업정보</button>
+    <button type='button' onclick="">종목토론실</button>
+    <button type='button' onclick="location.href='/order'">주문하기</button>
+
+    <div>
+        <p>시간별 시세</p>
+    </div>
+
+    <div>
+        <p>일별 시세</p>
+    </div>
+
     <%-include('base/footer.ejs')%>
 </body>
 </html>

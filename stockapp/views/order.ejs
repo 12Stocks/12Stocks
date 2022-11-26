@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <%-include('base/header.ejs') %>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+        }
+    </style>
+    <link rel="stylesheet" href="/stylesheets/tab.css">
+    <title>order</title>
+</head>
+
+<body>
+    <%-include('base/navbarTop.ejs')-%>
+
+    <h1>주식 주문</h1><br>
+
+    <div>
+        <input type="text" placeholder="종목 코드/이름 입력...">
+        <button type="submit">검색</button>
+    </div><br>
+
+    <p>여기에 현재가, 등략률 등 표시</p>
+
+    <!-- 매수/매도 창 -->
+    <div class="tab">
+        <button class="tab1links" onclick="openTab(event, 1, 'buy')" id="tab1-default">매수</button>
+        <button class="tab1links" onclick="openTab(event, 1, 'sell')">매도</button>
+    </div>
+    <div id="buy" class="tab1content">
+
+        <div style="width:200px;">
+            <select>
+                <option selected>지정가</option>
+                <option>시장가</option>
+            </select>
+        </div><br>
+
+        <label>수량</label>
+        <input type="text"><br>
+        <label>가격</label>
+        <input type="text"><br><br>
+        <p>주문 금액 : </p>
+        <button >매수</button><br><br>
+    </div>
+
+    <div id="sell" class="tab1content">
+        <div style="width:200px;">
+            <select>
+                <option selected>지정가</option>
+                <option>시장가</option>
+            </select>
+        </div><br>
+
+        <label>수량</label>
+        <input type="text"><br>
+        <label>가격</label>
+        <input type="text"><br><br>
+        <p>주문 금액 : </p>
+        <button>매도</button><br><br>
+    </div>
+    
+    <!-- 실시간 주문 창 예시 -->
+    <div>
+        <table>
+            <tr>
+                <th>체결 시간</th>
+                <th>가격</th>
+                <th>수량</th>
+            </tr>
+            <tr>
+                <td>00:00:00</td>
+                <td>3,000</td>
+                <td>50</td>
+            </tr>
+            <tr>
+                <td>00:00:10</td>
+                <td>4,000</td>
+                <td>70</td>
+            </tr>
+        </table>
+    </div><br>
+
+    <!-- 호가 창 예시 -->
+    <div>
+        <table>
+            <tr>
+                <th>매도량</th>
+                <th>가격</th>
+                <th>매수량</th>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>590</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>30</td>
+                <td>600</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>610</td>
+                <td>94</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>620</td>
+                <td>67</td>
+            </tr>
+        </table>
+    </div><br>
+    
+    <!-- 주식 체결/미체결 -->
+    <div class="tab">
+        <button class="tab2links" onclick="openTab(event, 2, 'conclusion')" id="tab2-default">주식 체결</button>
+        <button class="tab2links" onclick="openTab(event, 2, 'nonTrading')">주식 미체결</button>
+    </div>
+    <div id="conclusion" class="tab2content">
+        <p>체결 내역</p>
+    </div>
+
+    <div id="nonTrading" class="tab2content">
+        <P>미체결 주문</P>
+    </div>
+
+    <%-include('base/footer.ejs')%>
+</body>
+
+<script>
+    function openTab(evt, id, tabName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tab" + id + "content");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tab" + id + "links");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+
+    document.getElementById("tab1-default").click();
+    document.getElementById("tab2-default").click();
+</script>
+
+</html>

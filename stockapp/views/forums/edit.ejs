@@ -34,20 +34,21 @@
     </nav>
 
     <div class="row justify-content-center mb-5">
-      <div class="col-8 py-3">
+      <div class="col-8 m-3">
         <!-- 작성 내용 -->
         <form method="post">
-          <div class="d-grid gap-2 d-md-flex justify-content-md-end m-3"> 
+          <div class="d-grid gap-2 d-md-flex justify-content-md-end"> 
+            <!-- 글 삭제 확인 알림창 띄우기? -->
             <button type="submit" formaction="/forums/delete" class="btn btn-danger shadow">글 삭제</button>
           </div> 
-          <div class="container card mb-5 py-3 shadow">
+          <div class="card align-self-center m-5 p-3 shadow">
             <div class="mb-3">
               <label for="title" class="form-label subTitle">제목</label>
               <input type="text" class="form-control" id="title" name="title" aria-describedby="titleHelp" value="<%= title %>" required>
             </div>
             <div class="mb-3">
               <label for="content" class="form-label subTitle">내용</label>
-              <textarea class="form-control"id="content" name="content" style="height: 300px;" required><%= content %></textarea>
+              <textarea class="form-control" id="content" name="content" style="height: 300px;" required><%= content %></textarea>
             </div>
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">  
               <button type="submit" formaction="/forums/edit" class="btn btn-primary shadow">제출</button>

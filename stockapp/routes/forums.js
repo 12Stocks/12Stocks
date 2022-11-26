@@ -19,7 +19,7 @@ router.get('/edit', function (req, res) {
 });
 router.post('/edit', function (req, res) {
     console.log(req.body);
-    res.redirect("/");
+    res.redirect("/forums");
 });
 router.post('/delete', function (req, res) {
     // res.render('forums/edit');

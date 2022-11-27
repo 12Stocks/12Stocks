@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<!-- 페이지 기초 템플릿, 복사해서 사용 -->
+<html>
+
+<head>
+  <%-include('../base/header.ejs') %>
+  <style>
+    .subTitle {
+      font-size: 25px;
+    }
+  </style>
+  <title>markets</title>
+</head>
+
+<body>
+  <%-include('../base/navbarTop.ejs')-%>
+
+  <!-- 메인 컨테이너 -->
+  <div class="container mb-3">
+
+    <!-- 작업 트리 -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb p-1 pl-2 pr-2">
+        <li class="breadcrumb-item"><a href="/">홈</a></li>
+        <li class="breadcrumb-item"><a href="/forums">게시판</a></li>
+        <li class="breadcrumb-item active" aria-current="page">글쓰기</li>
+      </ol>
+    </nav>
+
+    <!-- 작성 내용 -->
+    <div class="row justify-content-center mb-5">
+      <div class="col-8 m-3">
+        <!-- 작성 내용 -->
+        <form method="post">
+          <div class="card align-self-center m-5 p-3 shadow">
+            <div class="mb-3">
+              <label for="title" class="form-label subTitle">제목</label>
+              <input type="text" class="form-control" id="title" name="title" aria-describedby="titleHelp" required>
+            </div>
+            <div class="mb-3">
+              <label for="content" class="form-label subTitle">내용</label>
+              <textarea class="form-control"id="content" name="content" style="height: 300px;" required></textarea>
+            </div>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">  
+              <button type="submit" formaction="/forums/new" class="btn btn-primary shadow">제출</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <%-include('../base/footer.ejs')%>
+</body>
+
+</html>

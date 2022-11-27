@@ -10,13 +10,18 @@ var crawling = require('../crawling/crawling');
 
 const MAX_RECENT_ITEMS = 5;
 
+const sorting = async (array) => {
+    return await array.sort((a, b) => b.total_val - a.total_val);
+}
+
 router.get('/', function (req, res) {
-    crawling.KOSPI200(req, res, function() {
+    crawling.KOSPI200(req, res, async function() {
+        var rows = await sorting(req.kospi200);
         if (auth.isOwner(req, res)) {
-            res.render('markets', { userId: req.user.user_id, stocks: req.kospi200 });
+            res.render('markets', { userId: req.user.user_id, stocks: rows });
         }
         else {
-            res.render('markets', { stocks: req.kospi200 });
+            res.render('markets', { stocks: rows });
         }
     })
 });

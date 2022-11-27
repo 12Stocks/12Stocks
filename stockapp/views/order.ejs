@@ -19,11 +19,12 @@
     <h1>주식 주문</h1><br>
 
     <div>
-        <input type="text" placeholder="종목 코드/이름 입력...">
+        <input type="text" placeholder="종목 코드/이름 입력..." value="<%= itemInfo.code %>">
         <button type="submit">검색</button>
     </div><br>
 
-    <p>여기에 현재가, 등략률 등 표시</p>
+    <h3><%= itemInfo.name %></h3>
+    <p><%= itemInfo.now %></p>
 
     <!-- 매수/매도 창 -->
     <div class="tab">

@@ -8,10 +8,11 @@
     <body>
         <%-include('base/navbarTop.ejs')-%>
 
-        <h1>Welcome to My Portfolios</h1>
-        <p>로그인이 필요한 기능입니다.</p>
-        <button type="button" onclick="location.href='/login'">Login</button>
+        <h1>내 관심 목록</h1>
+        <% for( var i in watchlist ) { %>
+        <label><%= watchlist[i].stock_code %></label>
+        <button onclick="location.href='/portfolios/<%= watchlist[i].stock_code %>/delete_from_watchlist'" >관심목록에서 제거</button><br>
+        <% } %>
         <%-include('base/footer.ejs')%>
-
     </body>
 </html>

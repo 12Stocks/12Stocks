@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>12Stocks</title>
     <%-include('base/header.ejs') %>
@@ -28,71 +29,77 @@
             </div>
         </div>
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid">
-            <!-- <a class="navbar-brand" href="#!">검색바?</a> -->
-            <div class="col-1"></div>
-            <div class="col-3 align-self-end">
-                <form class="d-flex">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                </form>
-            </div>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <!-- <a class="navbar-brand" href="#!">검색바?</a> -->
+                <div class="col-1"></div>
+                <div class="col-3 align-self-end">
+                    <form class="d-flex">
+                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form>
+                </div>
                 <!-- <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button> -->
-            <div class="collapse navbar-collapse" id="navbarSupportedContent" style="color: rgb(151, 67, 67)">
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link" href="/users">회원조회</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/markets">시장</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/forums">게시판</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/portfolios">포트폴리오</a></li>
-                </ul>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent" style="color: rgb(151, 67, 67)">
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        <li class="nav-item"><a class="nav-link" href="/users">회원조회</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/markets">시장</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/forums">게시판</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/portfolios">포트폴리오</a></li>
+                    </ul>
+                </div>
+                <div class="col-1"></div>
             </div>
-            <div class="col-1"></div>
-        </div>
-    </nav>
-    
-    <!-- Page Content-->
-    <div class="container px-4 px-lg-5">
-        <!-- Call to Action-->
-        <div class="card text-white bg-secondary my-5 py-4 text-center">
-            <div class="card-body"><p class="text-white m-0">This call to action card is a great place to showcase some important information or display a clever tagline!</p></div>
-        </div>
-        <!-- Content Row-->
-        <div class="row gx-4 gx-lg-5">
-            <div class="col-md-4 mb-5">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h2 class="card-title">최근 조회 종목</h2>
-                        <hr>
-                        <p class="card-text">Empty</p>
-                    </div>
-                    <div class="card-footer"><a class="btn btn-primary btn-sm" href="#!">More Info</a></div>
+        </nav>
+
+        <!-- Page Content-->
+        <div class="container px-4 px-lg-5">
+            <!-- Call to Action-->
+            <div class="card text-white bg-secondary my-5 py-4 text-center">
+                <div class="card-body">
+                    <p class="text-white m-0">This call to action card is a great place to showcase some important
+                        information or display a clever tagline!</p>
                 </div>
             </div>
-            <div class="col-md-4 mb-5">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h2 class="card-title">실시간 인기 종목</h2>
-                        <hr>
-                        <p class="card-text">Empty</p>
+            <!-- Content Row-->
+            <div class="row gx-4 gx-lg-5">
+                <div class="col-md-4 mb-5">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h2 class="card-title">최근 조회 종목</h2>
+                            <hr>
+                            <% for( var i in recentItems ) { %>
+                            <a class="card-text" href="/markets/<%= recentItems[i].stock_code %>"><%= recentItems[i].stock_name %></a><br>
+                            <% } %> 
+                        </div>
+                        <div class="card-footer"><a class="btn btn-primary btn-sm" href="#!">More Info</a></div>
                     </div>
-                    <div class="card-footer"><a class="btn btn-primary btn-sm" href="#!">More Info</a></div>
                 </div>
-            </div>
-            <div class="col-md-4 mb-5">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h2 class="card-title">인기 게시글</h2>
-                        <hr>
-                        <p class="card-text">Empty</p>
+
+                <div class="col-md-4 mb-5">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h2 class="card-title">실시간 인기 종목</h2>
+                            <hr>
+                            <p class="card-text">Empty</p>
+                        </div>
+                        <div class="card-footer"><a class="btn btn-primary btn-sm" href="#!">More Info</a></div>
                     </div>
-                    <div class="card-footer"><a class="btn btn-primary btn-sm" href="#!">More Info</a></div>
+                </div>
+                <div class="col-md-4 mb-5">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h2 class="card-title">인기 게시글</h2>
+                            <hr>
+                            <p class="card-text">Empty</p>
+                        </div>
+                        <div class="card-footer"><a class="btn btn-primary btn-sm" href="#!">More Info</a></div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- Footer-->
-    <%-include('base/footer.ejs')%>
+        <!-- Footer-->
+        <%-include('base/footer.ejs')%>
 
 </body>
 

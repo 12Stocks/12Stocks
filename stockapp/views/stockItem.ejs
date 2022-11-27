@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <%-include('base/header.ejs') %>
+
+    <title>stockItem</title>
+
+</head>
+
+<body>
+    <%-include('base/navbarTop.ejs')-%>
+    <h1><%= item.name %></h1>
+    <p>현재가 : <%= item.now %></p>
+    <p>전일 종가 : <%= item.closed %></p>
+    <p>시가 : <%= item.open %></p>
+    <p>고가 : <%= item.high %></p>
+    <p>저가 : <%= item.low %></p>
+    <p>거래량 : <%= item.vol %></p>
+    <p>거래대금 : <%= item.val %></p>
+    <button type='button' onclick="location.href='/markets/<%= item.code %>/add_to_watchlist'" <%= disabled %>><%= text %></button>
+    <button type='button' onclick="">종목토론실</button>
+    <button type='button' onclick="">주문하기</button>
+    <%-include('base/footer.ejs')%>
+</body>
+</html>

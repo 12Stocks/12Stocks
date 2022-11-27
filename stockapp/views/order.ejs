@@ -9,6 +9,7 @@
         }
     </style>
     <script src="/node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
     <link rel="stylesheet" href="/stylesheets/tab.css">
     <title>order</title>
 </head>
@@ -30,48 +31,57 @@
     <div class="tab">
         <button class="tab1links" onclick="openTab(event, 1, 'buy')" id="tab1-default">매수</button>
         <button class="tab1links" onclick="openTab(event, 1, 'sell')">매도</button>
+        <button class="tab1links" onclick="openTab(event, 1, 'correct')">정정/취소</button>
     </div>
     <div id="buy" class="tab1content">
-
-        <div style="width:200px;">
-            <select>
-                <option selected>보통가(지정가)</option>
-                <option>시장가</option>
-            </select>
-        </div><br>
-
-        <label>수량</label>
-        <input type="number" step="1" value="0" id="bq"><br>
-        <label>가격</label>
-        <input type="number" step="10" value="0" id="bp"><br><br>
-        <p>주문 금액 : <span id="buyOrderAmount"></span></p>
-        <button >매수</button><br><br>
-        <script>
-            $('#bq, #bp').bind('keyup input', function () {
-                $('#buyOrderAmount').text($('#bq').val() *  $('#bp').val());
-            });
-        </script>
+        <form action='/order/<%= itemInfo.code %>/buy_process' onsubmit="return validateBuyForm()" method="post">
+            <div style="width:200px;">
+                <select>
+                    <option selected>보통가(지정가)</option>
+                    <option>시장가</option>
+                </select>
+            </div><br>
+            <label>수량</label>
+            <input type="number" min="0" step="1" value="0" name="bq" id="bq"/><br>
+            <label>가격</label>
+            <input type="number" min="0" step="10" value="0" name="bp" id="bp" /><br><br>
+            <p>주문 금액 : <span id="buyOrderAmount"></span></p>
+            <input type="submit" value="매수">
+        </form>
     </div>
 
     <div id="sell" class="tab1content">
+        <form action='/order/<%= itemInfo.code %>/sell_process' onsubmit="return validateSellForm()" method="post">
+            <div style="width:200px;">
+                <select>
+                    <option selected>보통가(지정가)</option>
+                    <option>시장가</option>
+                </select>
+            </div><br>
+            <label>수량</label>
+            <input type="number" min="0" step="1" value="0" name="sq" id="sq" /><br>
+            <label>가격</label>
+            <input type="number" min="0" step="10" value="0" name="sp" id="sp" /><br><br>
+            <p>주문 금액 : <span id="sellOrderAmount"></span></p>
+            <input type="submit" value="매도">
+        </form>
+    </div>
+
+    <div id="correct" class="tab1content">
+        <p>미체결 내역에서 선택</p>
         <div style="width:200px;">
             <select>
                 <option selected>보통가(지정가)</option>
                 <option>시장가</option>
             </select>
         </div><br>
-
         <label>수량</label>
-        <input type="number" step="1" value="0" id="sq"><br>
+        <input type="number" min="0" step="1" value="0" id="uq" /><br>
         <label>가격</label>
-        <input type="number" step="10" value="0" id="sp"><br><br>
-        <p>주문 금액 : <span id="sellOrderAmount"></span></p>
-        <button>매도</button><br><br>
-        <script>
-            $('#sq, #sp').bind('keyup input', function () {
-                $('#sellOrderAmount').text($('#sq').val() * $('#sp').val());
-            });
-        </script>
+        <input type="number" min="0" step="10" value="0" id="up" /><br><br>
+        <p>주문 금액 : <span id="updateAmount"></span></p>
+        <input type="button" value ="정정" onclick="alert('정정')">
+        <input type="button" value= "취소" onclick="alert('취소')">
     </div><br>
     
     <!-- 실시간 주문 창 예시 -->
@@ -79,7 +89,7 @@
         <table>
             <tr>
                 <th>체결 시간</th>
-                <th>가격</th>
+                <th>단가</th>
                 <th>수량</th>
             </tr>
             <tr>
@@ -100,29 +110,18 @@
         <table>
             <tr>
                 <th>매도량</th>
-                <th>가격</th>
+                <th>단가</th>
                 <th>매수량</th>
             </tr>
-            <tr>
-                <td>5</td>
-                <td>590</td>
-                <td></td>
-            </tr>
-            <tr>
-                <td>30</td>
-                <td>600</td>
-                <td></td>
-            </tr>
+            <% var rnd = Math.round(Math.random()) %>
+            <% for( var i = 0; i < 20; i++ ) { %>
             <tr>
                 <td></td>
-                <td>610</td>
-                <td>94</td>
-            </tr>
-            <tr>
+                <% var bidprice = parseInt(itemInfo.now.replace(/,/g, '')) + parseInt(tickSize) * (i - 10 + rnd) %>
+                <td><%= bidprice.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ","); %></td>
                 <td></td>
-                <td>620</td>
-                <td>67</td>
             </tr>
+            <% } %>
         </table>
     </div><br>
     
@@ -136,13 +135,46 @@
     </div>
 
     <div id="nonTrading" class="tab2content">
-        <P>미체결 주문</P>
+        <div id="nonTradingContent">
+            <P>미체결 주문</P>
+        </div>
     </div><br>
 
     <%-include('base/footer.ejs')%>
 </body>
 
 <script>
+    $('#bq, #bp').bind('keyup input', function () {
+        $('#buyOrderAmount').text($('#bq').val() * $('#bp').val());
+    });
+    
+    $('#sq, #sp').bind('keyup input', function () {
+        $('#sellOrderAmount').text($('#sq').val() * $('#sp').val());
+    });
+
+    $('#uq, #up').bind('keyup input', function () {
+        $('#updateAmount').text($('#uq').val() * $('#up').val());
+    });
+
+    function validateBuyForm() {
+        if($('#bq').val() * $('#bp').val() <= 0) {
+            alert("수량과 가격을 정확히 입력하여 주세요.");
+            return false;
+        }
+    }
+
+    function validateSellForm() {
+        if ($('#sq').val() * $('#sp').val() <= 0) {
+            alert("수량과 가격을 정확히 입력하여 주세요.");
+            return false;
+        }
+    }
+
+    function reloadDivArea() {
+        alert('nonTradingContent reloaded!');
+        $('#nonTradingContent').load(location.href + ' #nonTradingContent');
+    }
+
     function openTab(evt, id, tabName) {
         var i, tabcontent, tablinks;
         tabcontent = document.getElementsByClassName("tab" + id + "content");

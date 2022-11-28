@@ -33,7 +33,7 @@
         <button class="tab1links" onclick="openTab(event, 1, 'correct')">정정/취소</button>
     </div>
     <div id="buy" class="tab1content">
-        <form action='/order/<%= itemInfo.code %>/buy_process' onsubmit="return validateBuyForm()" method="post">
+        <form name="buyForm" id="buyForm">
             <div style="width:200px;">
                 <select>
                     <option selected>보통가(지정가)</option>
@@ -43,14 +43,14 @@
             <label>수량</label>
             <input type="number" min="0" step="1" value="0" name="bq" id="bq"/><br>
             <label>가격</label>
-            <input type="number" min="0" step="10" value="0" name="bp" id="bp" /><br><br>
+            <input type="number" min="0" step="10" value="0" name="bp" id="bp"/><br><br>
             <p>주문 금액 : <span id="buyOrderAmount"></span></p>
-            <input type="submit" value="매수">
+            <input type="button" value="매수" id = "buyOrder"/>
         </form>
     </div>
 
     <div id="sell" class="tab1content">
-        <form action='/order/<%= itemInfo.code %>/sell_process' onsubmit="return validateSellForm()" method="post">
+        <form name="sellForm" id="sellForm">
             <div style="width:200px;">
                 <select>
                     <option selected>보통가(지정가)</option>
@@ -58,11 +58,11 @@
                 </select>
             </div><br>
             <label>수량</label>
-            <input type="number" min="0" step="1" value="0" name="sq" id="sq" /><br>
+            <input type="number" min="0" step="1" value="0" name="sq" id="sq"/><br>
             <label>가격</label>
-            <input type="number" min="0" step="10" value="0" name="sp" id="sp" /><br><br>
+            <input type="number" min="0" step="10" value="0" name="sp" id="sp"/><br><br>
             <p>주문 금액 : <span id="sellOrderAmount"></span></p>
-            <input type="submit" value="매도">
+            <input type="button" value="매도" id = "sellOrder"/>
         </form>
     </div>
 
@@ -156,9 +156,11 @@
     });
 
     function validateBuyForm() {
-        if($('#bq').val() * $('#bp').val() <= 0) {
+        if ($('#bq').val() * $('#bp').val() <= 0) {
             alert("수량과 가격을 정확히 입력하여 주세요.");
             return false;
+        } else {
+            return true;
         }
     }
 
@@ -166,8 +168,46 @@
         if ($('#sq').val() * $('#sp').val() <= 0) {
             alert("수량과 가격을 정확히 입력하여 주세요.");
             return false;
+        } else {
+            return true;
         }
     }
+
+    $(document).ready(function () {
+        $('#buyOrder').click(function () {
+            if(validateBuyForm()) {
+                var buyForm = $("#buyForm").serialize();
+                $.ajax({
+                    url: '/order/<%= itemInfo.code %>/buy_process',
+                    dataType: 'json',
+                    type: 'POST',
+                    data: buyForm,
+                    success: function (result) {
+                        if (result) {
+                            alert(result.result);
+                        }
+                    }
+                });
+            }
+        });
+
+        $('#sellOrder').click(function () {
+            if (validateSellForm()) {
+                var sellForm = $("#sellForm").serialize();
+                $.ajax({
+                    url: '/order/<%= itemInfo.code %>/sell_process',
+                    dataType: 'json',
+                    type: 'POST',
+                    data: sellForm,
+                    success: function (result) {
+                        if (result) {
+                            alert(result.result);
+                        }
+                    }
+                });
+            }
+        });
+    });
 
     function reloadDivArea() {
         alert('nonTradingContent reloaded!');
@@ -193,3 +233,4 @@
 </script>
 
 </html>
+

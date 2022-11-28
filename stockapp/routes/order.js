@@ -30,7 +30,7 @@ router.post('/:item_code/buy_process', function (req, res) {
     var buy_quantity = post.bq;
     var buy_price = post.bp;
     orderController.Order(req.user.user_id, req.params.item_code, buy_quantity, 0, buy_price, function() {
-        res.redirect('/order/' + req.params.item_code);
+        res.send({result : '매수 주문 성공' });
     });
 });
 
@@ -40,7 +40,7 @@ router.post('/:item_code/sell_process', function (req, res) {
     var sell_quantity = post.sq;
     var sell_price = post.sp;
     orderController.Order(req.user.user_id, req.params.item_code, sell_quantity, 1, sell_price, function () {
-        res.redirect('/order/' + req.params.item_code);
+        res.send({ result: '매도 주문 성공' });
     });
 });
 

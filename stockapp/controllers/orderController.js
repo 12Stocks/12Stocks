@@ -15,62 +15,23 @@ module.exports = {
 
     // buy : 0, sell : 1
     Order : async function(userId, stock_code, quantity, buysell, price, cb) {
-        var q = quantity;
-        var datas = {userId, stock_code, quantity, buysell, price};
+        var order = {userId, stock_code, quantity, quantity, price};
         await orderModel.getOrder(stock_code, quantity, buysell, price, async (matched) => {
-            matched.forEach(async (elm, i) => {
-                await orderModel.compareOrder(elm, datas, () => {
-                    console.log(`idx : ${i}`);
+            for(let i = 0; i < matched.length; i++) {
+                if(order.quantity == 0) break;
+                await orderModel.compareOrder(matched[i], order, (remain) => {
+                    order.quantity = remain;
+                    console.log(`idx : ${i}\t remain : ${order.quantity}`);
                 });
-            });
+            }
+            if(order.quantity > 0) {
+                await orderModel.insertOrder(userId, stock_code, order.quantity, buysell, order.price);
+            }
             cb();
-        //     for(let i = 0; i < matched.length; i++) {
-                // if(buysell == 0) {
-                //     datas = [matched[i].trader_id, userId, stock_code, q, price];
-                // }
-                // else {
-                //     datas = [userId, matched[i].trader_id, stock_code, q, price];
-                // }
-        //         console.log(`idx : ${i} remain : ${q}`);
-
-        //         if(matched[i].quantity > q) {
-        //             await orderModel.updateOrder(matched[i].offer_id, q, async (result) => {
-        //                 await orderModel.conclusion(datas);
-        //                 console.log(`offer_id ${result.offer_id} updated ${matched[i].quantity} => ${matched[i].quantity - q} by conclusion !`);
-        //                 q = 0;
-        //             });
-        //             break;
-        //         }
-        //         else if(matched[i].quantity == q) {
-        //             await orderModel.deleteOrder(matched[i].offer_id, async (result) => {
-        //                 await orderModel.conclusion(datas);
-        //                 console.log(`offer_id ${matched[i].offer_id} deleted by conclusion !`);
-        //                 q = 0;
-        //             });
-        //             break;
-        //         }
-        //         else {
-        //             await orderModel.deleteOrder(matched[i].offer_id, async (result) => {
-        //                 await orderModel.conclusion(datas);
-        //                 console.log(`offer_id ${matched[i].offer_id} deleted by conclusion !`);
-        //                 q -= matched[i].quantity;
-        //             });
-        //         }
-        //     }
-        // }).then(() => {
-        //     if(q > 0) {
-        //         orderModel.insertOrder(userId, stock_code, q, buysell, price);
-        //         console.log(`주문자 : ${userId},\n종목 : ${stock_code},\n가격 : ${price},\n수량 : ${q}\n${((buysell == 0) ? "구매" : "판매")} 주문 완료 !`);
-        //     }
-        //     cb();
         });
     },
 
     GetOrderList : function() {
         
     },
-
-    Conclusion : function() {
-        
-    }
 }

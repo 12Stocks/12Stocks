@@ -55,7 +55,7 @@ router.get('/:item_code', function (req, res) {
         ///
 
         if (auth.isOwner(req, res)) {
-            watchListController.FindInWatchList(req.user.id, req.params.item_code, 1, (exist) => {
+            watchListController.FindInWatchList(req.user.user_id, req.params.item_code, 1, (exist) => {
                 if (exist) { // watchlist에 이미 있음
                     res.render('stockItem', { userId: req.user.user_id, item: req.itemInfo, text: "관심목록에 추가됨", disabled: "disabled" });
                 } else { // watchlist에 없음
@@ -71,7 +71,7 @@ router.get('/:item_code', function (req, res) {
 
 router.get('/:item_code/add_to_watchlist', function (req, res) {
     if (req.user) {
-        watchListController.AddToWatchList(req.user.id, req.params.item_code, 1, function () {
+        watchListController.AddToWatchList(req.user.user_id, req.params.item_code, 1, function () {
             res.redirect(`/markets/${req.params.item_code}`);
         });
     } else {

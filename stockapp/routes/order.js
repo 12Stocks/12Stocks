@@ -3,7 +3,58 @@ var router = express.Router();
 var auth = require('../lib/auth');
 var crawling = require('../crawling/crawling');
 var orderController = require("../controllers/orderController");
-const { data } = require('jquery');
+const db = require('../config/DB');
+
+router.get('/search/auto_complete', function(req, res) {
+    var sql = "SELECT stock_code, stock_name from stocks;";
+    db.query(sql,  function (err, result) {
+        if (err) throw err;
+        var resultArr = [];
+        for(var i =0; i < result.length; i++) {
+            resultArr.push({ label: result[i].stock_code + ' [' + result[i].stock_name + '] ', value: result[i].stock_name });
+            resultArr.push({ label: result[i].stock_name, value: result[i].stock_name });
+        }
+        res.send(resultArr);
+    });
+})
+
+router.post('/search/:search_input', function (req, res) {
+    var search_by_code = "SELECT stock_code, stock_name from stocks WHERE stock_code = ?";
+    db.query(search_by_code, [req.params.search_input], function (err, results_by_code) {
+        if (err) throw err;
+
+        if (results_by_code.length == 0) {
+            var search_by_name = "SELECT stock_code, stock_name from stocks WHERE stock_name = ?";
+            db.query(search_by_name, [req.params.search_input], function(err, results_by_name) {
+                if (err) throw err;
+
+                if (results_by_name.length == 0) { // 결과 없음
+                    console.log("검색 결과 없음");
+                    res.send({ result: undefined })
+
+                } else { // 이름으로 찾음
+                    console.log("이름으로 찾음");
+                    res.redirect('/order/found/' + results_by_name[0].stock_code);
+                }
+            })
+        } else { // 코드로 찾음
+            console.log("코드로 찾음");
+            res.redirect('/order/found/' + results_by_code[0].stock_code);
+        }
+    });
+});
+
+router.get('/found/:item_code', function (req, res) {
+    crawling.ItemPrice(req, res, function () {
+        var tickSize = orderController.GetTickSize(req.itemInfo.now);
+        var result = {
+            itemInfo: req.itemInfo,
+            tickSize: tickSize
+        };
+
+        res.send({ result: result });
+    });
+});
 
 router.get('/:item_code', function (req, res) {
     crawling.ItemPrice(req, res, function () {

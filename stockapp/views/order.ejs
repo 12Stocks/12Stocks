@@ -15,9 +15,20 @@
         table.type02 td.bg02{background:#FCEBEB}
         table.type03 td {border: 1px solid black;}
         table.type03 th {border: 1px solid black;}
+
+        /* this for scrolling view of auto completion */
+        .ui-autocomplete {
+            max-height: 200px;
+            overflow-y: auto;
+            width: 200px;
+        } 
     </style>
     <script src="/node_modules/jquery/dist/jquery.min.js"></script>
     <link rel="stylesheet" href="/stylesheets/tab.css">
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
     <title>order</title>
 </head>
 
@@ -27,12 +38,16 @@
     <h1>주식 주문</h1><br>
 
     <div>
-        <input type="text" placeholder="종목 코드/이름 입력..." value="<%= itemInfo.code %>">
-        <button type="submit">검색</button>
+        <form name="searchForm" id="searchForm">
+            <input type="text" id="item" placeholder="종목 코드/이름 입력..." value="<%= itemInfo.code %>">
+            <button type="button" id="itemSearch">검색</button>
+        </form>
     </div><br>
 
-    <h3><%= itemInfo.name %></h3>
-    <p><%= itemInfo.now %></p>
+    <div>
+        <h3 id="itemName"><%= itemInfo.name %></h3>
+        <p id="currentPrice"><%= itemInfo.now %></p>
+    </div>
 
     <!-- 매수/매도 창 -->
     <div class="tab">
@@ -222,7 +237,8 @@
         }
     }
 
-    function reloadOpenOrderList(openOrderList) {
+     function reloadOpenOrderList(openOrderList) {
+        // TODO OPTIMIZE : 추가된 주문이나 취소 및 결제된 주문을 찾아서 해당 row만 추가/삭제하는 방식
         $('#openOrderListBody').empty();
 
         for (var i = 0; i < openOrderList.length; i++) {
@@ -238,6 +254,49 @@
     }
 
     $(document).ready(function () {
+        $('#item').autocomplete({
+            source: function(req, res) {
+                $.ajax({
+                    url: '/order/search/auto_complete',
+                    dataType: 'json',
+                    type: 'GET',
+                    success: function(result) {
+                        res(
+                            $.map(result, function (item) {
+                                var inputLength = $('#item').val().length;
+                                if($('#item').val().substring(0, inputLength) == item.label.substring(0, inputLength))
+                                    return item;
+                            })
+                        );
+                    }
+                })
+            },
+            delay: 0,
+            minLength: 1,
+        });
+
+        $('#itemSearch').click(function () {
+            var searchInput = $('#item').val();
+            $.ajax({
+                url: '/order/search/' + searchInput,
+                dataType: 'json',
+                type: 'POST',
+                data: { search_input : searchInput },
+                success: function (result) {
+                    if (result) {
+                        if(result.result == undefined) {
+                            $('#itemName').text("결과 없음");
+                            $('#currentPrice').text("no result");
+                        } else {
+                            var itemInfo = result.result.itemInfo;
+                            $('#itemName').text(itemInfo.name);
+                            $('#currentPrice').text(itemInfo.now);
+                        }
+                    }
+                }
+            })
+        });
+
         $('#buyOrder').click(function () {
             if(validateBuyForm()) {
                 var buyForm = $("#buyForm").serialize();

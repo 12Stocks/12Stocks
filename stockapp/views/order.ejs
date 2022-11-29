@@ -163,15 +163,26 @@
     <!-- 주식 체결/미체결 -->
     <div class="tab">
         <button class="tab2links" onclick="openTab(event, 2, 'conclusion')" id="tab2-default">주식 체결</button>
-        <button class="tab2links" onclick="openTab(event, 2, 'nonTrading')">주식 미체결</button>
+        <button class="tab2links" onclick="openTab(event, 2, 'openOrders')">주식 미체결</button>
     </div>
     <div id="conclusion" class="tab2content">
-        <p>체결 내역</p>
+        <p>체결된 내 주문 목록</p>
     </div>
 
-    <div id="nonTrading" class="tab2content">
-        <div id="nonTradingContent">
-            <P>미체결 주문</P>
+    <div id="openOrders" class="tab2content">
+        <div>
+            <table id="openOrderList">
+                <thead>
+                    <tr>
+                        <th>구분</th>
+                        <th>종목명/종목 코드</th>
+                        <th>주문 수량/잔량</th>
+                        <th>주문 단가</th>
+                        <th>주문 유형</th>
+                    </tr>
+                </thead>
+                <tbody id="openOrderListBody"></tbody>
+            </table>
         </div>
     </div><br>
 
@@ -209,6 +220,21 @@
         }
     }
 
+     function reloadOpenOrderList(openOrderList) {
+        $('#openOrderListBody').empty();
+
+        for (var i = 0; i < openOrderList.length; i++) {
+            var tableTd = '<tr>';
+            var buysell = openOrderList[i].buysell ? "매도" : "매수";
+            tableTd += '<td>' + buysell + '</td>';
+            tableTd += '<td>' + openOrderList[i].stock_code + '</td>';
+            tableTd += '<td>' + openOrderList[i].quantity + '</td>';
+            tableTd += '<td>' + openOrderList[i].price + '</td>';
+            tableTd += '</tr>';
+            $('#openOrderList').append(tableTd);
+        }
+    }
+
     $(document).ready(function () {
         $('#buyOrder').click(function () {
             if(validateBuyForm()) {
@@ -220,9 +246,22 @@
                     data: buyForm,
                     success: function (result) {
                         if (result) {
-                            alert(result.result);
+                            alert(result.msg);
                         }
                     }
+                }).then((arg) => {
+                    return $.ajax({
+                        url: '/order/<%= itemInfo.code %>/open_orderlist',
+                        dataType: 'json',
+                        type: 'GET',
+                        data: buyForm,
+                        success: function (result) {
+                            if (result) {
+                                alert(result.msg);
+                                reloadOpenOrderList(result.openOrderList);
+                            }
+                        }
+                    });
                 });
             }
         });
@@ -237,18 +276,26 @@
                     data: sellForm,
                     success: function (result) {
                         if (result) {
-                            alert(result.result);
+                            alert(result.msg);
                         }
                     }
+                }).done((arg) => {
+                    $.ajax({
+                        url: '/order/<%= itemInfo.code %>/open_orderlist',
+                        dataType: 'json',
+                        type: 'GET',
+                        data: sellForm,
+                        success: function (result) {
+                            if (result) {
+                                alert(result.msg);
+                                reloadOpenOrderList(result.openOrderList);
+                            }
+                        }
+                    });
                 });
             }
         });
     });
-
-    function reloadDivArea() {
-        alert('nonTradingContent reloaded!');
-        $('#nonTradingContent').load(location.href + ' #nonTradingContent');
-    }
 
     function openTab(evt, id, tabName) {
         var i, tabcontent, tablinks;

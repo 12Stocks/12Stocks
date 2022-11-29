@@ -43,4 +43,30 @@ router.get('/', function(req, res, next) {
   }
 });
 
+/////////////////
+// Jquery Ajax test
+// ajax : 페이지의 일부만 갱신하고 싶을 때
+// Client와 Server 간에 비동기 통신으로 데이터를 주고받는 방법
+router.get('/ajax', function (req, res) {
+  res.render('ajaxTest');
+});
+
+router.get('/ajax/get', function (req, res) {
+  var data = req.query.data;
+  console.log('GET Parameter = ' + data);
+  var result = data + ' Succese';
+  console.log(result);
+  res.send({ result: result });
+});
+
+
+router.post('/ajax/post', function (req, res) {
+  var data = req.body.data;
+  console.log('POST Parameter = ' + data);
+  var result = data + ' Succese';
+  console.log(result);
+  res.send({ result: result });
+});
+/////////////////
+
 module.exports = router;

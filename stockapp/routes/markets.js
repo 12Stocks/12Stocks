@@ -2,9 +2,6 @@ var express = require('express')
 var router = express.Router();
 var auth = require('../lib/auth');
 var watchListController = require('../controllers/watchListController'); 
-const axios = require('axios');
-const cheerio = require('cheerio');
-const iconv = require('iconv-lite');
 var cookie = require('cookie');
 var crawling = require('../crawling/crawling');
 

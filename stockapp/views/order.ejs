@@ -4,9 +4,15 @@
 <head>
     <%-include('base/header.ejs') %>
     <style>
-        table, th, td {
-            border: 1px solid black;
-        }
+        table.type1{clear:both;width:100%;margin-top:15px;font-size:12px}
+        table.type1 td{padding:0 0 8px 8px;vertical-align:top}
+        .tlline2{height:19px;padding:0 0 0 9px;border-bottom:2px solid #e1e1e1;font-size:12px;text-align:left}
+        table.type02{clear:both;width:290px;border-bottom:1px solid #e1e1e1;font-family:dotum;font-size:12px}
+        table.type02 th{padding:8px 0 5px 0;background:#fafafa;color:#777;font-weight:normal;border-bottom:1px solid #e5e5e5}
+        table.type02 td{margin:0;padding:0;font-size:11px}
+        table.type02 td.num{padding:5px 10px 5px 0;text-align:right}
+        table.type02 td.bg01{background:#EBF2FC}
+        table.type02 td.bg02{background:#FCEBEB}
     </style>
     <script src="/node_modules/jquery/dist/jquery.min.js"></script>
     <script src="/node_modules/jquery/dist/jquery.min.js"></script>
@@ -44,7 +50,7 @@
             <label>수량</label>
             <input type="number" min="0" step="1" value="0" name="bq" id="bq"/><br>
             <label>가격</label>
-            <input type="number" min="0" step="10" value="0" name="bp" id="bp" /><br><br>
+            <input type="number" min="0" step="<%= tickSize %>" value="0" name="bp" id="bp" /><br><br>
             <p>주문 금액 : <span id="buyOrderAmount"></span></p>
             <input type="submit" value="매수">
         </form>
@@ -61,7 +67,7 @@
             <label>수량</label>
             <input type="number" min="0" step="1" value="0" name="sq" id="sq" /><br>
             <label>가격</label>
-            <input type="number" min="0" step="10" value="0" name="sp" id="sp" /><br><br>
+            <input type="number" min="0" step="<%= tickSize %>" value="0" name="sp" id="sp" /><br><br>
             <p>주문 금액 : <span id="sellOrderAmount"></span></p>
             <input type="submit" value="매도">
         </form>
@@ -78,7 +84,7 @@
         <label>수량</label>
         <input type="number" min="0" step="1" value="0" id="uq" /><br>
         <label>가격</label>
-        <input type="number" min="0" step="10" value="0" id="up" /><br><br>
+        <input type="number" min="0" step="<%= tickSize %>" value="0" id="up" /><br><br>
         <p>주문 금액 : <span id="updateAmount"></span></p>
         <input type="button" value ="정정" onclick="alert('정정')">
         <input type="button" value= "취소" onclick="alert('취소')">
@@ -86,7 +92,7 @@
     
     <!-- 실시간 주문 창 예시 -->
     <div>
-        <table>
+        <table class="type01">
             <tr>
                 <th>체결 시간</th>
                 <th>단가</th>
@@ -106,20 +112,50 @@
     </div><br>
 
     <!-- 호가 창 예시 -->
-    <div>
-        <table>
+    <div style="display: block;">
+        <h4 class="tlline2">
+            <strong style="float:left">호가</strong>
+            <span style="float:right; padding-right: 10px;">
+                
+            </span>
+        </h4>
+        
+        <table class="type02">
             <tr>
-                <th>매도량</th>
-                <th>단가</th>
-                <th>매수량</th>
+                <th>매도잔량</th>
+                <th>매도호가</th>
+                <th></th>
+                <th>매수호가</th>
+                <th>매수잔량</th>
+            </tr>
+            <tr>
+                <td colspan="2" height="6" class="bg01"></td>
+                <td width="1"></td>
+                <td></td>
+                <td></td>
             </tr>
             <% var rnd = Math.round(Math.random()) %>
-            <% for( var i = 0; i < 20; i++ ) { %>
-            <tr>
-                <td></td>
+            <% for( var i = 0; i < 11; i++ ) { %>
+                <tr>
                 <% var bidprice = parseInt(itemInfo.now.replace(/,/g, '')) + parseInt(tickSize) * (i - 10 + rnd) %>
-                <td><%= bidprice.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ","); %></td>
-                <td></td>
+                <% if( i < 5) { %>
+                    <td class="num bg01">240</td>
+                    <td class="num bg01"><%= bidprice.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ","); %></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                <%  } else if(i == 5) { %>
+                    <td colspan="2" height="4" class="bg01"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                <%  } else { %>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td class="num bg02"><%= bidprice.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ","); %></td>
+                    <td class="num bg02">360</td>
+                <%  } %>
             </tr>
             <% } %>
         </table>

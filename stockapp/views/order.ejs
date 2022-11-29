@@ -13,6 +13,8 @@
         table.type02 td.num{padding:5px 10px 5px 0;text-align:right}
         table.type02 td.bg01{background:#EBF2FC}
         table.type02 td.bg02{background:#FCEBEB}
+        table.type03 td {border: 1px solid black;}
+        table.type03 th {border: 1px solid black;}
     </style>
     <script src="/node_modules/jquery/dist/jquery.min.js"></script>
     <link rel="stylesheet" href="/stylesheets/tab.css">
@@ -171,7 +173,7 @@
 
     <div id="openOrders" class="tab2content">
         <div>
-            <table id="openOrderList">
+            <table class="type03" id="openOrderList">
                 <thead>
                     <tr>
                         <th>구분</th>
@@ -220,7 +222,7 @@
         }
     }
 
-     function reloadOpenOrderList(openOrderList) {
+    function reloadOpenOrderList(openOrderList) {
         $('#openOrderListBody').empty();
 
         for (var i = 0; i < openOrderList.length; i++) {

@@ -48,7 +48,6 @@ module.exports = {
             const seller = datas;
         }
         if(mRow.quantity > datas.quantity) {
-            await 
         }
         cb();
     },

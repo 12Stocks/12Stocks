@@ -7,7 +7,7 @@
         table.type1{clear:both;width:100%;margin-top:15px;font-size:12px}
         table.type1 td{padding:0 0 8px 8px;vertical-align:top}
         .tlline2{height:19px;padding:0 0 0 9px;border-bottom:2px solid #e1e1e1;font-size:12px;text-align:left}
-        table.type02{clear:both;width:290px;border-bottom:1px solid #e1e1e1;font-family:dotum;font-size:12px}
+        table.type02{clear:both;width:100%;border-bottom:1px solid #e1e1e1;font-family:dotum;font-size:12px}
         table.type02 th{padding:8px 0 5px 0;background:#fafafa;color:#777;font-weight:normal;border-bottom:1px solid #e5e5e5}
         table.type02 td{margin:0;padding:0;font-size:11px}
         table.type02 td.num{padding:5px 10px 5px 0;text-align:right}
@@ -112,7 +112,7 @@
     </div><br>
 
     <!-- 호가 창 예시 -->
-    <div style="display: block;">
+    <div style="display: block; width: 300px;">
         <h4 class="tlline2">
             <strong style="float:left">호가</strong>
             <span style="float:right; padding-right: 10px;">
@@ -135,10 +135,10 @@
                 <td></td>
             </tr>
             <% var rnd = Math.round(Math.random()) %>
-            <% for( var i = 0; i < 11; i++ ) { %>
+            <% for( var i = 10; i >= 0; i-- ) { %>
                 <tr>
                 <% var bidprice = parseInt(itemInfo.now.replace(/,/g, '')) + parseInt(tickSize) * (i - 10 + rnd) %>
-                <% if( i < 5) { %>
+                <% if( i > 5) { %>
                     <td class="num bg01">240</td>
                     <td class="num bg01"><%= bidprice.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ","); %></td>
                     <td></td>

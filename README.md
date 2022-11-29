@@ -40,11 +40,11 @@ axios가 비동기 함수라 들어갈 때마다 목록 순서가 랜덤하게 �
 
  
 [TODO]
-- [ ] 주문 인터페이스
-- [ ] 채결 Trigger 구현
+- [x] 주문 인터페이스
+- [x] 채결 Trigger 구현
   - [ ] Update current_price
-  - [ ] Make conclusion when current_price updated
-  - [ ] Update Trading after conclusion
+  - [x] Make conclusion when current_price updated
+  - [x] Update Trading after conclusion
   - [ ] Update account & holdings after update on Trading
 
 - [ ] 현재 주가 받아오기

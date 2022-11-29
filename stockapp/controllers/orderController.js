@@ -1,3 +1,4 @@
+var mysql = require("mysql");
 const db = require('../config/DB');
 
 module.exports = {
@@ -16,14 +17,20 @@ module.exports = {
     Order : function(userId, stock_code, quantity, buysell, price, cb) {
         var sql = "INSERT INTO offers (trader_id, stock_code, quantity, buysell, price, DT)"
             + " VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP);";
+
         db.query(sql, [userId, stock_code, quantity, buysell, price], function (err) {
             if (err) throw err;
             console.log("주문 완료");
-            cb();
+            cb(); 
         });
     },
 
-    GetOrderList : function() {
-       
+    GetOpenOrderList: function (userId, cb) {
+        var sql = "SELECT * FROM offers WHERE trader_id = ?;";
+        db.query(sql, [userId], function (err, results) {
+            if (err) throw err;
+            console.log("미체결 내역 조회");
+            cb(results);
+        });
     }
 }

@@ -17,19 +17,23 @@ module.exports = {
     // buy : 0, sell : 1
     Order : async function(userId, stock_code, quantity, buysell, price, cb) {
         var order = {userId, stock_code, quantity, quantity, price};
-        await orderModel.getOrder(stock_code, quantity, buysell, price, async (matched) => {
-            for(let i = 0; i < matched.length; i++) {
-                if(order.quantity == 0) break;
-                await orderModel.compareOrder(matched[i], order, (remain) => {
-                    order.quantity = remain;
-                    console.log(`idx : ${i}\t remain : ${order.quantity}`);
-                });
-            }
-            if(order.quantity > 0) {
-                await orderModel.insertOrder(userId, stock_code, order.quantity, buysell, order.price);
-            }
-            cb();
-        });
+        let matched = await orderModel.getOrder(stock_code, quantity, buysell, price);
+        var remain;
+
+        for(let i = 0; i < matched.length; i++) {
+            await orderModel.compareOrder(matched[i], order)
+            .then((conc) => {
+                order.quantity -= conc;
+            });
+            console.log(`idx : ${i}, remain : ${order.quantity}`);
+            if(order.quantity == 0) break;
+        }
+        
+        if(order.quantity > 0) {
+            console.log(`채결 후 잔량 : ${order.quantity}`);
+            orderModel.insertOrder(userId, stock_code, order.quantity, buysell, price);
+        }
+        cb();
     },
 
     GetOpenOrderList: function (userId, cb) {

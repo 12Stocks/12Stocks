@@ -3,7 +3,7 @@ var db = require("../config/DB");
 module.exports = {
     getOrder : async function(stock_code, quantity, buysell, price, cb) {
         return new Promise(resolve => {
-            var sql = "SELECT * FROM offers WHERE buysell = ? AND stock_code = ? AND price = ? ORDER BY quantity DESC, DT ASC;";
+            var sql = "SELECT * FROM offers WHERE buysell = ? AND stock_code = ? AND price = ? ORDER BY DT ASC, quantity DESC;";
             db.query(sql, [!buysell, stock_code, price ], (err, rows, fields) => {
                 if(err) throw err;
                 console.log(`find ${rows.length} rows !`);

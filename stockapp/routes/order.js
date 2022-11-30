@@ -25,16 +25,13 @@ router.post('/search/open_order', function (req, res) {
     var quantity = req.body.quantity;
     var buysell = req.body.buysell;
     var price = req.body.price;
-    var sql = "SELECT * FROM offers WHERE trader_id =? AND stock_code = ? AND quantity = ? " +
-              "AND buysell = ? AND price = ?;"
-    db.query(sql, [trader_id, stock_code, quantity, buysell, price], function(err, result) {
-        if (err) throw err;
 
-        if (result.length == 0) res.send({result: undefined});
+    orderController.FindOpenOrder(trader_id, stock_code, quantity, buysell, price, function(result) {
+        if (result.length == 0) res.send({ result: undefined });
         else {
             console.log("미체결 주문 선택 성공");
             console.log(result[0]);
-            res.send({ result : result[0] })
+            res.send({ result: result[0] })
         }
     })
 });

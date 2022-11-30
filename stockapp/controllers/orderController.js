@@ -43,5 +43,14 @@ module.exports = {
             console.log("미체결 내역 조회");
             cb(results);
         });
+    },
+
+    FindOpenOrder: function (trader_id, stock_code, quantity, buysell, price, cb) {
+        var sql = "SELECT * FROM offers WHERE trader_id =? AND stock_code = ? AND quantity = ? " +
+            "AND buysell = ? AND price = ?;"
+        db.query(sql, [trader_id, stock_code, quantity, buysell, price], function (err, result) {
+            if (err) throw err;
+            cb(result);
+        });
     }
 }

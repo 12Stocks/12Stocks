@@ -42,6 +42,7 @@
             <input type="text" id="item" placeholder="종목 코드/이름 입력..." value="<%= itemInfo.code %>">
             <button type="button" id="itemSearch">검색</button>
         </form>
+        <span id="error_msg" style="color:red;"></span>
     </div><br>
 
     <div>
@@ -198,7 +199,17 @@
                         <th>주문 유형</th>
                     </tr>
                 </thead>
-                <tbody id="openOrderListBody"></tbody>
+                <tbody id="openOrderListBody">
+                    <% for( var i = 0; i < openOrderList.length; i++ ) { %>
+                        <% var buysell = openOrderList[i].buysell ? "매도" : "매수"; %>
+                    <tr>
+                        <td><%= buysell %></td>
+                        <td><%= openOrderList[i].stock_code %></td>
+                        <td><%= openOrderList[i].quantity %></td>
+                        <td><%= openOrderList[i].price %></td>
+                    </tr>
+                    <% } %>
+                </tbody>
             </table>
         </div>
     </div><br>
@@ -285,12 +296,9 @@
                 success: function (result) {
                     if (result) {
                         if(result.result == undefined) {
-                            $('#itemName').text("결과 없음");
-                            $('#currentPrice').text("no result");
+                            $('#error_msg').text("결과 없음");
                         } else {
-                            var itemInfo = result.result.itemInfo;
-                            $('#itemName').text(itemInfo.name);
-                            $('#currentPrice').text(itemInfo.now);
+                            window.location.href = "/order/" + result.result;
                         }
                     }
                 }

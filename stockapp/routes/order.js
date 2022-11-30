@@ -56,15 +56,20 @@ router.get('/:item_code', function (req, res) {
                 itemInfo: req.itemInfo, 
                 tickSize: tickSize,
             };
+        
+        orderController.GetOpenOrderList(req.user.user_id, function (openOrderList) {
+            datas.openOrderList = openOrderList;
 
-        // TODO : refactor all the other codes like this
-        if (auth.isOwner(req, res)) {
-            datas.userId = req.user.user_id;
-            res.render('order', datas);
-        } 
-        else {
-            res.redirect('/auth/loginRequired');
-        }
+            // TODO : refactor all the other codes like this
+            if (auth.isOwner(req, res)) {
+                datas.userId = req.user.user_id;
+                console.log(datas);
+                res.render('order', datas);
+            }
+            else {
+                res.redirect('/auth/loginRequired');
+            }
+        });
     });
 });
 

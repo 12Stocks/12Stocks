@@ -199,7 +199,17 @@
                         <th>주문 유형</th>
                     </tr>
                 </thead>
-                <tbody id="openOrderListBody"></tbody>
+                <tbody id="openOrderListBody">
+                    <% for( var i = 0; i < openOrderList.length; i++ ) { %>
+                        <% var buysell = openOrderList[i].buysell ? "매도" : "매수"; %>
+                    <tr>
+                        <td><%= buysell %></td>
+                        <td><%= openOrderList[i].stock_code %></td>
+                        <td><%= openOrderList[i].quantity %></td>
+                        <td><%= openOrderList[i].price %></td>
+                    </tr>
+                    <% } %>
+                </tbody>
             </table>
         </div>
     </div><br>

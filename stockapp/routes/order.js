@@ -45,7 +45,7 @@ router.post('/search/:search_input', function (req, res) {
 });
 
 router.get('/found/:item_code', function (req, res) {
-      res.send({ result: req.params.item_code });
+    res.send({ result: req.params.item_code });
 });
 
 router.get('/:item_code', function (req, res) {

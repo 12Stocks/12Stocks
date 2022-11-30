@@ -42,6 +42,7 @@
             <input type="text" id="item" placeholder="종목 코드/이름 입력..." value="<%= itemInfo.code %>">
             <button type="button" id="itemSearch">검색</button>
         </form>
+        <span id="error_msg" style="color:red;"></span>
     </div><br>
 
     <div>
@@ -285,12 +286,9 @@
                 success: function (result) {
                     if (result) {
                         if(result.result == undefined) {
-                            $('#itemName').text("결과 없음");
-                            $('#currentPrice').text("no result");
+                            $('#error_msg').text("결과 없음");
                         } else {
-                            var itemInfo = result.result.itemInfo;
-                            $('#itemName').text(itemInfo.name);
-                            $('#currentPrice').text(itemInfo.now);
+                            window.location.href = "/order/" + result.result;
                         }
                     }
                 }

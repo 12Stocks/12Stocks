@@ -45,15 +45,7 @@ router.post('/search/:search_input', function (req, res) {
 });
 
 router.get('/found/:item_code', function (req, res) {
-    crawling.ItemPrice(req, res, function () {
-        var tickSize = orderController.GetTickSize(req.itemInfo.now);
-        var result = {
-            itemInfo: req.itemInfo,
-            tickSize: tickSize
-        };
-
-        res.send({ result: result });
-    });
+      res.send({ result: req.params.item_code });
 });
 
 router.get('/:item_code', function (req, res) {

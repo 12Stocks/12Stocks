@@ -22,6 +22,8 @@
             overflow-y: auto;
             width: 200px;
         } 
+
+        .highlight { background-color:yellow }
     </style>
     <script src="/node_modules/jquery/dist/jquery.min.js"></script>
     <link rel="stylesheet" href="/stylesheets/tab.css">
@@ -98,6 +100,8 @@
                 <option>시장가</option>
             </select>
         </div><br>
+        <p>종목 : <span id="updateItem"></span></p>
+        <p>주문 : <span id="buysell"></span></p>
         <label>수량</label>
         <input type="number" min="0" step="1" value="0" id="uq" /><br>
         <label>가격</label>
@@ -265,6 +269,9 @@
     }
 
     $(document).ready(function () {
+        // 미체결 내역에서 주문 선택 성공시 해당 주문의 offer_id 값
+        var selected_open_oder_id;
+
         $('#item').autocomplete({
             source: function(req, res) {
                 $.ajax({
@@ -363,6 +370,45 @@
                     });
                 });
             }
+        });
+
+        $('#openOrderListBody tr').on('click', function () {
+            $('#openOrderListBody tr').removeClass('highlight');
+            $(this).addClass('highlight');
+
+            var buysell = $(this).children().eq(0).text();
+            if(buysell == "매수") buysell = 0;
+            else if (buysell == "매도") buysell = 1;
+
+            var code = $(this).children().eq(1).text();
+            var quantity = parseInt($(this).children().eq(2).text());
+            var price = parseInt($(this).children().eq(3).text());
+
+            $.ajax({
+                url: '/order/search/open_order',
+                dataType: 'json',
+                type: 'POST',
+                data: {
+                    trader_id: '<%= userId %>',
+                    stock_code: code,
+                    quantity: quantity,
+                    buysell: buysell,
+                    price: price
+                },
+                success: function (result) {
+                    if (result.result == undefined) {
+                        alert("해당 주문 없음");
+                    }
+                    else {
+                        var openOrderInfo = result.result;
+                        selected_open_oder_id = openOrderInfo.offer_id;
+                        $("#updateItem").text(openOrderInfo.stock_code);
+                        $("#buysell").text(openOrderInfo.buysell? "매도" : "매수");
+                        $("#uq").val(openOrderInfo.quantity);
+                        $("#up").val(openOrderInfo.price);
+                    }
+                }
+            });
         });
     });
 

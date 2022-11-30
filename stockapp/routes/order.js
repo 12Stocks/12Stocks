@@ -18,6 +18,27 @@ router.get('/search/auto_complete', function(req, res) {
     });
 })
 
+
+router.post('/search/open_order', function (req, res) {
+    var trader_id = req.body.trader_id;
+    var stock_code = req.body.stock_code;
+    var quantity = req.body.quantity;
+    var buysell = req.body.buysell;
+    var price = req.body.price;
+    var sql = "SELECT * FROM offers WHERE trader_id =? AND stock_code = ? AND quantity = ? " +
+              "AND buysell = ? AND price = ?;"
+    db.query(sql, [trader_id, stock_code, quantity, buysell, price], function(err, result) {
+        if (err) throw err;
+
+        if (result.length == 0) res.send({result: undefined});
+        else {
+            console.log("미체결 주문 선택 성공");
+            console.log(result[0]);
+            res.send({ result : result[0] })
+        }
+    })
+});
+
 router.post('/search/:search_input', function (req, res) {
     var search_by_code = "SELECT stock_code, stock_name from stocks WHERE stock_code = ?";
     db.query(search_by_code, [req.params.search_input], function (err, results_by_code) {
@@ -63,7 +84,6 @@ router.get('/:item_code', function (req, res) {
             // TODO : refactor all the other codes like this
             if (auth.isOwner(req, res)) {
                 datas.userId = req.user.user_id;
-                console.log(datas);
                 res.render('order', datas);
             }
             else {

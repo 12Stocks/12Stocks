@@ -14,10 +14,30 @@ module.exports = {
         if (500000 <= p) return 1000;
     },
 
+    marketOrder : async function(userId, stock_code, quantity, buysell, price, cb) {
+        var order = {userId, stock_code, quantity, buysell, price};
+        let matched = await orderModel.getMarketOrder(stock_code, quantity, buysell, price);
+        var remain;
+
+        for(let i = 0; i < matched.length; i++) {
+            await orderModel.compareOrder(matched[i], order)
+            .then((conc) => {
+                order.quantity -= conc;
+            });
+            console.log(`idx : ${i}, remain : ${order.quantity}`);
+            if(order.quantity == 0) break;
+        }
+
+        if(order.quantity > 0) {
+            console.log(`채결 후 잔량 : ${order.quantity}\n자동취소`);
+        }
+        cb();
+    },
+
     // buy : 0, sell : 1
-    Order : async function(userId, stock_code, quantity, buysell, price, cb) {
-        var order = {userId, stock_code, quantity, quantity, price};
-        let matched = await orderModel.getOrder(stock_code, quantity, buysell, price);
+    limitOrder : async function(userId, stock_code, quantity, buysell, price, cb) {
+        var order = {userId, stock_code, quantity, buysell, price};
+        let matched = await orderModel.getLimitOrder(stock_code, quantity, buysell, price);
         var remain;
 
         for(let i = 0; i < matched.length; i++) {

@@ -75,39 +75,57 @@ router.get('/:item_code', function (req, res) {
                 tickSize: tickSize,
             };
         
-        orderController.GetOpenOrderList(req.user.user_id, function (openOrderList) {
-            datas.openOrderList = openOrderList;
-
             // TODO : refactor all the other codes like this
-            if (auth.isOwner(req, res)) {
-                datas.userId = req.user.user_id;
-                res.render('order', datas);
+            if(auth.isOwner(req, res)) {
+                orderController.GetOpenOrderList(req.user.user_id, function (openOrderList) {
+                    datas.openOrderList = openOrderList;
+                    datas.userId = req.user.user_id;
+                    res.render('order', datas);
+                });
             }
             else {
                 res.redirect('/auth/loginRequired');
             }
-        });
     });
 });
 
 // buy : 0
 router.post('/:item_code/buy_process', function (req, res) {
     var post = req.body;
-    var buy_quantity = post.bq;
-    var buy_price = post.bp;
-    orderController.Order(req.user.user_id, req.params.item_code, buy_quantity, 0, buy_price, function (openOrderList) {
-        res.send({ msg: '매수 주문 성공'});
-    });
+    var buy_quantity = post.q;
+    var buy_price = post.p;
+    var option = post.type;
+    if(option == "marOd") {
+        orderController.marketOrder(req.user.user_id, req.params.item_code, buy_quantity, 0, buy_price, function (openOrderList) {
+            res.send({ msg : "매수 주문 성공"});
+        });
+    } else {
+        orderController.limitOrder(req.user.user_id, req.params.item_code, buy_quantity, 0, buy_price, function (openOrderList) {
+            res.send({ msg: '매수 주문 성공'});
+        });
+    }
 });
 
 // sell : 1
 router.post('/:item_code/sell_process', function (req, res) {
-    var post = req.body;
-    var sell_quantity = post.sq;
-    var sell_price = post.sp;
-    orderController.Order(req.user.user_id, req.params.item_code, sell_quantity, 1, sell_price, function (openOrderList) {
-        res.send({ msg: '매도 주문 성공'});
-    });
+    try {
+        var post = req.body;
+        var sell_quantity = post.q;
+        var sell_price = post.p;
+        var option = post.type;
+
+        if(option == "marOd") {
+            orderController.marketOrder(req.user.user_id, req.params.item_code, sell_quantity, 1, sell_price, function (openOrderList) {
+                res.send({ msg : "매도 주문 성공"});
+            });
+        } else {
+            orderController.limitOrder(req.user.user_id, req.params.item_code, sell_quantity, 1, sell_price, function (openOrderList) {
+                res.send({ msg: '매도 주문 성공'});
+            });
+        }
+    } catch(err) {
+        console.error(err);
+    }
 });
 
 router.get('/:item_code/open_orderlist', function(req, res) {

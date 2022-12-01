@@ -1,7 +1,7 @@
 var db = require("../config/DB");
 
 module.exports = {
-    getOrder : async function(stock_code, quantity, buysell, price, cb) {
+    getLimitOrder : async function(stock_code, quantity, buysell, price) {
         return new Promise(resolve => {
             var sql = "SELECT * FROM offers WHERE buysell = ? AND stock_code = ? AND price = ? ORDER BY DT ASC, quantity DESC;";
             db.query(sql, [!buysell, stock_code, price ], (err, rows, fields) => {
@@ -9,6 +9,25 @@ module.exports = {
                 console.log(`find ${rows.length} rows !`);
                 resolve(rows);
             })
+        });
+    },
+
+    getMarketOrder : async function(stock_code, quantity, buysell, price) {
+        return new Promise(resolve => {
+            if(!buysell == 0) {
+                var sort = "DESC";
+                var cmp = "<=";
+            } else {
+                var sort = "ASC";
+                var cmp = ">=";
+            }
+            console.log(`[시장가 주문]\n종목 : ${stock_code}\n수량 : ${quantity}\n현재가 : ${price}\nBS : ${buysell}`);
+            var sql = `SELECT * FROM offers WHERE buysell = ? AND stock_code = ? AND price ${cmp} ? ORDER BY price ${sort}, DT ASC, quantity DESC;`;
+            db.query(sql, [!buysell, stock_code, price], (err, rows, fields) => {
+                if(err) throw err;
+                console.log(`find ${rows.length} rows !`);
+                resolve(rows);
+            });
         });
     },
 
@@ -60,12 +79,12 @@ module.exports = {
             if(mRow.quantity > order.quantity) {
                 console.log(`update ${mRow.quantity} => ${mRow.quantity - order.quantity}\nconclusion ${order.quantity} !`);
                 this.updateOrder(mRow.offer_id, order.quantity);
-                let conc = this.conclusion(seller, buyer, order.stock_code, order.quantity, order.price);
+                let conc = this.conclusion(seller, buyer, order.stock_code, order.quantity, mRow.price);
                 resolve(await conc);
             } else {
                 console.log(`delete ${mRow.offer_id} conclusion ${mRow.quantity}`);
                 this.deleteOrder(mRow.offer_id);
-                let conc = this.conclusion(seller, buyer, order.stock_code, mRow.quantity, order.price)
+                let conc = this.conclusion(seller, buyer, order.stock_code, mRow.quantity, mRow.price)
                 resolve(await conc);
             }
         })

@@ -8,36 +8,40 @@
 </head>
 
 <body>
-
-    <%
+    <%-include('base/navbarTop_none.ejs')-%>
+        <h4>
+            <%= alert %>
+        </h4>
+        <%
     for(var i=0; i<rows.length; i++) 
     { var oneItem= rows[i]; 
 %>
-        <form action="/userupdate/user_edit/<%= oneItem.user_id %>" method="post">
-            <div class="container w-25 border py-3">
-
-                <h4 class="font-weight-bold text-center">정보 수정</h4>
-                <br><label for="user_username">이름 변경하기</label>
-                <input type="text" class="form-control" id="user_name" value="<%= oneItem.user_name %>" placeholder="새로운 이름" name="user_name" required>
-                <br><label for="user_email">이매일_주소 변경하기</label>
-                <input type="text" class="form-control" id="user_email" value="<%= oneItem.user_email %>" placeholder="새로운 이매일 주소" name="user_email" required>
-                <br><label for="user_pw">비밀번호 변경하기</label>
-
-                <input type="password" class="form-control" id="user_pw" value="<%= oneItem.user_pw %>" placeholder="새로운 비밀번호" name="user_pw" required>
-
-                <br>
-
-                <button type="button" class="btn btn-secondary" onclick="location.href='/users/user_info/<%= oneItem.user_id %>'">돌아가기</button>
-                <button type="submit" class="btn btn-success">수정하기</button><br>
+            <form action="/userupdate/user_edit/<%= oneItem.user_id %>" method="post">
+                <div class="container w-25 border py-3">
 
 
-                <%
+                    <h4 class="font-weight-bold text-center">정보 수정</h4>
+                    <br><label for="user_username">이름 변경하기</label>
+                    <input type="text" class="form-control" id="user_name" value="<%= oneItem.user_name %>" placeholder="새로운 이름" name="user_name" required>
+                    <br><label for="user_email">이매일_주소 변경하기</label>
+                    <input type="text" class="form-control" id="user_email" value="<%= oneItem.user_email %>" placeholder="새로운 이매일 주소" name="user_email" required>
+                    <br><label for="user_pw">비밀번호 변경하기</label>
+
+                    <input type="password" class="form-control" id="user_pw" value="<%= oneItem.user_pw %>" placeholder="새로운 비밀번호" name="user_pw" required>
+
+                    <br>
+
+                    <button type="button" class="btn btn-secondary" onclick="location.href='/users/user_info/<%= oneItem.user_id %>'">돌아가기</button>
+                    <button type="submit" class="btn btn-success">수정하기</button><br>
+
+
+                    <%
 }
 %>
 
-            </div>
-        </form>
-        <%-include('base/footer.ejs')%>
+                </div>
+            </form>
+            <%-include('base/footer.ejs')%>
 
 </body>
 

@@ -10,8 +10,7 @@
                 <% if(isAuthenticated){ %>
                     <!-- check own user_infomations and can change -->
                     <li class="nav-item">
-                        <a class="nav-link" href="/users/user_info/<%= userId %>">
-                            <%= userId %>
+                        <a class="nav-link" href="/users/user_info/<%= rows.user_id %>">
                         </a>
                     </li>
                     <li class="nav-item"><a class="nav-link" href="/auth/logout">로그아웃</a></li>

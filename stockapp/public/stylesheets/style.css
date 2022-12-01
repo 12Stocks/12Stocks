@@ -3,8 +3,8 @@
     --Playfair: 'Playfair Display', serif;
     --Quicksand: 'Quicksand', sans-serif;
     --Roboto: 'Roboto', sans-serif;
-    --dark #3c393d;
-    --exDark #2b2b2b;
+    --dark: #3c393d;
+    --exDark: #2b2b2b;
 }
 
 * {
@@ -89,5 +89,3 @@ header {
     width: 80%;
 }
 
-
-}

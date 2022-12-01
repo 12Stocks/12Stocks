@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <%-include('../base/header.ejs') %>
+
+  <title>forums</title>
+</head>
+
+<body>
+  <%-include('../base/navbarTop.ejs')-%>
+  <% 
+    forum = {};
+    forum.code = 005930;
+    forum.title = '삼성전자'
+    tmpList = {}; 
+    lenData = 30;
+    maxLenData = 15; 
+    tmpList.idx = [...Array(lenData).keys()]; 
+    tmpList.titles = [...Array(lenData).keys()].map(key => "title - " + key); 
+    tmpList.timeStamp = [...Array(lenData).keys()].map(key => new Date().toLocaleString()); 
+    tmpList.hit = [...Array(lenData).keys()].map(key => key * 11); 
+  %>
+
+  <div class="container col-8 py-3">
+    <!-- 메인 컨테이너 -->
+    <div class="row justify-content-center p-3">
+      <!-- 종목 소개 -->
+      <div class="col-10 align-self-start p-3">
+        <div class="card">
+          <div class="card-body">
+            <blockquote class="blockquote mb-0">
+              <p><%=forum.title%></p>
+              <footer class="blockquote-footer">종목코드: <%=forum.code%></footer>
+            </blockquote>
+          </div>
+        </div>
+      </div>
+      <!-- 게시판 -->
+      <div class="col-md-11 col-sm-12">
+        <!-- 네비게이션 바 -->
+        <div class="container-sm p-2">
+          <ul class="nav nav-tabs">
+            <li class="nav-item">
+              <a class="nav-link" href="#">시세</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">차트</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="#">게시판</a>
+            </li>
+          </ul>
+        </div>
+        <!-- 메인 테이블 -->
+        <table class="table table-hover table-bordered" 
+        style="font-size: 12px;">
+          <thead class="table-dark">
+            <tr>
+              <th class="col-1 text-center" scope="col">#</th>
+              <th class="col-7 text-center" scope="col">제목</th>
+              <th class="col-3 text-center" scope="col">날짜</th>
+              <th class="col-1 text-center" scope="col">조회수</th>
+            </tr>
+          </thead>
+          <tbody class="table-group-divider">
+            <% for(let i=0; i < maxLenData; i++){ %> 
+            <tr>
+              <th scope="row"><%= tmpList.idx[i] + 1 %></th>
+              <td><a href="/forums/show"><%= tmpList.titles[i]%></a></td>
+              <td><%=tmpList.timeStamp[i]%></td>
+              <td><%=tmpList.hit[i]%></td>
+            </tr>
+            <% } %> 
+          </tbody>
+        </table>
+        <div class="row pb-3 justify-content-end">
+          <!-- 페이지 번호 네비게이션 -->
+          <!-- 페이지 개수에 따른 네비게이션 구현 필요 -->
+          <div class="col-8">
+            <nav aria-label="Page navigation">
+              <ul class="pagination justify-content-center align-items-center h-100 mb-0">
+                <li class="page-item disabled">
+                  <a class="page-link" href="#" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                  </a>
+                </li>
+                <li class="page-item active" aria-current="page"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                  <a class="page-link" href="#" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+          <div class="col-2">
+            <!-- 사용자 로그인 확인 필요 -->
+            <a name="" id="" class="btn btn-primary" href="/forums/new" role="button">글쓰기</a>                  
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%-include('../base/footer.ejs')%>
+</body>
+
+</html>

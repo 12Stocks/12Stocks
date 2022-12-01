@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <%-include('../base/header.ejs') %>
+  <title>markets</title>
+</head>
+
+<body>
+  <%-include('../base/navbarTop.ejs')-%>
+
+  <% 
+  let title = "이전 제목" ;
+  let content = 
+  `게시글 테스트
+  컴공 DB 12
+
+
+  
+  끝`;
+  let user_id = 'asd';
+
+  let comments = [];
+  for (let i = 0; i < 3; i++){
+    comments.push({
+      user_id: '홍길동 - ' + i,
+      content: '댓글 테스트 - ' + i * 3,
+    });
+  }
+  %> 
+
+  
+  <div class="container mb-3">
+
+  <!-- 작업 트리 -->
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb p-1 pl-2 pr-2">
+      <li class="breadcrumb-item"><a href="/">홈</a></li>
+      <li class="breadcrumb-item"><a href="/forums">게시판</a></li>
+      <li class="breadcrumb-item active" aria-current="page">게시글</li>
+    </ol>
+  </nav>
+
+  <!-- 메인 컨테이너 -->
+  <div class="row justify-content-center mb-5">
+
+    <!-- 게시글 -->
+  <div class="card col-8 my-5 p-0">
+  <div class="card-header pt-3"> <!-- 헤더 -->
+    <label for="title" class="subTitle">제목</label>
+    <h4 class="p-1 fw-bolder" id="title"><%= title %></h4>
+  </div>
+
+  <div class="card-body"> <!-- 바디 -->
+    <p class="card-text m-1" id="content">
+      <%- content.replace(/\n/g, '<br/>') %>
+    </p>
+  </div>
+
+  <hr class="p-0 m-0">
+  <div class="row">
+    <div class="col d-grid gap-2 m-3 d-md-flex justify-content-md-start"> 
+      <form method="get">
+        <input type="hidden" name="user_id" id="user_id" value="<%=''%>">
+        <!-- 사용자 로그인 확인 필요 -->
+        <button type="submit" formaction="/forums/edit" class="btn btn-secondary shadow">글 수정</button>
+      </form>
+    </div>
+    <div class="col-md-5 col-lg-4 col-xl-3">
+      <div class="post-info card m-2 p-2"> 
+        <div>작성자:</div>
+        <hr class="p-0 m-1">
+        <div>작성날짜:</div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <!-- 댓글 -->
+  <div class="col-8 my-5 p-0">
+    <div class="h4">댓글<hr class="p-0 mt-2"></div>
+    <% comments.forEach(function(comment) { %>
+      <div class="row">
+        <div class="col-2"><%= comment.user_id %></div>
+        <div class="col-10">
+          <%- comment.content.replace(/\n/g, '<br/>') %>
+          <br><br><span style="font-size: 9px;">(작성날짜: )</span>
+        </div>
+      </div>
+      <hr class="p-0 mt-2">
+    <% }) %>
+    <div class="row">
+      <div class="col-2">user_id</div>
+      <div class="col-10">
+        <form action="post">
+          <input type="hidden" name="user_id" id="user_id" value="<%=''%>">
+          <textarea class="form-control" id="content" name="content" required></textarea>
+          <div class="d-grid d-md-flex justify-content-md-end my-2">  
+            <!-- 사용자 로그인 확인 필요 -->
+            <button type="submit" formaction="/forums/new" class="btn btn-secondary shadow">댓글 쓰기</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  </div>
+  </div>
+
+    
+  <%-include('../base/footer.ejs')%>
+
+</body>
+
+</html>

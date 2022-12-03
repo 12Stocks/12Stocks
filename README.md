@@ -1,14 +1,14 @@
 
-### Recent Items  
+### Forums Backend  
   
-const MAX_RECENT_ITEMS = 5;  
+const MAX_POST_LENGTH = 2;  
+const PAGE_WINDOW_LENGTH = 3;  
+
+forumController 모듈에서  
+MAX_POST_LENGTH : 한 페이지에 보여지는 게시글의 개수   
+PAGE_WINDOW_LENGTH : 한번에 이동할 수 있는 페이지 개수  
   
-최대 MAX_RECENT_ITEMS 개수만큼 최근 조회한 종목을 cookie에 저장  
-이미 cookie값에 저장된 종목의 경우 다시 최상단으로 이동
-index page에서 리스트로 확인할 수 있으며 각 종목을 클릭하면 종목 페이지로 이동할 수 있게 함  
-  
-[Considerations]  
-  
-index page 뿐만 아니라 시장이나 종목 상세보기 페이지에서도   
-가장 최근에 조회한 종목 리스트를 확인할 수 있도록 템플릿화  
-  
+최근 게시글 순으로 정렬됨  
+Index Page에서 게시판을 공지사항으로 바꾸고 종목 페이지에서  
+토론 게시판 버튼을 클릭해 게시판 페이지로 이동  
+비회원이거나 자신이 작성한 게시글이 아닐 경우 글 수정 버튼 비활성화    

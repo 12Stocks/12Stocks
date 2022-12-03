@@ -8,6 +8,7 @@ var connection = mysql.createConnection({
     password: process.env.DB_PASSWORD,
     database: process.env.DB,
     port: process.env.DB_PORT,
+    dateStrings: true
 });
 
 connection.connect((err) => {

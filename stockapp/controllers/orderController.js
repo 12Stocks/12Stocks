@@ -57,12 +57,15 @@ module.exports = {
     },
 
     GetOpenOrderList: function (userId, cb) {
-        var sql = "SELECT * FROM offers WHERE trader_id = ?;";
-        db.query(sql, [userId], function (err, results) {
-            if (err) throw err;
-            console.log("미체결 내역 조회");
-            cb(results);
-        });
+        // var sql = "SELECT * FROM offers WHERE trader_id = ?;";
+        // db.query(sql, [userId], function (err, results) {
+        //     if (err) throw err;
+        //     console.log("미체결 내역 조회");
+        //     cb(results);
+        // });
+        orderModel.getOrderByUid(userId, (rows) => {
+            cb(rows);
+        })
     },
 
     FindOpenOrder: function (trader_id, stock_code, quantity, buysell, price, cb) {
@@ -72,5 +75,17 @@ module.exports = {
             if (err) throw err;
             cb(result);
         });
+    },
+
+    updateOrder : function (offer_id, quantity, price, cb) {
+        orderModel.updateOrder(offer_id, quantity, price);
+        orderModel.getOrderByOid(offer_id, (row) => {
+            cb(row[0]);
+        })
+    },
+
+    cancelOrder : function (offer_id, cb) {
+        orderModel.deleteOrder(offer_id);
+        cb();
     }
 }

@@ -24,6 +24,7 @@ router.get('/', function (req, res) {
 });
 
 router.get('/:item_code', function (req, res) {
+    console.log(req);
     crawling.ItemPrice(req, res, function() {
         /// 최근 조회 목록을 cookie값으로 저장, TODO : Refactoring ex. cookieController.js
         if (req.headers.cookie !== undefined) {

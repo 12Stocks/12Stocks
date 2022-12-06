@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
+    <link rel="stylesheet" href="/stylesheets/tab.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <title>orderList</title>
+    <style>
+        table.type03 td {border-collapse: collapse; border: 1px solid black; display: table-cell;}
+        table.type03 th {border: 1px solid black;}
+    </style>
+</head>
+<body>
+    <div>
+        <div id="tableDiv">
+            <table class="type03" id="openOrderList">
+                <thead>
+                    <tr>
+                        <th>구분</th>
+                        <th>종목명/종목 코드</th>
+                        <th>주문 수량/잔량</th>
+                        <th>주문 단가</th>
+                    </tr>
+                </thead>
+                <tbody id="openOrderListBody">
+                    <% for( var i = 0; i < list.length; i++ ) { %>
+                        <% var buysell = list[i].buysell ? "매도" : "매수"; %>
+                    <tr>
+                        <td><%= buysell %></td>
+                        <td><%= list[i].stock_code %></td>
+                        <td><%= list[i].quantity %></td>
+                        <td><%= list[i].price %></td>
+                    </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+<script type="text/javascript">
+    setInterval(function() {
+        $("#tableDiv").fadeOut(100).load(window.location + ' #tableDiv').fadeIn(1500);
+    }, 5000);
+</script>
+</html>

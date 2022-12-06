@@ -16,7 +16,7 @@ router.get('/search/auto_complete', function(req, res) {
         }
         res.send(resultArr);
     });
-})
+});
 
 
 router.post('/search/open_order', function (req, res) {
@@ -128,10 +128,41 @@ router.post('/:item_code/sell_process', function (req, res) {
     }
 });
 
+router.post('/:item_code/update_order', function (req, res) {
+    try {
+        var post = req.body;
+        var q = post.q;
+        var p = post.p;
+        var offer_id = post.offer_id;
+
+        orderController.updateOrder(offer_id, q, p, (result) => {
+            res.send({msg : "정정 완료 !"});
+        });
+    } catch (err) {
+        console.error(err);
+    }
+});
+
+router.post('/:item_code/cancel_order', function (req, res) {
+    try {
+        var post = req.body;
+        var id = post.offer_id;
+        orderController.cancelOrder(id, () => {
+            res.send({msg : "취소 완료 !"});
+        });
+    } catch (err) {
+        console.error(err);
+    }
+});
+
 router.get('/:item_code/open_orderlist', function(req, res) {
-    orderController.GetOpenOrderList(req.user.user_id, function (openOrderList) {
-        res.send({ msg: '미체결 내역 조회', openOrderList: openOrderList })
-    });
+    try {
+        orderController.GetOpenOrderList(req.user.user_id, function (openOrderList) {
+            res.send({ msg: '미체결 내역 조회', openOrderList: openOrderList })
+        });
+    } catch (err) {
+        console.log(err);
+    }
 });
 
 module.exports = router;

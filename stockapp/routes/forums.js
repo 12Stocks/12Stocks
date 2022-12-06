@@ -11,14 +11,14 @@ router.get('/', function (req, res) {
     }
 });
 router.get('/show', function (req, res) {
-    res.render('forums/show');
+    res.render('forums/show', {userId : req.user.user_id});
 });
 router.get('/new', function (req, res) {
-    res.render('forums/new');
+    res.render('forums/new', {userId : req.user.user_id});
 });
 router.post('/new', function (req, res) {
     console.log(req.body);
-    res.redirect("/forums");
+    res.redirect("/forums", {userId : req.user.user_id});
 });
 router.get('/edit', function (req, res) {
     res.render('forums/edit');

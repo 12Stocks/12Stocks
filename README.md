@@ -19,7 +19,7 @@ index page 뿐만 아니라 시장이나 종목 상세보기 페이지에서도
   주문 창에서 정보들을 입력  
   [Example]  
   
-  ![image](https://user-images.githubusercontent.com/80976609/203515770-339e3389-cf0c-4b65-b461-8bc4b1d06181.png)    
+  ![image](https://user-images.githubusercontent.com/80976609/205973147-37dd4fd2-b2fd-4905-a35f-190b68cd0c6c.png)    
   
 - Conclusion  
   - [x] 지정가 주문  
@@ -35,9 +35,18 @@ index page 뿐만 아니라 시장이나 종목 상세보기 페이지에서도
   판매자 => 보유 주식 수--,   총 금액--  
   구매자 => 보유 주식 수++,   총 금액++  
 
+- getOrderList  
+  - [ ] Conclusion List  
+    주문 시 채결된 내역들을 웹에 띄워 실시간으로 갱신  
+
+  - [x] Not Conclusion Order List  
+    주문 후 아직 채결이 진행되지 않은 내역들을 갱신
+
  
 [TODO]  
 - [x] 시장가 주문, 지정가 주문 구분
+- [x] 정정 / 취소 기능
+- [x] 채결 / 미채결 내역 실시간 update
 - [ ] 자동 주문 생성  
 - [ ] 계좌 변동  
 - [ ] 보유 주식 페이지  
@@ -52,3 +61,15 @@ index page 뿐만 아니라 시장이나 종목 상세보기 페이지에서도
 - [ ] 가상 주문  
     ~~현재 holding에 Trigger가 걸려있어서 보유 주식이 없는 유저가 매도 주문을 하면 오류가 날듯?~~  
     구매자 주식만 증가하고 판매자가 해당 종목 미보유 시 판매자 관련 update는 안됨  
+
+### Holdings Page  
+
+- get Holdings  
+  DB에서 현재 로그인 된 유저가 보유한 주식 목록들을 가져옴  
+
+- Update
+  주가 변동에 따른 변동률을 실시간으로 갱신  
+
+[TODO]  
+- [ ] get holdings
+- [ ] update periodically

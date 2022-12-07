@@ -22,7 +22,7 @@
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb p-1 pl-2 pr-2">
         <li class="breadcrumb-item"><a href="/">홈</a></li>
-        <li class="breadcrumb-item"><a href="/forums">게시판</a></li>
+        <li class="breadcrumb-item"><a href="/forums/<%= code %>/1">게시판</a></li>
         <li class="breadcrumb-item active" aria-current="page">글쓰기</li>
       </ol>
     </nav>
@@ -31,7 +31,7 @@
     <div class="row justify-content-center mb-5">
       <div class="col-8 m-3">
         <!-- 작성 내용 -->
-        <form method="post">
+        <form method="post" action="/forums/<%= code %>/create_process">
           <div class="card align-self-center m-5 p-3 shadow">
             <div class="mb-3">
               <label for="title" class="form-label subTitle">제목</label>
@@ -42,7 +42,7 @@
               <textarea class="form-control"id="content" name="content" style="height: 300px;" required></textarea>
             </div>
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">  
-              <button type="submit" formaction="/forums/new" class="btn btn-primary shadow">제출</button>
+              <button type="submit" class="btn btn-primary shadow">제출</button>
             </div>
           </div>
         </form>

@@ -18,6 +18,8 @@ const marketsRouter = require('./routes/markets');
 const orderRouter = require('./routes/order');
 const orderListRouter = require('./routes/orderlist');
 const holdingRouter = require('./routes/holding');
+const user_edit = require('./routes/userupdate');
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -43,8 +45,8 @@ app.use(session({
 app.use(flash());
 var passport = require('./lib/passport')(app);
 
-app.post('/auth/login_process', function (req, res, next) {
-    passport.authenticate('local', function (err, user, info) {
+app.post('/auth/login_process', function(req, res, next) {
+    passport.authenticate('local', function(err, user, info) {
         if (err) {
             return next(err);
         }
@@ -53,9 +55,9 @@ app.post('/auth/login_process', function (req, res, next) {
             req.flash('login', info.message);
             res.redirect('/auth/login');
         }
-        req.login(user, function (err) {
+        req.login(user, function(err) {
             if (err) { return next(err); }
-            req.session.save(function () {
+            req.session.save(function() {
                 res.redirect('/');
                 return;
             });
@@ -73,6 +75,7 @@ app.use('/markets', marketsRouter);
 app.use('/order', orderRouter);
 app.use('/orderlist', orderListRouter);
 app.use('/holding', holdingRouter);
+app.use('/userupdate', user_edit);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

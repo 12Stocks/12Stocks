@@ -7,36 +7,14 @@
 </head>
 
 <body>
-  <%-include('../base/navbarTop.ejs') %>
-
-  <% 
-  let title = "이전 제목" ;
-  let content = 
-  `게시글 테스트
-  컴공 DB 12
-
-
-  
-  끝`;
-  let user_id = 'asd';
-
-  let comments = [];
-  for (let i = 0; i < 3; i++){
-    comments.push({
-      user_id: '홍길동 - ' + i,
-      content: '댓글 테스트 - ' + i * 3,
-    });
-  }
-  %> 
-
-  
+  <%-include('../base/navbarTop.ejs')-%>
   <div class="container mb-3">
 
   <!-- 작업 트리 -->
   <nav aria-label="breadcrumb">
     <ol class="breadcrumb p-1 pl-2 pr-2">
       <li class="breadcrumb-item"><a href="/">홈</a></li>
-      <li class="breadcrumb-item"><a href="/forums">게시판</a></li>
+      <li class="breadcrumb-item"><a href="/forums/<%= code %>/1">게시판</a></li>
       <li class="breadcrumb-item active" aria-current="page">게시글</li>
     </ol>
   </nav>
@@ -62,15 +40,14 @@
     <div class="col d-grid gap-2 m-3 d-md-flex justify-content-md-start"> 
       <form method="get">
         <input type="hidden" name="user_id" id="user_id" value="<%=''%>">
-        <!-- 사용자 로그인 확인 필요 -->
-        <button type="submit" formaction="/forums/edit" class="btn btn-secondary shadow">글 수정</button>
+        <button type="submit" <%= disableUpdate %> formaction="/forums/<%= code %>/post/<%= postId %>/edit" class="btn btn-secondary shadow">글 수정</button>
       </form>
     </div>
     <div class="col-md-5 col-lg-4 col-xl-3">
       <div class="post-info card m-2 p-2"> 
-        <div>작성자:</div>
+        <div>작성자: <span><%= authorId %></span></div>
         <hr class="p-0 m-1">
-        <div>작성날짜:</div>
+        <div>작성날짜: <span><%= regDate %></span></div>
       </div>
     </div>
   </div>
@@ -79,25 +56,28 @@
   <!-- 댓글 -->
   <div class="col-8 my-5 p-0">
     <div class="h4">댓글<hr class="p-0 mt-2"></div>
-    <% comments.forEach(function(comment) { %>
+    <% for(let i = 0; i < comments.length; i++) { %>
       <div class="row">
-        <div class="col-2"><%= comment.user_id %></div>
+        <div class="col-2"><%= comments[i].author_id %></div>
         <div class="col-10">
-          <%- comment.content.replace(/\n/g, '<br/>') %>
-          <br><br><span style="font-size: 9px;">(작성날짜: )</span>
+          <%= comments[i].comment_content %>
+          <form method="post" action="/forums/<%= code %>/post/<%= postId %>/delete_comment">
+            <input type="hidden" name="comment_id" id="comment_id" value="<%= comments[i].comment_id %>">
+            <button type="submit" style ="float: right">삭제</button>
+          </form>
+          <br><br><span style="font-size: 9px;">(작성날짜: <%- comments[i].reg_date %>)</span>
         </div>
       </div>
       <hr class="p-0 mt-2">
-    <% }) %>
+    <% } %>
     <div class="row">
-      <div class="col-2">user_id</div>
+      <div class="col-2"><%= userId %></div>
       <div class="col-10">
-        <form action="post">
+        <form method="post" action="/forums/<%= code %>/post/<%= postId %>/create_comment">
           <input type="hidden" name="user_id" id="user_id" value="<%=''%>">
           <textarea class="form-control" id="content" name="content" required></textarea>
-          <div class="d-grid d-md-flex justify-content-md-end my-2">  
-            <!-- 사용자 로그인 확인 필요 -->
-            <button type="submit" formaction="/forums/new" class="btn btn-secondary shadow">댓글 쓰기</button>
+          <div class="d-grid d-md-flex justify-content-md-end my-2">
+            <button type="submit" class="btn btn-secondary shadow">댓글 쓰기</button>
           </div>
         </form>
       </div>
@@ -111,5 +91,4 @@
   <%-include('../base/footer.ejs')%>
 
 </body>
-
 </html>

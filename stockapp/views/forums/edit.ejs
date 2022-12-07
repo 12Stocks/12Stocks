@@ -16,11 +16,6 @@
   <!-- 네비게이션바 -->
   <%-include('../base/navbarTop.ejs')-%>
 
-  <% 
-  let title = "이전 제목" 
-  let content = "이전 내용" 
-  %> 
-
   <!-- 메인 컨테이너 -->
   <div class="container mb-3">
 
@@ -39,7 +34,7 @@
         <form method="post">
           <div class="d-grid gap-2 d-md-flex justify-content-md-end"> 
             <!-- 글 삭제 확인 알림창 띄우기? -->
-            <button type="submit" formaction="/forums/delete" class="btn btn-danger shadow">글 삭제</button>
+            <button type="submit" formaction="/forums/<%= code %>/post/<%= postId %>/delete_process" class="btn btn-danger shadow">글 삭제</button>
           </div> 
           <div class="card align-self-center m-5 p-3 shadow">
             <div class="mb-3">
@@ -50,8 +45,8 @@
               <label for="content" class="form-label subTitle">내용</label>
               <textarea class="form-control" id="content" name="content" style="height: 300px;" required><%= content %></textarea>
             </div>
-            <div class="d-grid gap-2 d-md-flex justify-content-md-end">  
-              <button type="submit" formaction="/forums/edit" class="btn btn-primary shadow">제출</button>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+              <button type="submit" formaction="/forums/<%= code %>/post/<%= postId %>/edit_process" class="btn btn-primary shadow">제출</button>
             </div>
           </div>
         </form>

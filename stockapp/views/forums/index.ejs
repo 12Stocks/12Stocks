@@ -3,25 +3,12 @@
 
 <head>
   <%-include('../base/header.ejs') %>
-
+  <script src="/node_modules/jquery/dist/jquery.min.js"></script>
   <title>forums</title>
 </head>
 
 <body>
   <%-include('../base/navbarTop.ejs')-%>
-  <% 
-    forum = {};
-    forum.code = '005930';
-    forum.title = '삼성전자'
-    tmpList = {}; 
-    lenData = 30;
-    maxLenData = 15; 
-    tmpList.idx = [...Array(lenData).keys()]; 
-    tmpList.titles = [...Array(lenData).keys()].map(key => "title - " + key); 
-    tmpList.timeStamp = [...Array(lenData).keys()].map(key => new Date().toLocaleString()); 
-    tmpList.hit = [...Array(lenData).keys()].map(key => key * 11); 
-  %>
-
   <div class="container col-8 py-3">
     <!-- 메인 컨테이너 -->
     <div class="row justify-content-center p-3">
@@ -30,8 +17,8 @@
         <div class="card">
           <div class="card-body">
             <blockquote class="blockquote mb-0">
-              <p><%=forum.title%></p>
-              <footer class="blockquote-footer">종목코드: <%=forum.code%></footer>
+              <p><%= title %></p>
+              <footer class="blockquote-footer">종목코드: <%= code %></footer>
             </blockquote>
           </div>
         </div>
@@ -64,12 +51,12 @@
             </tr>
           </thead>
           <tbody class="table-group-divider">
-            <% for(let i=0; i < maxLenData; i++){ %> 
+            <% for(let i = 0; i < pagePostNum; i++){ %> 
             <tr>
-              <th scope="row"><%= tmpList.idx[i] + 1 %></th>
-              <td><a href="/forums/show"><%= tmpList.titles[i]%></a></td>
-              <td><%=tmpList.timeStamp[i]%></td>
-              <td><%=tmpList.hit[i]%></td>
+              <th scope="row"><%= postList[i].post_id %></th>
+              <td><a href="/forums/<%= code %>/post/<%= postList[i].post_id %>"><%= postList[i].post_title %></a></td>
+              <td><%=postList[i].reg_date %></td>
+              <td><%=postList[i].hit %></td>
             </tr>
             <% } %> 
           </tbody>
@@ -80,16 +67,18 @@
           <div class="col-8">
             <nav aria-label="Page navigation">
               <ul class="pagination justify-content-center align-items-center h-100 mb-0">
-                <li class="page-item disabled">
-                  <a class="page-link" href="#" aria-label="Previous">
+                
+                <li class="page-item" id = "pfjump">
+                  <a class="page-link" href="/forums/<%= code %>/1" aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                   </a>
                 </li>
-                <li class="page-item active" aria-current="page"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                  <a class="page-link" href="#" aria-label="Next">
+                <!-- <li class="page-item active" aria-current="page"><a class="page-link" href="#">1</a></li> -->
+                <% for(let i = pageStartIndex; i <= pageLastIndex; i++) { %> 
+                  <li class="page-item" id="pi<%= i %>"><a class="page-link" href="/forums/<%= code %>/<%= i %>"><%= i %></a></li>
+                <% } %>
+                <li class="page-item" id = "pljump">
+                  <a class="page-link" href="/forums/<%= code %>/<%= maxPageNum %>" aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                   </a>
                 </li>
@@ -98,7 +87,7 @@
           </div>
           <div class="col-2">
             <!-- 사용자 로그인 확인 필요 -->
-            <a name="" id="" class="btn btn-primary" href="/forums/new" role="button">글쓰기</a>                  
+            <a name="" id="" class="btn btn-primary" href="/forums/<%= code %>/create" role="button">글쓰기</a>                  
           </div>
         </div>
       </div>
@@ -107,5 +96,24 @@
 
   <%-include('../base/footer.ejs')%>
 </body>
+
+<script>
+  $(document).ready(function () {
+    $("#pi<%= currentPage %>").attr('class', 'page-item active');
+    $("#pi<%= currentPage %>").attr('aria-current', 'page');
+
+    if ($("#pi1").attr('class') == 'page-item active') {
+      $("#pfjump").attr('class', 'page-item disabled');
+    } else {
+      $("#pfjump").attr('class', 'page-item');
+    }
+
+    if ($("#pi<%= maxPageNum %>").attr('class') == 'page-item active') {
+      $("#pljump").attr('class', 'page-item disabled');
+    } else {
+      $("#pljump").attr('class', 'page-item');
+    }
+  });
+</script>
 
 </html>

@@ -61,6 +61,10 @@
         <div class="col-2"><%= comments[i].author_id %></div>
         <div class="col-10">
           <%= comments[i].comment_content %>
+          <form method="post" action="/forums/<%= code %>/post/<%= postId %>/delete_comment">
+            <input type="hidden" name="comment_id" id="comment_id" value="<%= comments[i].comment_id %>">
+            <button type="submit" style ="float: right">삭제</button>
+          </form>
           <br><br><span style="font-size: 9px;">(작성날짜: <%- comments[i].reg_date %>)</span>
         </div>
       </div>

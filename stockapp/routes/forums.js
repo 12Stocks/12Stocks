@@ -127,8 +127,6 @@ router.post('/:item_code/post/:post_id/create_comment', function (req, res) {
     var board_id = req.params.item_code;
     var post_id = req.params.post_id;
 
-    console.log(board_id, post_id);
-
     var datas = {
         code: board_id
     }
@@ -142,6 +140,33 @@ router.post('/:item_code/post/:post_id/create_comment', function (req, res) {
         })
     } else {
         res.redirect('/auth/loginRequired');
+    }
+});
+
+router.post('/:item_code/post/:post_id/delete_comment', function (req, res) {
+    var board_id = req.params.item_code;
+    var post_id = req.params.post_id;
+
+    var post = req.body;
+    var comment_id = post.comment_id;
+
+    if (auth.isOwner(req, res)) {
+        forumController.IsMyComment(board_id, post_id, comment_id, req.user.user_id, function (result) {
+            if(result) {
+                forumController.DeleteComment(board_id, post_id, comment_id, function() {
+                    res.redirect(`/forums/${board_id}/post/${post_id}`);
+                })
+            }
+            else {
+                res.send(`<script>
+                alert('내가 작성한 댓글이 아닙니다.');
+                location.href='/forums/${board_id}/post/${post_id}'; </script>`);
+            }
+        })
+    } else {
+        res.send(`<script>
+        alert('로그인을해야 삭제할 수 있습니다.');
+        location.href='/forums/${board_id}/post/${post_id}'; </script>`);
     }
 });
 

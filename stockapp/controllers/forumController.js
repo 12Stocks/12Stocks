@@ -112,12 +112,30 @@ module.exports = {
         })
     },
     GetComments: function (board_id, post_id, cb) {
-        var sql = "SELECT author_id, comment_content, reg_date FROM comments WHERE board_id = ? AND post_id = ?;";
+        var sql = "SELECT comment_id, author_id, comment_content, reg_date FROM comments WHERE board_id = ? AND post_id = ?;";
         var params = [board_id, post_id];
         db.query(sql, params, function (err, result) {
             if (err) throw err;
             console.log("댓글 조회");
             cb(result);
+        })
+    },
+    IsMyComment: function (board_id, post_id, comment_id, user_id, cb) {
+        var sql = "SELECT * FROM comments WHERE board_id = ? AND post_id = ? AND comment_id = ?";
+        db.query(sql, [board_id, post_id, comment_id], function (err, result) {
+            if (err) throw err;
+            console.log(result);
+            if (result[0].author_id == user_id) cb(true);
+            else cb(false);
+        })
+    },
+    DeleteComment: function (board_id, post_id, comment_id, cb) {
+        var sql = "DELETE FROM comments WHERE board_id = ? AND post_id = ? AND comment_id = ?;";
+        var params = [board_id, post_id, comment_id];
+        db.query(sql, params, function (err, result) {
+            if (err) throw err;
+            console.log("댓글 삭제 성공");
+            cb();
         })
     }
 }

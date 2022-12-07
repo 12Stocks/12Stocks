@@ -198,7 +198,29 @@
     </div>
     <div id="conclusion" class="tab2content" style="display: block;">
         <div id="conclusionDiv">
-            <p>체결된 내 주문 목록</p>
+            <% if(conclusionList.length == 0) {
+                %> <span>내역 없음</span> <%
+            } else { %>
+                <table class="type03" id="conclusionList">
+                    <thead>
+                        <th>구분</th>
+                        <th>종목명/종목코드</th>
+                        <th>수량</th>
+                        <th>채결가</th>
+                    </thead>
+                    <tbody id="conclusionListBody">
+                        <% for(var i = 0; i < conclusionList.length; i++) {
+                            var buysell = conclusionList[i].buyer_id == userId ? "매수" : "매도"; %>
+                            <tr>
+                                <td><%= buysell %></td>
+                                <td><%= conclusionList[i].stock_code %></td>
+                                <td><%= conclusionList[i].quantity %></td>
+                                <td><%= conclusionList[i].unit_price %></td>
+                            </tr> <%
+                        } %>
+                    </tbody>
+                </table> <%
+            } %>
         </div>
     </div>
 
@@ -419,10 +441,12 @@
     function reload(id) {
         $(`#${id}`).load(location + ` #${id}Div`, function () {
             if($("#openOrders").css("display") == "block") {
-                $("#openOrders").fadeOut(1000).load(location + " #openOrdersDiv").fadeIn(2000)
+                $("#conclusion").fadeOut(1000).load(location + " #conclusionDiv").fadeIn(2000).hide();
+                $("#openOrders").fadeOut(1000).load(location + " #openOrdersDiv").fadeIn(2000);
             }
             else {
                 $("#openOrders").fadeOut(1000).load(location + " #openOrdersDiv").fadeIn(2000).hide();
+                $("#conclusion").fadeOut(1000).load(location + " #conclusionDiv").fadeIn(2000);
             }
         });
     }

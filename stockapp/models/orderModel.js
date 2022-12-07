@@ -1,6 +1,14 @@
 var db = require("../config/DB");
 
 module.exports = {
+    getConclusionList : function(user_id, cb) {
+        var sql = "SELECT * FROM trades WHERE seller_id = ? OR buyer_id = ?;";
+        db.query(sql, [user_id, user_id], (err, rows, fields) => {
+            if(err) throw err;
+            cb(rows);
+        });
+    },
+
     getOrderByOid : function(offer_id, cb) {
         var sql = "SELECT * FROM offers WHERE offer_id = ?;";
         db.query(sql, offer_id, (err, row, fields) => {

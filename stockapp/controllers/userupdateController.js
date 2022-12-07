@@ -1,8 +1,5 @@
-var express = require('express');
-var router = express.Router();
 const db = require('../config/DB');
 var auth = require('../lib/auth');
-
 
 exports.view = (req, res) => {
     // User the connection

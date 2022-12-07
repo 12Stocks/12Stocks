@@ -1,5 +1,4 @@
 var userModel = require('../models/userModel');
-var express = require("express");
 var auth = require('../lib/auth');
 
 exports.findAll=(req, res) => {

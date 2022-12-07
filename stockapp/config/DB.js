@@ -2,7 +2,7 @@ var mysql = require("mysql");
 require("dotenv").config();
 
 var connection = mysql.createConnection({
-    connectionLimit: 5,
+    connectionLimit: 10,
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
@@ -12,7 +12,7 @@ var connection = mysql.createConnection({
 
 connection.connect((err) => {
     console.log("try connect to DB...");
-    if(err) throw err;
+    if (err) throw err;
     else console.log("complete !");
 });
 

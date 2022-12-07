@@ -68,10 +68,10 @@
                     </select>
                 </div><br>
                 <label>수량</label>
-                <input type="number" min="0" step="1" value="0" name="q" id="q"/><br>
+                <input type="number" min="0" step="1" value="0" name="q" id="q" onchange="valueChanged($(this))"/><br>
                 <label>가격</label>
-                <input type="number" min="0" step="<%= tickSize %>" value="0" name="p" id="p" /><br><br>
-                <p>주문 금액 : <span id="buyOrderAmount"></span></p>
+                <input type="number" min="0" step="<%= tickSize %>" value="0" name="p" id="p" onchange="valueChanged($(this))"/><br><br>
+                <p>주문 금액 : <span id="OrderAmount"></span></p>
                 <input type="button" value="매수" id = "buyOrder" onclick="buyClicked()"/>
             </form>
         </div>
@@ -87,10 +87,10 @@
                     </select>
                 </div><br>
                 <label>수량</label>
-                <input type="number" min="0" step="1" value="0" name="q" id="q"/><br>
+                <input type="number" min="0" step="1" value="0" name="q" id="q" onchange="valueChanged($(this))"/><br>
                 <label>가격</label>
-                <input type="number" min="0" step="<%= tickSize %>" value="0" name="p" id="p" /><br><br>
-                <p>주문 금액 : <span id="sellOrderAmount"></span></p>
+                <input type="number" min="0" step="<%= tickSize %>" value="0" name="p" id="p" onchange="valueChanged($(this))"/><br><br>
+                <p>주문 금액 : <span id="OrderAmount"></span></p>
                 <input type="button" value="매도" id = "sellOrder" onclick="sellClicked()"/>
             </form>
         </div>
@@ -106,10 +106,10 @@
                 <p>종목 : <span id="updateItem"></span></p>
                 <p>주문 : <span id="buysell"></span></p>
                 <label>수량</label>
-                <input type="number" min="0" step="1" value="0" name="q" id="q" /><br>
+                <input type="number" min="0" step="1" value="0" name="q" id="q" onchange="valueChanged($(this))"/><br>
                 <label>가격</label>
-                <input type="number" min="0" step="<%= tickSize %>" value="0" name="p" id="p" /><br><br>
-                <p>주문 금액 : <span id="updateAmount"></span></p>
+                <input type="number" min="0" step="<%= tickSize %>" value="0" name="p" id="p" onchange="valueChanged($(this))"/><br><br>
+                <p>주문 금액 : <span id="OrderAmount"></span></p>
                 <input type="button" value ="정정" id="updateOrder" onclick="updateClicked()">
                 <input type="button" value= "취소" id="cancelOrder" onclick="cancelClicked()">
             </form>
@@ -196,13 +196,35 @@
         <button class="tab2links" onclick="openTab(event, 2, 'conclusion')" id="tab2-default">주식 체결</button>
         <button class="tab2links" onclick="openTab(event, 2, 'openOrders')">주식 미체결</button>
     </div>
-    <div id="conclusion" class="tab2content">
+    <div id="conclusion" class="tab2content" style="display: block;">
         <div id="conclusionDiv">
-            <p>체결된 내 주문 목록</p>
+            <% if(conclusionList.length == 0) {
+                %> <span>내역 없음</span> <%
+            } else { %>
+                <table class="type03" id="conclusionList">
+                    <thead>
+                        <th>구분</th>
+                        <th>종목명/종목코드</th>
+                        <th>수량</th>
+                        <th>채결가</th>
+                    </thead>
+                    <tbody id="conclusionListBody">
+                        <% for(var i = 0; i < conclusionList.length; i++) {
+                            var buysell = conclusionList[i].buyer_id == userId ? "매수" : "매도"; %>
+                            <tr>
+                                <td><%= buysell %></td>
+                                <td><%= conclusionList[i].stock_code %></td>
+                                <td><%= conclusionList[i].quantity %></td>
+                                <td><%= conclusionList[i].unit_price %></td>
+                            </tr> <%
+                        } %>
+                    </tbody>
+                </table> <%
+            } %>
         </div>
     </div>
 
-    <div id="openOrders" class="tab2content">
+    <div id="openOrders" class="tab2content" style="display: none;">
         <div id="openOrdersDiv">
             <% if(openOrderList.length == 0) {
                 %> <span>내역 없음</span> <%
@@ -235,6 +257,7 @@
 </body>
 
 <script>
+    // 시장가, 보통가
     function changeSelect() {
         var option = document.getElementsByName("type");
         var p = document.getElementsByName("p");
@@ -295,7 +318,6 @@
 
     // click function
     function selectedTr(clicked) {
-        console.log("clicked");
         $('#openOrderListBody tr').removeClass('highlight');
         clicked.addClass('highlight');
 
@@ -306,7 +328,6 @@
         var code = clicked.children().eq(1).text();
         var quantity = parseInt(clicked.children().eq(2).text());
         var price = parseInt(clicked.children().eq(3).text());
-        console.log(code, quantity, price);
 
         $.ajax({
             url: '/order/search/open_order',
@@ -333,7 +354,7 @@
                     $("#buysell").text(openOrderInfo.buysell? "매도" : "매수");
                     $("#correctForm > #q").val(prior_quantity);
                     $("#correctForm > #p").val(prior_price);
-                    $('#updateAmount').text($('#q').val() * $('#p').val());
+                    $('#correctForm > p > #OrderAmount').text($('#correctForm > #q').val() * $('#correctForm > #p').val());
                     // 
                     $('#q, #p').css("color", "black");
                     $('#updateOrder').attr("disabled", true);
@@ -382,7 +403,6 @@
     function buyClicked() {
         if(validateBuyForm()) {
             var buyForm = $("#buyForm").serialize();
-            console.log(buyForm);
             $.ajax({
                 url: '/order/<%= itemInfo.code %>/buy_process',
                 dataType: 'json',
@@ -402,7 +422,6 @@
     function sellClicked() {
         if (validateSellForm()) {
             var sellForm = $("#sellForm").serialize();
-            console.log(sellForm);
             $.ajax({
                 url: '/order/<%= itemInfo.code %>/sell_process',
                 dataType: 'json',
@@ -421,46 +440,56 @@
 
     function reload(id) {
         $(`#${id}`).load(location + ` #${id}Div`, function () {
-            $("#openOrders").fadeOut(1000).load(location + " #openOrdersDiv").fadeIn(2000);
+            if($("#openOrders").css("display") == "block") {
+                $("#conclusion").fadeOut(1000).load(location + " #conclusionDiv").fadeIn(2000).hide();
+                $("#openOrders").fadeOut(1000).load(location + " #openOrdersDiv").fadeIn(2000);
+            }
+            else {
+                $("#openOrders").fadeOut(1000).load(location + " #openOrdersDiv").fadeIn(2000).hide();
+                $("#conclusion").fadeOut(1000).load(location + " #conclusionDiv").fadeIn(2000);
+            }
         });
     }
 
-    $(document).ready(function () {
-        // 미체결 내역에서 주문 선택 성공시 해당 주문의 offer_id 값
-        $('#buyForm > #q, #buyForm > #p').bind('keyup input', function () {
-            $('#buyOrderAmount').text($('#buyForm > #q').val() * $('#buyForm > #p').val());
-        });
+    // change value
+    function valueChanged(changed) {
+        var formId = changed.parent()[0].id;
+        var inputId = changed[0].id;
+        var selected = `#${formId} > #${inputId}`;
 
-        $('#sellForm > #q, #sellForm > #p').bind('keyup input', function () {
-            $('#sellOrderAmount').text($('#sellForm > #q').val() * $('#sellForm > #p').val());
-        });
-
-        $('#correctForm > #q, #correctForm > #p').bind('keyup input', function () {
-
-            $('#updateAmount').text($('#correctForm > #q').val() * $('#correctForm > #p').val());
-
-            if(prior_quantity != undefined && prior_quantity != $('#correctForm > #q').val()) {
-                $('#correctForm > #q').css("color", "red");
-                $('#cancelOrder').attr("disabled", true);
-                $('#updateOrder').attr("disabled", false);
-            } else {
-                $('#correctForm > #q').css("color", "black"); 
+        if(formId == "correctForm") {
+            // changed color red / black, able update button
+            if(inputId == "q") {
+                if(prior_quantity != undefined && prior_quantity != changed.val()) {
+                    changed.css("color", "red");
+                    $('#cancelOrder').attr("disabled", true);
+                    $('#updateOrder').attr("disabled", false);
+                } else {
+                    changed.css("color", "black"); 
+                }
+            }
+            else if(inputId == "p") {
+                if (prior_price != undefined && prior_price != changed.val()) {
+                    changed.css("color", "red");
+                    $('#cancelOrder').attr("disabled", true);
+                    $('#updateOrder').attr("disabled", false);
+                } else {
+                    changed.css("color", "black");
+                }
             }
 
-            if (prior_price != undefined && prior_price != $('#correctForm > #p').val()) {
-                $('#correctForm > #p').css("color", "red");
-                $('#cancelOrder').attr("disabled", true);
-                $('#updateOrder').attr("disabled", false);
-            } else {
-                $('#correctForm > #p').css("color", "black");
-            }
-
+            // able cancel button
             if(prior_quantity == $('#correctForm > #q').val() && prior_price == $('#correctForm > #p').val()) {
                 $('#updateOrder').attr("disabled", true);
                 $('#cancelOrder').attr("disabled", false);  
             }
-        });
+        }
 
+        $(`#${formId} > p > #OrderAmount`).text($(`#${formId} > #q`).val() * $(`#${formId} > #p`).val());
+    }
+
+    $(document).ready(function () {
+        // 미체결 내역에서 주문 선택 성공시 해당 주문의 offer_id 값
         $('#item').autocomplete({
             source: function(req, res) {
                 $.ajax({

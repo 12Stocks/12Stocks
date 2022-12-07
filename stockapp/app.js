@@ -17,6 +17,7 @@ const forumsRouter = require('./routes/forums');
 const marketsRouter = require('./routes/markets');
 const orderRouter = require('./routes/order');
 const orderListRouter = require('./routes/orderlist');
+const holdingRouter = require('./routes/holding');
 const user_edit = require('./routes/userupdate');
 
 
@@ -73,6 +74,7 @@ app.use('/forums', forumsRouter);
 app.use('/markets', marketsRouter);
 app.use('/order', orderRouter);
 app.use('/orderlist', orderListRouter);
+app.use('/holding', holdingRouter);
 app.use('/userupdate', user_edit);
 
 // catch 404 and forward to error handler

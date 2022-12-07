@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <%-include('base/header.ejs') %>
+    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+        }
+        #holding {width: 100%; text-align: center; padding: 20px; margin: 15px;}
+        #holdingDiv {display: inline-block; width: 50%; border: 1px solid black; font-size: large;}
+        .pageHeader {display: inline-block; width: 50%;}
+        table.type03 {width: 100%;}
+        table.type03 th, table.type03 tr{text-align: center; padding: 10px; margin: 15px;}
+        table.type03 td {padding: 20px; margin: 15px;}
+        span.userid {float: left; font: bold;}
+    </style>
+    <title>markets</title>
+</head>
+
+<body>
+    <%-include('base/navbarTop.ejs')-%>
+    <div id="holding">
+        <div class="pageHeader" id="pageHeader">
+            <span class="userid">
+                <strong><%= userId %></strong>
+            </span>
+        </div>
+        <div id="holdingDiv">
+            <div id="items">
+                <table class="type03">
+                    <thead>
+                        <th>#</th>
+                        <th>종목명</th>
+                        <th>현재가</th>
+                        <th>전일비</th>
+                        <th>등락률</th>
+                        <th>거래량</th>
+                        <th>거래대금</th>
+                    </thead>
+    
+                    <tbody>
+                        <%
+                        for(var i = 1; i <= 3; i++) {
+                            prc = prc + 200; 
+                            %>
+                            <tr>
+                                <td><%= i%></td>
+                                <td>삼성전자</td>
+                                <td class="cp" id="cp"><%= prc.toLocaleString('ko-KR') %></td>
+                                <td>+200</td>
+                                <td>+0.5%</td>
+                                <td>8393033</td>
+                                <td>14302923223</td>
+                            </tr><%
+                        } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <%-include('base/footer.ejs')%>
+</body>
+<script>
+    setInterval(function() {
+        $("#holdingDiv").fadeOut(1).load(location + " #items").fadeIn(1500);
+    }, 5000);
+</script>
+</html>

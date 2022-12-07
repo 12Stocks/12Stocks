@@ -57,14 +57,14 @@ module.exports = {
     },
 
     GetOpenOrderList: function (userId, cb) {
-        // var sql = "SELECT * FROM offers WHERE trader_id = ?;";
-        // db.query(sql, [userId], function (err, results) {
-        //     if (err) throw err;
-        //     console.log("미체결 내역 조회");
-        //     cb(results);
-        // });
         orderModel.getOrderByUid(userId, (rows) => {
             cb(rows);
+        })
+    },
+
+    getConclusionList: function(userId, cb) {
+        orderModel.getConclusionList(userId, (conclusionList) => {
+            cb(conclusionList);
         })
     },
 

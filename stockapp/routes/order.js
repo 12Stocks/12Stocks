@@ -71,21 +71,24 @@ router.get('/:item_code', function (req, res) {
         
         var tickSize = orderController.GetTickSize(req.itemInfo.now);
         var datas = { 
-                itemInfo: req.itemInfo, 
-                tickSize: tickSize,
-            };
+            itemInfo: req.itemInfo, 
+            tickSize: tickSize,
+        };
         
-            // TODO : refactor all the other codes like this
-            if(auth.isOwner(req, res)) {
-                orderController.GetOpenOrderList(req.user.user_id, function (openOrderList) {
-                    datas.openOrderList = openOrderList;
-                    datas.userId = req.user.user_id;
-                    res.render('order', datas);
-                });
-            }
-            else {
-                res.redirect('/auth/loginRequired');
-            }
+        // TODO : refactor all the other codes like this
+        if(auth.isOwner(req, res)) {
+            orderController.GetOpenOrderList(req.user.user_id, function (openOrderList) {
+                datas.openOrderList = openOrderList;
+                datas.userId = req.user.user_id;
+            });
+            orderController.getConclusionList(req.user.user_id, function(conclusionList) {
+                datas.conclusionList = conclusionList;
+                res.render('order', datas);
+            });
+        }
+        else {
+            res.redirect('/auth/loginRequired');
+        }
     });
 });
 
@@ -161,7 +164,17 @@ router.get('/:item_code/open_orderlist', function(req, res) {
             res.send({ msg: '미체결 내역 조회', openOrderList: openOrderList })
         });
     } catch (err) {
-        console.log(err);
+        console.error(err);
+    }
+});
+
+router.get('/:item_code/open_conclusionList', function(req, res) {
+    try {
+        orderController.getConclusionList(req.user.user_id, function(conclusionList) {
+            res.send({msg: '채결 내역 조회', conclusionList : conclusionList});
+        });
+    } catch (err) {
+        console.error(err);
     }
 });
 

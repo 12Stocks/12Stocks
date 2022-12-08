@@ -2,7 +2,7 @@ var express = require('express')
 var router = express.Router();
 var auth = require('../lib/auth');
 var forumController = require('../controllers/forumController');
-const { post } = require('jquery');
+const constants = require('../lib/constants');
 
 router.get('/:item_code/post/:post_id', function (req, res) {
     var datas = {
@@ -190,7 +190,7 @@ router.get('/:item_code/:page_num', function (req, res) {
             forumController.GetPostListByPage(board_id, current_page_num, function (postList, page_post_num, max_page_num) {
                 
                 var pageStartIndex, pageLastIndex;
-                var pwl = forumController.PAGE_WINDOW_LENGTH;
+                var pwl = constants.PAGE_WINDOW_LENGTH;
 
                 if (pwl < max_page_num) {
                     if(current_page_num + Math.floor(pwl / 2) >= max_page_num) {

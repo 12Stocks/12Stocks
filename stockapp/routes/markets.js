@@ -4,8 +4,7 @@ var auth = require('../lib/auth');
 var watchListController = require('../controllers/watchListController'); 
 var cookie = require('cookie');
 var crawling = require('../crawling/crawling');
-
-const MAX_RECENT_ITEMS = 5;
+const constants = require('../lib/constants');
 
 const sorting = async (array) => {
     return await array.sort((a, b) => b.total_val - a.total_val);
@@ -43,7 +42,7 @@ router.get('/:item_code', function (req, res) {
                     recentItems = req.params.item_code;
                 }
                 else {
-                    if (recentItemArr.length >= MAX_RECENT_ITEMS) recentItemArr.pop();
+                    if (recentItemArr.length >= constants.MAX_RECENT_ITEMS) recentItemArr.pop();
                     recentItems = req.params.item_code + ',' + recentItemArr.join(',');
                 }
 

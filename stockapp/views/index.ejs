@@ -94,7 +94,9 @@
                         <div class="card-body">
                             <h2 class="card-title">인기 게시글</h2>
                             <hr>
-                            <p class="card-text">Empty</p>
+                            <% for( var i in TrendingPosts ) { %>
+                            <a class="card-text" href="/forums/<%= TrendingPosts[i].board_id %>/post/<%= TrendingPosts[i].post_id %>"><%= TrendingPosts[i].post_title %></a><br>
+                            <% } %>
                         </div>
                         <div class="card-footer"><a class="btn btn-primary btn-sm" href="#!">More Info</a></div>
                     </div>

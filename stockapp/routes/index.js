@@ -7,17 +7,14 @@ var indexController = require('../controllers/indexController');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-
-  // TODO : refactoring ex. cookieController
+  var datas = { recentItems: undefined }; 
   var cookies = cookie.parse(req.headers.cookie);
   var recentItemArr = [];
 
   if (cookies.recent_items == undefined) {
-    if (auth.isOwner(req, res)) {
-      res.render('index', { userId: req.user.user_id, recentItems: undefined });
-    } else {
-      res.render('index', { recentItems: undefined });
-    }
+    if (auth.isOwner(req, res))
+      datas.userId = req.user.user_id;
+    res.render('index', datas);
   }
   else {
     var recentItems = cookies.recent_items;
@@ -26,13 +23,14 @@ router.get('/', function(req, res, next) {
     console.log(recentItemArr);
 
     indexController.GetRecentItems(recentItemArr, function(rItems) {
-      if (auth.isOwner(req, res)) {
-        res.render('index', { userId: req.user.user_id, recentItems: rItems });
-      } else {
-        res.render('index', { recentItems: rItems });
-      }
+      datas.recentItems = rItems;
+      indexController.GetTrendingPosts(function (trendingPosts) {
+        datas.TrendingPosts = trendingPosts;
+        if (auth.isOwner(req, res))
+          datas.userId = req.user.user_id;
+        res.render('index', datas);
+      })
     })
-
   }
 });
 

@@ -13,34 +13,36 @@ router.get('/:item_code/post/:post_id', function (req, res) {
     var post_id = req.params.post_id;
 
     forumController.Hit(board_id, post_id, function () {
-        forumController.GetPostData(board_id, post_id, function(postData) {
-            if(postData.length > 0) {
-                datas.postId = postData[0].post_id;
-                datas.title = postData[0].post_title;
-                datas.content = postData[0].post_content;
-                datas.authorId = postData[0].author_id;
-                datas.regDate = postData[0].reg_date;
+        forumController.DayHit(board_id, post_id, function () {
+            forumController.GetPostData(board_id, post_id, function (postData) {
+                if (postData.length > 0) {
+                    datas.postId = postData[0].post_id;
+                    datas.title = postData[0].post_title;
+                    datas.content = postData[0].post_content;
+                    datas.authorId = postData[0].author_id;
+                    datas.regDate = postData[0].reg_date;
 
-                forumController.GetComments(board_id, post_id, function (comments) {
-                    if (comments.length > 0) {
-                        datas.comments = comments; 
-                    } else { datas.comments = {}; }
+                    forumController.GetComments(board_id, post_id, function (comments) {
+                        if (comments.length > 0) {
+                            datas.comments = comments;
+                        } else { datas.comments = {}; }
 
-                    if (auth.isOwner(req, res)) {
-                        datas.userId = req.user.user_id;
-                        forumController.IsMyPost(board_id, post_id, req.user.user_id, function (result) {
-                            datas.disableUpdate = result ? "" : "disabled";
+                        if (auth.isOwner(req, res)) {
+                            datas.userId = req.user.user_id;
+                            forumController.IsMyPost(board_id, post_id, req.user.user_id, function (result) {
+                                datas.disableUpdate = result ? "" : "disabled";
+                                res.render('forums/post', datas);
+                            })
+                        }
+                        else {
+                            datas.userId = "userId";
+                            datas.disableUpdate = "disabled";
                             res.render('forums/post', datas);
-                        })
-                    }
-                    else {
-                        datas.userId = "userId";
-                        datas.disableUpdate = "disabled";
-                        res.render('forums/post', datas);
-                    }
-                })
-            }
-        })
+                        }
+                    })
+                }
+            })
+        });
     });
 });
 

@@ -3,6 +3,7 @@ var router = express.Router();
 var auth = require('../lib/auth');
 var cookie = require('cookie');
 const db = require('../config/DB');
+var indexController = require('../controllers/indexController');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -22,24 +23,16 @@ router.get('/', function(req, res, next) {
     var recentItems = cookies.recent_items;
     recentItemArr = recentItems.split(',');
 
-    var rItems = [];
-    for (var i = 0; i < recentItemArr.length; i++) {
-      var sql = "SELECT stock_code, stock_name from stocks WHERE stock_code = ?";
-      db.query(sql, recentItemArr[i], function (err, recentItem) {
-        if (err) throw err;
+    console.log(recentItemArr);
 
-        rItems.push({ stock_code: recentItem[0].stock_code, stock_name: recentItem[0].stock_name});
-        console.log(rItems);
-        
-        if (rItems.length == recentItemArr.length) {
-          if (auth.isOwner(req, res)) {
-            res.render('index', { userId: req.user.user_id, recentItems: rItems });
-          } else {
-            res.render('index', { recentItems: rItems });
-          }
-        }
-      })
-    }
+    indexController.GetRecentItems(recentItemArr, function(rItems) {
+      if (auth.isOwner(req, res)) {
+        res.render('index', { userId: req.user.user_id, recentItems: rItems });
+      } else {
+        res.render('index', { recentItems: rItems });
+      }
+    })
+
   }
 });
 

@@ -1,3 +1,4 @@
+const { post } = require('jquery');
 const db = require('../config/DB');
 const MAX_POST_LENGTH = 2;
 const PAGE_WINDOW_LENGTH = 3;
@@ -108,6 +109,16 @@ module.exports = {
         db.query(sql, params, function (err, result) {
             if (err) throw err;
             console.log("조회수 증가");
+            cb();
+        })
+    },
+    DayHit: function(board_id, post_id, cb) {
+        var sql = "INSERT INTO dayhit (board_id, post_id, hit_date, total_hit) " +
+                  "VALUES (?, ?, CURDATE(), 0) " +
+                  "ON DUPLICATE KEY UPDATE total_hit = total_hit + 1;" 
+        var params = [board_id, post_id];
+        db.query(sql, params, function (err, result) {
+            if (err) throw err;
             cb();
         })
     },

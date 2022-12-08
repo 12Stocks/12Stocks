@@ -5,6 +5,12 @@ const constants = require('../lib/constants');
 module.exports = { 
     GetRecentItems : function(recentItemArr, cb) {
         var sql = "";
+
+        if(recentItemArr.length == 0) {
+            cb(undefined);
+            return;
+        }
+        
         for (var i = 0; i < recentItemArr.length; i++) {
             var sub_sql = "SELECT stock_code, stock_name from stocks WHERE stock_code = ?; ";
             sql += mysql.format(sub_sql, recentItemArr[i]);

@@ -57,52 +57,104 @@ module.exports = {
         }
     },
 
-    ItemPrice: async function(req, res, next) {
-        await axios({
-            url: 'https://finance.naver.com/item/main.naver?code=' + req.params.item_code,
-            method: 'GET',
-            responseType: 'arraybuffer',
-        })
-        .then(response => {
-            try {
-                const content = iconv.decode(response.data, 'EUC-KR');
-                const $ = cheerio.load(content);
+    ItemPrice: async function(req, res) {
+        return new Promise(resolve => {
+            axios({
+                url: 'https://finance.naver.com/item/main.naver?code=' + req.params.item_code,
+                method: 'GET',
+                responseType: 'arraybuffer',
+            })
+            .then(response => {
+                try {
+                    const content = iconv.decode(response.data, 'EUC-KR');
+                    const $ = cheerio.load(content);
 
-                const $now = $("#chart_area > div.rate_info > div > p.no_today > em").children("span")[0];
-                const $closed = $("#chart_area > div.rate_info > table > tbody > tr:nth-child(1) > td.first > em").children("span")[0];
-                const $open = $("#chart_area > div.rate_info > table > tbody > tr:nth-child(2) > td.first > em").children("span")[0];
-                const $high = $("#chart_area > div.rate_info > table > tbody > tr:nth-child(1) > td:nth-child(2) > em").children("span")[0];
-                const $low = $("#chart_area > div.rate_info > table > tbody > tr:nth-child(2) > td:nth-child(2) > em:nth-child(2)").children("span")[0];
-                const $vol = $("#chart_area > div.rate_info > table > tbody > tr:nth-child(1) > td:nth-child(3) > em").children("span")[0];
-                const $val = $("#chart_area > div.rate_info > table > tbody > tr:nth-child(2) > td:nth-child(3) > em").children("span")[0];
+                    const $now = $("#chart_area > div.rate_info > div > p.no_today > em").children("span")[0];
+                    const $closed = $("#chart_area > div.rate_info > table > tbody > tr:nth-child(1) > td.first > em").children("span")[0];
+                    const $open = $("#chart_area > div.rate_info > table > tbody > tr:nth-child(2) > td.first > em").children("span")[0];
+                    const $high = $("#chart_area > div.rate_info > table > tbody > tr:nth-child(1) > td:nth-child(2) > em").children("span")[0];
+                    const $low = $("#chart_area > div.rate_info > table > tbody > tr:nth-child(2) > td:nth-child(2) > em:nth-child(2)").children("span")[0];
+                    const $vol = $("#chart_area > div.rate_info > table > tbody > tr:nth-child(1) > td:nth-child(3) > em").children("span")[0];
+                    const $val = $("#chart_area > div.rate_info > table > tbody > tr:nth-child(2) > td:nth-child(3) > em").children("span")[0];
 
-                let name = $("#middle > div.h_company > div.wrap_company > h2 > a").text();
-                let now = $($now).text();
-                let closed = $($closed).text();
-                let open = $($open).text();
-                let high = $($high).text();
-                let low = $($low).text();
-                let vol = $($vol).text();
-                let val = $($val).text();
+                    let name = $("#middle > div.h_company > div.wrap_company > h2 > a").text();
+                    let now = $($now).text();
+                    let closed = $($closed).text();
+                    let open = $($open).text();
+                    let high = $($high).text();
+                    let low = $($low).text();
+                    let vol = $($vol).text();
+                    let val = $($val).text();
 
-                var item_info = {
-                    code: req.params.item_code,
-                    name: name,
-                    now: now,
-                    closed: closed,
-                    open: open,
-                    high: high,
-                    low: low,
-                    vol: vol,
-                    val: val
+                    var item_info = {
+                        code: req.params.item_code,
+                        name: name,
+                        now: now,
+                        closed: closed,
+                        open: open,
+                        high: high,
+                        low: low,
+                        vol: vol,
+                        val: val
+                    }
+
+                    resolve(item_info);
+
+                } catch (err) {
+                    console.error(err);
                 }
+            })
+        }) 
+    },
 
-                req.itemInfo = item_info;
-                next();
-                
-            } catch (err) {
-                console.error(err);
+    PriceByDay: async function (req, res, next) {
+        var priceByDay = [];
+        return new Promise(resolve => { 
+            for (let i = 1; i < 31; i++) {
+                axios({
+                    url: `https://finance.naver.com/item/sise_day.naver?code=${req.params.item_code}&page=${i}`,
+                    method: 'GET',
+                    responseType: 'arraybuffer',
+                    headers: {'User-agent': 'Mozilla/5.0'}
+                })
+                .then(response => {
+                    try {
+                        const content = iconv.decode(response.data, 'EUC-KR');
+                        const $ = cheerio.load(content);
+
+                        for(var i = 3; i < 8; i++) {
+                            const $tr = $(`body > table.type2 > tbody > tr:nth-child(${i})`).children("td");
+                            let trArr = [];
+
+                            $tr.each(function (i, elm) {
+                                trArr.push($(this).find('span').text().trim());
+                            });
+                            trArr.push($tr.find('img').attr('alt'));
+                            priceByDay.push(trArr);
+                        }
+
+                        for (var i = 11; i < 16; i++) {
+                            const $tr = $(`body > table.type2 > tbody > tr:nth-child(${i})`).children("td");
+                            let trArr = [];
+
+                            $tr.each(function (i, elm) {
+                                trArr.push($(this).find('span').text().trim());
+                            });
+                            trArr.push($tr.find('img').attr('alt'));
+                            priceByDay.push(trArr);
+                        }
+
+                        if(priceByDay.length == 300) {
+                            console.log(priceByDay);
+                        }
+
+                        resolve();
+
+                    } catch (err) {
+                        console.error(err);
+                    }
+                })
             }
-        })
+        });
     }
 }

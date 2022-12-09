@@ -11,47 +11,48 @@ const sorting = async (array) => {
     return await array.sort((a, b) => b.total_val - a.total_val);
 }
 
-router.get('/:item_code', function (req, res) {
-    crawling.ItemPrice(req, res, function() {
-        /// 최근 조회 목록을 cookie값으로 저장, TODO : Refactoring ex. cookieController.js
-        if (req.headers.cookie !== undefined) {
-            var cookies = cookie.parse(req.headers.cookie);
-            if (cookies.recent_items == undefined) {
-                res.cookie('recent_items', req.params.item_code, { maxAge: 900000 });
-            }
-            else {
+router.get('/:item_code', async function (req, res) {
+    let itemPrice = await crawling.ItemPrice(req, res);
+    // this is for test
+    let pbd = await crawling.PriceByDay(req, res);
 
-                var recentItems = cookies.recent_items;
-                var recentItemArr = recentItems.split(',');
-
-                recentItemArr = recentItemArr.filter(item => item != req.params.item_code);
-
-                if (recentItemArr.length == 0) {
-                    recentItems = req.params.item_code;
-                }
-                else {
-                    if (recentItemArr.length >= constants.MAX_RECENT_ITEMS) recentItemArr.pop();
-                    recentItems = req.params.item_code + ',' + recentItemArr.join(',');
-                }
-
-                res.cookie('recent_items', recentItems, { maxAge: 900000 });
-            }
-        }
-        ///
-
-        if (auth.isOwner(req, res)) {
-            watchListController.FindInWatchList(req.user.user_id, req.params.item_code, 1, (exist) => {
-                if (exist) { // watchlist에 이미 있음
-                    res.render('stockItem', { userId: req.user.user_id, item: req.itemInfo, disabled: "disabled" });
-                } else { // watchlist에 없음
-                    res.render('stockItem', { userId: req.user.user_id, item: req.itemInfo, disabled: "" });
-                }
-            })
+    if (req.headers.cookie !== undefined) {
+        var cookies = cookie.parse(req.headers.cookie);
+        if (cookies.recent_items == undefined) {
+            res.cookie('recent_items', req.params.item_code, { maxAge: 900000 });
         }
         else {
-            res.render('stockItem', { item: req.itemInfo, disabled: "" });
+
+            var recentItems = cookies.recent_items;
+            var recentItemArr = recentItems.split(',');
+
+            recentItemArr = recentItemArr.filter(item => item != req.params.item_code);
+
+            if (recentItemArr.length == 0) {
+                recentItems = req.params.item_code;
+            }
+            else {
+                if (recentItemArr.length >= constants.MAX_RECENT_ITEMS) recentItemArr.pop();
+                recentItems = req.params.item_code + ',' + recentItemArr.join(',');
+            }
+
+            res.cookie('recent_items', recentItems, { maxAge: 900000 });
         }
-    })
+    }
+    ///
+
+    if (auth.isOwner(req, res)) {
+        watchListController.FindInWatchList(req.user.user_id, req.params.item_code, 1, (exist) => {
+            if (exist) { // watchlist에 이미 있음
+                res.render('stockItem', { userId: req.user.user_id, item: itemPrice, disabled: "disabled" });
+            } else { // watchlist에 없음
+                res.render('stockItem', { userId: req.user.user_id, item: itemPrice, disabled: "" });
+            }
+        })
+    }
+    else {
+        res.render('stockItem', { item: itemPrice, disabled: "" });
+    }
 });
 
 router.get('/:item_code/add_to_watchlist', function (req, res) {

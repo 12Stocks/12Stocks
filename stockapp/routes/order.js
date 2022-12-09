@@ -61,26 +61,25 @@ router.post('/search/:search_input', function (req, res) {
     });
 });
 
-router.get('/:item_code', function (req, res) {
-    crawling.ItemPrice(req, res, function () {
-        
-        var tickSize = orderController.GetTickSize(req.itemInfo.now);
-        var datas = { 
-            itemInfo: req.itemInfo, 
-            tickSize: tickSize,
-        };
-        
-        if(auth.isOwner(req, res)) {
-            orderController.GetOpenOrderList(req.user.user_id, function (openOrderList) {
-                datas.openOrderList = openOrderList;
-                datas.userId = req.user.user_id;
-            });
-            orderController.getConclusionList(req.user.user_id, function(conclusionList) {
-                datas.conclusionList = conclusionList;
-                res.render('order', datas);
-            });
-        }
-    });
+router.get('/:item_code', async function (req, res) {
+    let itemPrice = await crawling.ItemPrice(req, res);
+
+    var tickSize = orderController.GetTickSize(itemPrice.now);
+    var datas = {
+        itemInfo: itemPrice,
+        tickSize: tickSize,
+    };
+
+    if (auth.isOwner(req, res)) {
+        orderController.GetOpenOrderList(req.user.user_id, function (openOrderList) {
+            datas.openOrderList = openOrderList;
+            datas.userId = req.user.user_id;
+        });
+        orderController.getConclusionList(req.user.user_id, function (conclusionList) {
+            datas.conclusionList = conclusionList;
+            res.render('order', datas);
+        });
+    }
 });
 
 // buy : 0

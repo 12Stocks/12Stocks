@@ -4,6 +4,7 @@ var auth = require('../lib/auth');
 var watchListController = require('../controllers/watchListController'); 
 var cookie = require('cookie');
 var crawling = require('../crawling/crawling');
+const db = require('../config/DB');
 
 const MAX_RECENT_ITEMS = 5;
 
@@ -75,6 +76,20 @@ router.get('/:item_code/add_to_watchlist', function (req, res) {
     } else {
         res.redirect("/auth/loginRequired");
     }
+});
+
+router.get('/showBasicCandle/:item_code', function (req, res) {
+    let sql = "SELECT (UNIX_TIMESTAMP(s.DT)*1000) as T_MS, s.O_PRC, s.H_PRC, s.L_PRC, s.C_PRC, s.VOL " +
+                    "FROM stockapp.stock_prices as s WHERE s.STK_CD = ?"; 
+    
+    db.query(sql, [req.params.item_code], function (err, rows) {
+        if (err) throw err;
+        if (rows.length == 0) {
+            // 에러 페이지 리다이렉트 필요
+            console.log("Invalid stock code.");
+        }
+        res.render('showBasicCandle', {cData: rows});
+    });
 });
 
 module.exports = router;

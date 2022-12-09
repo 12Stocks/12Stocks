@@ -75,7 +75,6 @@ router.get('/:item_code', function (req, res) {
             tickSize: tickSize,
         };
         
-        // TODO : refactor all the other codes like this
         if(auth.isOwner(req, res)) {
             orderController.GetOpenOrderList(req.user.user_id, function (openOrderList) {
                 datas.openOrderList = openOrderList;
@@ -85,9 +84,6 @@ router.get('/:item_code', function (req, res) {
                 datas.conclusionList = conclusionList;
                 res.render('order', datas);
             });
-        }
-        else {
-            res.redirect('/auth/loginRequired');
         }
     });
 });

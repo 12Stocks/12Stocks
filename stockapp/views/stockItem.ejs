@@ -5,6 +5,7 @@
     <%-include('base/header.ejs') %>
 
     <title>stockItem</title>
+    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
 </head>
 
 <body>
@@ -17,23 +18,45 @@
     <p>저가 : <%= item.low %></p>
     <p>거래량 : <%= item.vol %></p>
     <p>거래대금 : <%= item.val %></p>
-    <button type='button' onclick="location.href='/markets/<%= item.code %>/add_to_watchlist'" <%= disabled %>><%= text %></button>
+    <button type='button' id="AddToWL" onclick="AddToWatchList()" <%= disabled %>>관심목록에 추가</button>
     <!-- 시간별 시세, 일별 시세 보여주는 탭  -->
     <button type='button' onclick="">시세</button>
     <button type='button' onclick="">차트</button>
     <button type='button' onclick="">뉴스</button>
     <button type='button' onclick="">기업정보</button>
     <button type='button' onclick="location.href='/forums/<%= item.code %>/1'">종목토론실</button>
-    <button type='button' onclick="location.href='/order/<%= item.code %>'">주문하기</button>
+    <button type='button' id="Order" onclick="location.href='/order/<%= item.code %>'">주문하기</button>
 
-    <div>
-        <p>시간별 시세</p>
-    </div>
-
-    <div>
-        <p>일별 시세</p>
-    </div>
-
+    <%-include('base/loginRequiredModal.ejs')%>
+    
     <%-include('base/footer.ejs')%>
 </body>
+
+<script>
+    function AddToWatchList() {
+        $.ajax({
+            url: '/markets/<%= item.code %>/add_to_watchlist',
+            dataType: 'json',
+            type: 'GET',
+            success: function (result) {
+                if (result.result) {
+                    $('#AddToWL').attr("disabled", true);
+                }
+                else {
+                    modal.style.display = "block";
+                }
+            }
+        })
+    }
+
+    var orderBtn = document.getElementById("Order");
+    orderBtn.onclick = function () {
+        if ('<%= isAuthenticated %>' == 'false') {
+            modal.style.display = "block";
+        } else {
+            window.location.href = '/portfolios';
+        }
+    }
+    
+</script>
 </html>

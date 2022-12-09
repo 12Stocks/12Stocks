@@ -68,12 +68,16 @@ router.get('/:item_code/post/:post_id/edit', function (req, res) {
                 })
             }
             else {
-                res.redirect('/');
+                res.send(`<script>
+                alert('내가 작성한 글이 아닙니다.');
+                location.href='/'; </script>`);
             }
         })
     }
     else {
-        res.redirect('/auth/loginRequired');
+        res.send(`<script>
+                alert('You are not allowed to access this page.');
+                location.href='/'; </script>`);
     }
 });
 
@@ -120,9 +124,7 @@ router.get('/:item_code/create', function (req, res) {
     if (auth.isOwner(req, res)) {
         datas.userId = req.user.user_id;
         res.render('forums/create', datas);
-    } else {
-        res.redirect('/auth/loginRequired');
-    }
+    } 
 });
 
 router.post('/:item_code/post/:post_id/create_comment', function (req, res) {
@@ -140,9 +142,7 @@ router.post('/:item_code/post/:post_id/create_comment', function (req, res) {
         forumController.CreateComment(board_id, post_id, req.user.user_id, post.content, function() {
             res.redirect(`/forums/${board_id}/post/${post_id}`);
         })
-    } else {
-        res.redirect('/auth/loginRequired');
-    }
+    } 
 });
 
 router.post('/:item_code/post/:post_id/delete_comment', function (req, res) {

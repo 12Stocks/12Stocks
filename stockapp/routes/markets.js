@@ -23,7 +23,6 @@ router.get('/', function (req, res) {
 });
 
 router.get('/:item_code', function (req, res) {
-    console.log(req);
     crawling.ItemPrice(req, res, function() {
         /// 최근 조회 목록을 cookie값으로 저장, TODO : Refactoring ex. cookieController.js
         if (req.headers.cookie !== undefined) {
@@ -54,14 +53,14 @@ router.get('/:item_code', function (req, res) {
         if (auth.isOwner(req, res)) {
             watchListController.FindInWatchList(req.user.user_id, req.params.item_code, 1, (exist) => {
                 if (exist) { // watchlist에 이미 있음
-                    res.render('stockItem', { userId: req.user.user_id, item: req.itemInfo, text: "관심목록에 추가됨", disabled: "disabled" });
+                    res.render('stockItem', { userId: req.user.user_id, item: req.itemInfo, disabled: "disabled" });
                 } else { // watchlist에 없음
-                    res.render('stockItem', { userId: req.user.user_id, item: req.itemInfo, text: "관심 목록에 추가", disabled: "" });
+                    res.render('stockItem', { userId: req.user.user_id, item: req.itemInfo, disabled: "" });
                 }
             })
         }
         else {
-            res.render('stockItem', { item: req.itemInfo, text: "관심 목록에 추가", disabled: "" });;
+            res.render('stockItem', { item: req.itemInfo, disabled: "" });
         }
     })
 });
@@ -69,10 +68,12 @@ router.get('/:item_code', function (req, res) {
 router.get('/:item_code/add_to_watchlist', function (req, res) {
     if (req.user) {
         watchListController.AddToWatchList(req.user.user_id, req.params.item_code, 1, function () {
-            res.redirect(`/markets/${req.params.item_code}`);
+            res.send({ result: true })
         });
     } else {
-        res.redirect("/auth/loginRequired");
+        console.log("You are not logged in, please login first");
+        // TODO change this to modal
+        res.send({ result: false })
     }
 });
 

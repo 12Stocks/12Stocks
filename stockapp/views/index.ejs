@@ -45,7 +45,7 @@
                         <li class="nav-item"><a class="nav-link" href="/users">회원조회</a></li>
                         <li class="nav-item"><a class="nav-link" href="/markets">시장</a></li>
                         <li class="nav-item"><a class="nav-link" href="">공지사항</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/portfolios">포트폴리오</a></li>
+                        <li class="nav-item"><a style="border: none" class="nav-link" id="portfolios" role="button">포트폴리오</a></li>
                         <% if(isAuthenticated){ %>
                         <li class="nav-item"><a class="nav-link" href="/userupdate/user_edit/<%= userId %>">나의 회원 정보 수정</a></li>
                         <% } %>
@@ -92,7 +92,7 @@
                 <div class="col-md-4 mb-5">
                     <div class="card h-100">
                         <div class="card-body">
-                            <h2 class="card-title">인기 게시글</h2>
+                            <h2 class="card-title">오늘의 인기 게시글</h2>
                             <hr>
                             <% for( var i in TrendingPosts ) { %>
                             <a class="card-text" href="/forums/<%= TrendingPosts[i].board_id %>/post/<%= TrendingPosts[i].post_id %>"><%= TrendingPosts[i].post_title %></a><br>
@@ -104,8 +104,19 @@
             </div>
         </div>
         <!-- Footer-->
+
+        <%-include('base/loginRequiredModal.ejs')%>
         <%-include('base/footer.ejs')%>
-
 </body>
+<script>
+    var btn = document.getElementById("portfolios");
 
+    btn.onclick = function () {
+        if('<%= isAuthenticated %>' == 'false') {
+            modal.style.display = "block";
+        } else {
+            window.location.href = '/portfolios';
+        }
+    }
+</script>
 </html>

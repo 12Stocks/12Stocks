@@ -9,9 +9,6 @@ router.get('/', function (req, res) {
             res.render('portfolios', { userId: req.user.user_id, watchlist: watchlist });
         });
     }
-    else {
-        res.redirect('/auth/loginRequired');
-    }
 });
 
 router.get('/:item_code/delete_from_watchlist', function (req, res) {

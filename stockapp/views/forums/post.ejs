@@ -77,7 +77,7 @@
           <input type="hidden" name="user_id" id="user_id" value="<%=''%>">
           <textarea class="form-control" id="content" name="content" required></textarea>
           <div class="d-grid d-md-flex justify-content-md-end my-2">
-            <button type="submit" class="btn btn-secondary shadow">댓글 쓰기</button>
+            <button type="submit" id="writeComment" class="btn btn-secondary shadow">댓글 쓰기</button>
           </div>
         </form>
       </div>
@@ -87,8 +87,17 @@
   </div>
   </div>
 
-    
+  <%-include('../base/loginRequiredModal.ejs')%>
   <%-include('../base/footer.ejs')%>
 
 </body>
+
+<script>
+  var btn = document.getElementById("writeComment");
+    btn.onclick = function () {
+      if ('<%= isAuthenticated %>' == 'false') {
+        modal.style.display = "block";
+      } 
+    }
+</script>
 </html>

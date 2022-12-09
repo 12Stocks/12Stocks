@@ -4,8 +4,22 @@
 <head>
     <%-include('base/header.ejs') %>
     <style>
-        table, th, td {
-            border: 1px solid black;
+        table {
+            border:solid black 1px;
+            border-radius:6px;
+            font-size: small;
+        }
+        
+        td, th {
+            text-align: left
+        }
+        
+        th {
+            text-align: center
+        }
+        
+        td:first-child, th:first-child {
+             border-left: none;
         }
     </style>
     <title>markets</title>

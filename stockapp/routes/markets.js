@@ -11,18 +11,6 @@ const sorting = async (array) => {
     return await array.sort((a, b) => b.total_val - a.total_val);
 }
 
-router.get('/', function (req, res) {
-    crawling.KOSPI200(req, res, async function() {
-        var rows = await sorting(req.kospi200);
-        if (auth.isOwner(req, res)) {
-            res.render('markets', { userId: req.user.user_id, stocks: rows });
-        }
-        else {
-            res.render('markets', { stocks: rows });
-        }
-    })
-});
-
 router.get('/:item_code', function (req, res) {
     crawling.ItemPrice(req, res, function() {
         /// 최근 조회 목록을 cookie값으로 저장, TODO : Refactoring ex. cookieController.js
@@ -78,6 +66,7 @@ router.get('/:item_code/add_to_watchlist', function (req, res) {
     }
 });
 
+
 router.get('/showBasicCandle/:item_code', function (req, res) {
     let sql = "SELECT (UNIX_TIMESTAMP(s.DT)*1000) as T_MS, s.O_PRC, s.H_PRC, s.L_PRC, s.C_PRC, s.VOL " +
                     "FROM stockapp.stock_prices as s WHERE s.STK_CD = ?"; 
@@ -89,6 +78,18 @@ router.get('/showBasicCandle/:item_code', function (req, res) {
             console.log("Invalid stock code.");
         }
         res.render('showBasicCandle', {cData: rows});
+    });
+});
+
+router.get('/', function (req, res) {
+    crawling.KOSPI200(req, res, async function () {
+        var rows = await sorting(req.kospi200);
+        if (auth.isOwner(req, res)) {
+            res.render('markets', { userId: req.user.user_id, stocks: rows });
+        }
+        else {
+            res.render('markets', { stocks: rows });
+        }
     });
 });
 

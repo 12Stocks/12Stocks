@@ -4,12 +4,23 @@
 <head>
     <title>12Stocks</title>
     <%-include('base/header.ejs') %>
-        <style>
-            .fakeimg {
-                height: 200px;
-                background: #aaa;
-            }
-        </style>
+    <style>
+        .fakeimg {
+            height: 200px;
+            background: #aaa;
+        }
+
+        /* this for scrolling view of auto completion */
+        .ui-autocomplete {
+            max-height: 200px;
+            overflow-y: auto;
+            width: 200px;
+        } 
+    </style>
+    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 </head>
 
 <body>
@@ -35,8 +46,8 @@
                 <div class="col-1"></div>
                 <div class="col-3 align-self-end">
                     <form class="d-flex">
-                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                        <button class="btn btn-outline-success" type="submit">Search</button>
+                        <input class="form-control me-2" id="searchInput" type="search" placeholder="Search" aria-label="Search" required>
+                        <button type="reset" btn btn-outline-success" id="search" onclick="searchClicked()">Search</button>
                     </form>
                 </div>
                 <!-- <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button> -->
@@ -118,5 +129,51 @@
             window.location.href = '/portfolios';
         }
     }
+
+    function searchClicked() {
+        var searchInput = $('#searchInput').val();
+        $.ajax({
+            url: '/order/search/' + searchInput,
+            type: 'POST',
+            success: function (result) {
+                if (result) {
+                    if (result.result == undefined) {
+                        alert("검색 결과 없음");
+                    } else {
+                        location.href = "/markets/" + result.result;
+                    }
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert("Fail " + textStatus + " - " + errorThrown);
+            },
+        })
+    }
+
+    $(document).ready(function () {
+        $('#searchInput').autocomplete({
+            source: function (req, res) {
+                $.ajax({
+                    url: '/order/search/auto_complete',
+                    dataType: 'json',
+                    type: 'GET',
+                    success: function (result) {
+                        res(
+                            $.map(result, function (item) {
+                                var inputLength = $('#searchInput').val().length;
+                                if ($('#searchInput').val().substring(0, inputLength) == item.label.substring(0, inputLength))
+                                    return item;
+                            })
+                        );
+                    }
+                })
+            },
+            delay: 0,
+            minLength: 1,
+        });
+
+        
+    });
+
 </script>
 </html>

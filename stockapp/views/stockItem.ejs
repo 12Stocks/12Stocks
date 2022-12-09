@@ -25,7 +25,7 @@
     <button type='button' onclick="">뉴스</button>
     <button type='button' onclick="">기업정보</button>
     <button type='button' onclick="location.href='/forums/<%= item.code %>/1'">종목토론실</button>
-    <button type='button' id="Order" onclick="location.href='/order/<%= item.code %>'">주문하기</button>
+    <button type='button' id="Order">주문하기</button>
 
     <%-include('base/loginRequiredModal.ejs')%>
     
@@ -54,7 +54,7 @@
         if ('<%= isAuthenticated %>' == 'false') {
             modal.style.display = "block";
         } else {
-            window.location.href = '/portfolios';
+            window.location.href = '/order/<%= item.code %>';
         }
     }
     

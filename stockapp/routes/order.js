@@ -18,7 +18,6 @@ router.get('/search/auto_complete', function(req, res) {
     });
 });
 
-
 router.post('/search/open_order', function (req, res) {
     var trader_id = req.body.trader_id;
     var stock_code = req.body.stock_code;
@@ -52,18 +51,14 @@ router.post('/search/:search_input', function (req, res) {
 
                 } else { // 이름으로 찾음
                     console.log("이름으로 찾음");
-                    res.redirect('/order/found/' + results_by_name[0].stock_code);
+                    res.send({ result: results_by_name[0].stock_code });
                 }
             })
         } else { // 코드로 찾음
             console.log("코드로 찾음");
-            res.redirect('/order/found/' + results_by_code[0].stock_code);
+            res.send({ result: results_by_code[0].stock_code });
         }
     });
-});
-
-router.get('/found/:item_code', function (req, res) {
-    res.send({ result: req.params.item_code });
 });
 
 router.get('/:item_code', function (req, res) {

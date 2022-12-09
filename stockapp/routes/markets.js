@@ -10,18 +10,6 @@ const sorting = async (array) => {
     return await array.sort((a, b) => b.total_val - a.total_val);
 }
 
-router.get('/', function (req, res) {
-    crawling.KOSPI200(req, res, async function() {
-        var rows = await sorting(req.kospi200);
-        if (auth.isOwner(req, res)) {
-            res.render('markets', { userId: req.user.user_id, stocks: rows });
-        }
-        else {
-            res.render('markets', { stocks: rows });
-        }
-    })
-});
-
 router.get('/:item_code', function (req, res) {
     crawling.ItemPrice(req, res, function() {
         /// 최근 조회 목록을 cookie값으로 저장, TODO : Refactoring ex. cookieController.js
@@ -75,6 +63,18 @@ router.get('/:item_code/add_to_watchlist', function (req, res) {
         // TODO change this to modal
         res.send({ result: false })
     }
+});
+
+router.get('/', function (req, res) {
+    crawling.KOSPI200(req, res, async function () {
+        var rows = await sorting(req.kospi200);
+        if (auth.isOwner(req, res)) {
+            res.render('markets', { userId: req.user.user_id, stocks: rows });
+        }
+        else {
+            res.render('markets', { stocks: rows });
+        }
+    })
 });
 
 module.exports = router;

@@ -3,70 +3,74 @@
 
 <head>
     <%-include('base/header.ejs') %>
-    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <style>
-        table, th, td {
-            border: 1px solid black;
+        table {
+            border:solid black 1px;
+            border-radius:6px;
+            font-size: small;
         }
-        #holding {width: 100%; text-align: center; padding: 20px; margin: 15px;}
-        #holdingDiv {display: inline-block; width: 50%; border: 1px solid black; font-size: large;}
-        .pageHeader {display: inline-block; width: 50%;}
-        table.type03 {width: 100%;}
-        table.type03 th, table.type03 tr{text-align: center; padding: 10px; margin: 15px;}
-        table.type03 td {padding: 20px; margin: 15px;}
-        span.userid {float: left; font: bold;}
+        
+        td, th {
+            text-align: left
+        }
+        
+        th {
+            text-align: center
+        }
+        
+        td:first-child, th:first-child {
+            border-left: none;
+        }
     </style>
     <title>markets</title>
 </head>
 
 <body>
     <%-include('base/navbarTop.ejs')-%>
-    <div id="holding">
-        <div class="pageHeader" id="pageHeader">
-            <span class="userid">
-                <strong><%= userId %></strong>
-            </span>
-        </div>
-        <div id="holdingDiv">
-            <div id="items">
-                <table class="type03">
+
+    <div class="container">
+        <h1>보유 주식</h1>
+        <p><%= userId%><p>
+        <hr>
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-12">
+                <table class="table table-striped table-hover table-bordered align-middle shadow">
                     <thead>
-                        <th>#</th>
-                        <th>종목명</th>
-                        <th>현재가</th>
-                        <th>전일비</th>
-                        <th>등락률</th>
-                        <th>거래량</th>
-                        <th>거래대금</th>
+                        <tr>
+                            <th>#</th>
+                            <th>종목명</th>
+                            <th>현재가</th>
+                            <th>보유수량</th>
+                            <th>총 금액</th>
+                            <th>수익률</th>
+                        </tr>
                     </thead>
-    
-                    <tbody>
-                        <%
-                        for(var i = 1; i <= 3; i++) {
-                            prc = prc + 200; 
-                            %>
+                    <tbody class="table-group-divider">
+                        <% for( var i in stocks ) { %>
                             <tr>
-                                <td><%= i%></td>
-                                <td>삼성전자</td>
-                                <td class="cp" id="cp"><%= prc.toLocaleString('ko-KR') %></td>
-                                <td>+200</td>
-                                <td>+0.5%</td>
-                                <td>8393033</td>
-                                <td>14302923223</td>
-                            </tr><%
-                        } %>
+                                <td><a href="/markets/<%= stocks[i].code %>"><%= stocks[i].name %></a></td>
+                                <td><%= stocks[i].now_val %></td>
+                                <% if(stocks[i].s){ %>
+                                    <td>+<%= stocks[i].chg %></td>
+                                <% } else { %>
+                                    <td>-<%= stocks[i].chg %></td>
+                                <% } %>
+                                <td><%= stocks[i].chgp %></td>
+                                <td><%= stocks[i].vol %></td>
+                                <td><%= stocks[i].trading_val %></td>
+                                <td><%= stocks[i].total_val %></td>
+                            </tr>
+                        <% } %>
                     </tbody>
                 </table>
             </div>
         </div>
+
     </div>
+
+
     <%-include('base/footer.ejs')%>
+    
 </body>
-<script>
-    setInterval(function() {
-        $("#holdingDiv").fadeOut(1).load(location + " #items").fadeIn(1500);
-    }, 5000);
-</script>
+
 </html>

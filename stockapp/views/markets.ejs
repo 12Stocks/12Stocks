@@ -4,8 +4,22 @@
 <head>
     <%-include('base/header.ejs') %>
     <style>
-        table, th, td {
-            border: 1px solid black;
+        table {
+            border:solid black 1px;
+            border-radius:6px;
+            font-size: small;
+        }
+        
+        td, th {
+            text-align: left
+        }
+        
+        th {
+            text-align: center
+        }
+        
+        td:first-child, th:first-child {
+            border-left: none;
         }
     </style>
     <title>markets</title>
@@ -14,34 +28,47 @@
 <body>
     <%-include('base/navbarTop.ejs')-%>
 
-    <h1>금융 시장</h1>
-    <p>코스피200<p>
-    <table>
-        <tr>
-            <th>종목</th>
-            <th>현재가</th>
-            <th>전일비</th>
-            <th>등락률</th>
-            <th>거래량</th>
-            <th>거래대금(백만)</th>
-            <th>시가총액(억)</th>
-        </tr>
-        <% for( var i in stocks ) { %>
-            <tr>
-                <td><a href="/markets/<%= stocks[i].code %>"><%= stocks[i].name %></a></td>
-                <td><%= stocks[i].now_val %></td>
-                <% if(stocks[i].s){ %>
-                    <td>+<%= stocks[i].chg %></td>
-                <% } else { %>
-                    <td>-<%= stocks[i].chg %></td>
-                <% } %>
-                <td><%= stocks[i].chgp %></td>
-                <td><%= stocks[i].vol %></td>
-                <td><%= stocks[i].trading_val %></td>
-                <td><%= stocks[i].total_val %></td>
-            </tr>
-        <% } %>
-    </table>
+    <div class="container">
+        <h1>금융 시장</h1>
+        <p>코스피200<p>
+        <hr>
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-12">
+                <table class="table table-striped table-hover table-bordered align-middle shadow">
+                    <thead>
+                        <tr>
+                            <th>종목</th>
+                            <th>현재가</th>
+                            <th>전일비</th>
+                            <th>등락률</th>
+                            <th>거래량</th>
+                            <th>거래대금(백만)</th>
+                            <th>시가총액(억)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-group-divider">
+                        <% for( var i in stocks ) { %>
+                            <tr>
+                                <td><a href="/markets/<%= stocks[i].code %>"><%= stocks[i].name %></a></td>
+                                <td><%= stocks[i].now_val %></td>
+                                <% if(stocks[i].s){ %>
+                                    <td>+<%= stocks[i].chg %></td>
+                                <% } else { %>
+                                    <td>-<%= stocks[i].chg %></td>
+                                <% } %>
+                                <td><%= stocks[i].chgp %></td>
+                                <td><%= stocks[i].vol %></td>
+                                <td><%= stocks[i].trading_val %></td>
+                                <td><%= stocks[i].total_val %></td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
 
     <%-include('base/footer.ejs')%>
     

@@ -18,7 +18,6 @@ router.get('/search/auto_complete', function(req, res) {
     });
 });
 
-
 router.post('/search/open_order', function (req, res) {
     var trader_id = req.body.trader_id;
     var stock_code = req.body.stock_code;
@@ -52,44 +51,35 @@ router.post('/search/:search_input', function (req, res) {
 
                 } else { // 이름으로 찾음
                     console.log("이름으로 찾음");
-                    res.redirect('/order/found/' + results_by_name[0].stock_code);
+                    res.send({ result: results_by_name[0].stock_code });
                 }
             })
         } else { // 코드로 찾음
             console.log("코드로 찾음");
-            res.redirect('/order/found/' + results_by_code[0].stock_code);
+            res.send({ result: results_by_code[0].stock_code });
         }
     });
 });
 
-router.get('/found/:item_code', function (req, res) {
-    res.send({ result: req.params.item_code });
-});
+router.get('/:item_code', async function (req, res) {
+    let itemPrice = await crawling.ItemPrice(req, res);
 
-router.get('/:item_code', function (req, res) {
-    crawling.ItemPrice(req, res, function () {
-        
-        var tickSize = orderController.GetTickSize(req.itemInfo.now);
-        var datas = { 
-            itemInfo: req.itemInfo, 
-            tickSize: tickSize,
-        };
-        
-        // TODO : refactor all the other codes like this
-        if(auth.isOwner(req, res)) {
-            orderController.GetOpenOrderList(req.user.user_id, function (openOrderList) {
-                datas.openOrderList = openOrderList;
-                datas.userId = req.user.user_id;
-            });
-            orderController.getConclusionList(req.user.user_id, function(conclusionList) {
-                datas.conclusionList = conclusionList;
-                res.render('order', datas);
-            });
-        }
-        else {
-            res.redirect('/auth/loginRequired');
-        }
-    });
+    var tickSize = orderController.GetTickSize(itemPrice.now);
+    var datas = {
+        itemInfo: itemPrice,
+        tickSize: tickSize,
+    };
+
+    if (auth.isOwner(req, res)) {
+        orderController.GetOpenOrderList(req.user.user_id, function (openOrderList) {
+            datas.openOrderList = openOrderList;
+            datas.userId = req.user.user_id;
+        });
+        orderController.getConclusionList(req.user.user_id, function (conclusionList) {
+            datas.conclusionList = conclusionList;
+            res.render('order', datas);
+        });
+    }
 });
 
 // buy : 0

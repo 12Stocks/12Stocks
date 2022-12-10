@@ -61,24 +61,6 @@ module.exports = function (app) {
                     return done(null, user);
                 }
             });
-
-            /*
-            console.log('LocalStrategy', username, password);
-            if (username === authData.userId) {
-                if (password === authData.password) {
-                    return done(null, authData);
-                    // authData는 serialize user의 cb함수의 첫번째인자로 주입됨
-                } else {
-                    return done(null, false, {
-                        message: 'Incorrect password.'
-                    });
-                }
-            } else {
-                return done(null, false, {
-                    message: 'Incorrect userId.'
-                });
-            }
-            */
         }
     ));
     return passport;

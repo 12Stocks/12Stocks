@@ -4,36 +4,138 @@
 <head>
     <%-include('base/header.ejs') %>
 
+    <style>
+      table {
+        font-size: small;
+      }
+        .chart {
+            display:block; 
+        }
+    </style>
+
+    <script>
+        function resizeIframe(obj) {
+            obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + 'px';
+          }  
+    </script>
+
     <title>stockItem</title>
+    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
 </head>
 
 <body>
     <%-include('base/navbarTop.ejs')-%>
-    <h1><%= item.name %></h1>
-    <p>현재가 : <%= item.now %></p>
-    <p>전일 종가 : <%= item.closed %></p>
-    <p>시가 : <%= item.open %></p>
-    <p>고가 : <%= item.high %></p>
-    <p>저가 : <%= item.low %></p>
-    <p>거래량 : <%= item.vol %></p>
-    <p>거래대금 : <%= item.val %></p>
-    <button type='button' onclick="location.href='/markets/<%= item.code %>/add_to_watchlist'" <%= disabled %>><%= text %></button>
-    <!-- 시간별 시세, 일별 시세 보여주는 탭  -->
-    <button type='button' onclick="">시세</button>
-    <button type='button' onclick="">차트</button>
-    <button type='button' onclick="">뉴스</button>
-    <button type='button' onclick="">기업정보</button>
-    <button type='button' onclick="location.href='/forums/<%= item.code %>/1'">종목토론실</button>
-    <button type='button' onclick="location.href='/order/<%= item.code %>'">주문하기</button>
 
-    <div>
-        <p>시간별 시세</p>
+    <% let tRow = [
+      ["현재가", item.now],
+      ["전일 종가", item.closed],
+      ["시가", item.open],
+      ["고가", item.high],
+      ["저가", item.low],
+      ["거래량", item.vol],
+      ["거래대금", item.val],
+    ]; %> 
+
+    <div class="container col-8 py-3">
+      <div class="row justify-content-center p-3">
+          <!-- 종목 소개 -->
+          <div class="col-10 align-self-start p-3">
+            <div class="card mb-4 border border-4">
+              <div class="card-body">
+                <blockquote class="blockquote mb-0">
+                  <h1 class="text-center"><%= item.name %></h1>
+                  <footer class="blockquote-footer">종목코드: <%= item.code %></footer>
+                </blockquote>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <!-- 네비게이션 바 -->
+            <div class="container-sm p-2">
+              <ul class="nav nav-tabs">
+                <li class="nav-item">
+                  <a class="nav-link active" aria-current="page" href="#">시세</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#">차트</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="/forums/<%= item.code %>/1">게시판</a>
+                </li>
+              </ul>
+            </div>
+
+            <div class="row justify-content-center align-items-center gx-3">
+                <div class="col-lg-9 col-md-12">
+                    <iframe src="/markets/showBasicCandle/<%= item.code %>" style="width: 100%;" frameborder="0" scrolling="no" onload="resizeIframe(this)">
+                        <p>현재 사용 중인 브라우저는 iframe 요소를 지원하지 않습니다!</p>
+                    </iframe>
+                </div>
+              <div class="col-3">
+                <div class="table-responsive">
+                  <table class="table border">
+                    <tbody>
+                      <% for( let i in tRow ) { %>
+                        <tr class="">
+                          <td class="table-secondary" scope="row"><%= tRow[i][0] %></td>
+                          <td><%= tRow[i][1] %></td>
+                        </tr>
+                      <% } %> 
+                    </tbody>
+                  </table>
+                </div>
+                
+              </div>
+            </div>
+            <button type='button' id="AddToWL" onclick="AddToWatchList()" <%= disabled %>>관심목록에 추가</button>
+            <!-- 시간별 시세, 일별 시세 보여주는 탭  -->
+            <button type='button' onclick="">시세</button>
+            <button type='button' onclick="">차트</button>
+            <button type='button' onclick="">뉴스</button>
+            <button type='button' onclick="">기업정보</button>
+            <button type='button' id="Order">주문하기</button>
+        
+            <div>
+                <p>시간별 시세</p>
+            </div>
+        
+            <div>
+                <p>일별 시세</p>
+            </div>
+  
+          </div>
+      </div>
     </div>
-
-    <div>
-        <p>일별 시세</p>
-    </div>
-
+  
+    <%-include('base/loginRequiredModal.ejs')%>
     <%-include('base/footer.ejs')%>
 </body>
+
+<script>
+    function AddToWatchList() {
+        $.ajax({
+            url: '/markets/<%= item.code %>/add_to_watchlist',
+            dataType: 'json',
+            type: 'GET',
+            success: function (result) {
+                if (result.result) {
+                    $('#AddToWL').attr("disabled", true);
+                }
+                else {
+                    modal.style.display = "block";
+                }
+            }
+        })
+    }
+
+    var orderBtn = document.getElementById("Order");
+    orderBtn.onclick = function () {
+        if ('<%= isAuthenticated %>' == 'false') {
+            modal.style.display = "block";
+        } else {
+            window.location.href = '/order/<%= item.code %>';
+        }
+    }
+    
+</script>
 </html>

@@ -1,0 +1,28 @@
+<link rel="stylesheet" href="/stylesheets/modal.css">
+
+<div id="loginRequiredModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Login Required</h2>
+            <span class="close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p>로그인이 필요한 기능입니다.</p>
+            <button onclick="location.href='/auth/login'">Login</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    var modal = document.getElementById("loginRequiredModal");
+    var span = document.getElementsByClassName("close")[0];
+    span.onclick = function () {
+        modal.style.display = "none";
+    }
+
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>

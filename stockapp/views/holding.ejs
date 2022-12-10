@@ -30,7 +30,7 @@
 
     <div class="container">
         <h1>보유 주식</h1>
-        <p><%= userId%><p>
+        <p><strong><%= userId%></strong><p>
         <hr>
         <div class="row justify-content-center">
             <div class="col-lg-8 col-md-12">
@@ -41,26 +41,21 @@
                             <th>종목명</th>
                             <th>현재가</th>
                             <th>보유수량</th>
-                            <th>총 금액</th>
+                            <th>총 금액 (만)</th>
                             <th>수익률</th>
                         </tr>
                     </thead>
                     <tbody class="table-group-divider">
-                        <% for( var i in stocks ) { %>
-                            <tr>
-                                <td><a href="/markets/<%= stocks[i].code %>"><%= stocks[i].name %></a></td>
-                                <td><%= stocks[i].now_val %></td>
-                                <% if(stocks[i].s){ %>
-                                    <td>+<%= stocks[i].chg %></td>
-                                <% } else { %>
-                                    <td>-<%= stocks[i].chg %></td>
-                                <% } %>
-                                <td><%= stocks[i].chgp %></td>
-                                <td><%= stocks[i].vol %></td>
-                                <td><%= stocks[i].trading_val %></td>
-                                <td><%= stocks[i].total_val %></td>
-                            </tr>
-                        <% } %>
+                        <% for(var i = 0; i < holdings.length; i++) { 
+                            var rate = (1 - (holdings[i].price) / (59800 * holdings[i].shares)).toFixed(2);
+                            var op = rate < 0 ? '-' : '+'; %>
+                            <td><%= i+1 %></td>
+                            <td><a href="/markets/<%=holdings[i].stock_code%>"><%= holdings[i].stock_name %></a></td>
+                            <td>59800</td>
+                            <td><%= holdings[i].shares %></td>
+                            <td><%= holdings[i].price / 10000 %></td>
+                            <td><%= op%><%= rate %> </td> <%
+                        } %>
                     </tbody>
                 </table>
             </div>

@@ -9,8 +9,13 @@ var indexController = require('../controllers/indexController');
 router.get('/', function(req, res, next) {
   var datas = {}; 
   var recentItemArr = [];
+  let cookies = {};
 
-  var cookies = cookie.parse(req.headers.cookie);
+  // 쿠키가 아직 등록이 되어 있지 않은 상태에서 발생하는
+  // "argument str must be a string" 에러 해결
+  if (req.headers.cookie){ 
+    cookies = cookie.parse(req.headers.cookie);
+  }
 
   if (cookies.recent_items != undefined) {
     var recentItems = cookies.recent_items;

@@ -24,7 +24,7 @@ module.exports = {
         });
     },
     FindAllWatchList: function(id, watchlist_id, cb) {
-        let sql = "SELECT * FROM watchlists WHERE user_id = ? AND watchlist_id = ?";
+        let sql = "SELECT w.*, s.stock_name FROM (SELECT * FROM watchlists WHERE user_id = ? AND watchlist_id = ?) as w INNER JOIN stocks as s WHERE w.stock_code = s.stock_code" ;
         db.query(sql, [id, watchlist_id], function (err, watchlist) {
             if (err) throw err;
             console.log("관심목록 조회");

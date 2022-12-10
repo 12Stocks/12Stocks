@@ -1,9 +1,7 @@
 var express = require('express')
 var router = express.Router();
 var auth = require('../lib/auth');
-var watchListController = require('../controllers/watchListController'); 
 var cookie = require('cookie');
-var crawling = require('../crawling/crawling');
 
 router.get('/', function(req, res) {
     if (auth.isOwner(req, res)) {

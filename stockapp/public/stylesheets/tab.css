@@ -4,7 +4,7 @@ body {
 
 /* Style the tab */
 .tab {
-    width: 500px;
+    width: 100%;
     overflow: hidden;
     border: 1px solid rgb(34, 34, 34);
     background-color: #f1f1f1;
@@ -34,7 +34,8 @@ body {
 
 /* Style the tab content */
 .tab1content {
-    width: 500px;
+    min-height: 250px;
+    width: 100%;
     display: none;
     padding: 6px 12px;
     border: 1px solid rgb(0, 0, 0);
@@ -43,7 +44,8 @@ body {
 
 /* Style the tab content */
 .tab2content {
-    width: 500px;
+    min-height: 250px;
+    width: 100%;
     display: none;
     padding: 6px 12px;
     border: 1px solid rgb(0, 0, 0);

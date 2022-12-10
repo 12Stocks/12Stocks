@@ -13,6 +13,7 @@
         <label><%= watchlist[i].stock_code %></label>
         <button onclick="location.href='/portfolios/<%= watchlist[i].stock_code %>/delete_from_watchlist'" >관심목록에서 제거</button><br>
         <% } %>
+
         <%-include('base/footer.ejs')%>
     </body>
 </html>

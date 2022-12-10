@@ -1,10 +1,8 @@
+const { post } = require('jquery');
 const db = require('../config/DB');
-const MAX_POST_LENGTH = 2;
-const PAGE_WINDOW_LENGTH = 3;
+const constants = require('../lib/constants');
 
 module.exports = { 
-    MAX_POST_LENGTH: MAX_POST_LENGTH,
-    PAGE_WINDOW_LENGTH: PAGE_WINDOW_LENGTH,
     CreatePost: function(board_id, post_title, post_content, author_id, cb) {
         var sql = "INSERT INTO posts (board_id, post_id, post_title, post_content, author_id, reg_date) " 
                 + "VALUES(?, COALESCE((SELECT post_id FROM(SELECT MAX(post_id) as post_id FROM posts WHERE board_id = ? GROUP BY board_id) as tmp), 0) + 1, " 
@@ -44,22 +42,22 @@ module.exports = {
     GetPostListByPage: function (board_id, current_page_num, cb) {
         this.GetTotalPostNum(board_id, function (total_post_num) {
             var sql = "SELECT post_id, post_title, reg_date, hit FROM posts WHERE board_id = ? ORDER BY post_id DESC LIMIT ?, ?;";
-            var remain_post_num = total_post_num % MAX_POST_LENGTH;
+            var remain_post_num = total_post_num % constants.MAX_POST_LENGTH;
             var max_page_num;
 
-            if(total_post_num) max_page_num = Math.floor(total_post_num / MAX_POST_LENGTH) + (remain_post_num == 0 ? 0 : 1);
+            if (total_post_num) max_page_num = Math.floor(total_post_num / constants.MAX_POST_LENGTH) + (remain_post_num == 0 ? 0 : 1);
             else max_page_num = 1;
 
             var page_num = Math.min(current_page_num, max_page_num);
-            var start_index = (page_num - 1) * MAX_POST_LENGTH;
+            var start_index = (page_num - 1) * constants.MAX_POST_LENGTH;
 
             var page_post_num;
             if(page_num == max_page_num) {
-                if (remain_post_num == 0 && total_post_num != 0) page_post_num = MAX_POST_LENGTH;
+                if (remain_post_num == 0 && total_post_num != 0) page_post_num = constants.MAX_POST_LENGTH;
                 else if (remain_post_num == 0 && total_post_num == 0) page_post_num = 0;
-                else page_post_num = total_post_num % MAX_POST_LENGTH;
+                else page_post_num = total_post_num % constants.MAX_POST_LENGTH;
             } else {
-                page_post_num = MAX_POST_LENGTH;
+                page_post_num = constants.MAX_POST_LENGTH;
             }
 
             db.query(sql, [board_id, start_index, start_index + page_post_num], function (err, postList) {
@@ -108,6 +106,16 @@ module.exports = {
         db.query(sql, params, function (err, result) {
             if (err) throw err;
             console.log("조회수 증가");
+            cb();
+        })
+    },
+    DayHit: function(board_id, post_id, cb) {
+        var sql = "INSERT INTO dayhit (board_id, post_id, hit_date, total_hit) " +
+                  "VALUES (?, ?, CURDATE(), 0) " +
+                  "ON DUPLICATE KEY UPDATE total_hit = total_hit + 1;" 
+        var params = [board_id, post_id];
+        db.query(sql, params, function (err, result) {
+            if (err) throw err;
             cb();
         })
     },

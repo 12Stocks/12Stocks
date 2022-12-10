@@ -2,7 +2,7 @@ var express = require('express')
 var router = express.Router();
 var auth = require('../lib/auth');
 var forumController = require('../controllers/forumController');
-const { post } = require('jquery');
+const constants = require('../lib/constants');
 
 router.get('/:item_code/post/:post_id', function (req, res) {
     var datas = {
@@ -13,34 +13,36 @@ router.get('/:item_code/post/:post_id', function (req, res) {
     var post_id = req.params.post_id;
 
     forumController.Hit(board_id, post_id, function () {
-        forumController.GetPostData(board_id, post_id, function(postData) {
-            if(postData.length > 0) {
-                datas.postId = postData[0].post_id;
-                datas.title = postData[0].post_title;
-                datas.content = postData[0].post_content;
-                datas.authorId = postData[0].author_id;
-                datas.regDate = postData[0].reg_date;
+        forumController.DayHit(board_id, post_id, function () {
+            forumController.GetPostData(board_id, post_id, function (postData) {
+                if (postData.length > 0) {
+                    datas.postId = postData[0].post_id;
+                    datas.title = postData[0].post_title;
+                    datas.content = postData[0].post_content;
+                    datas.authorId = postData[0].author_id;
+                    datas.regDate = postData[0].reg_date;
 
-                forumController.GetComments(board_id, post_id, function (comments) {
-                    if (comments.length > 0) {
-                        datas.comments = comments; 
-                    } else { datas.comments = {}; }
+                    forumController.GetComments(board_id, post_id, function (comments) {
+                        if (comments.length > 0) {
+                            datas.comments = comments;
+                        } else { datas.comments = {}; }
 
-                    if (auth.isOwner(req, res)) {
-                        datas.userId = req.user.user_id;
-                        forumController.IsMyPost(board_id, post_id, req.user.user_id, function (result) {
-                            datas.disableUpdate = result ? "" : "disabled";
+                        if (auth.isOwner(req, res)) {
+                            datas.userId = req.user.user_id;
+                            forumController.IsMyPost(board_id, post_id, req.user.user_id, function (result) {
+                                datas.disableUpdate = result ? "" : "disabled";
+                                res.render('forums/post', datas);
+                            })
+                        }
+                        else {
+                            datas.userId = "userId";
+                            datas.disableUpdate = "disabled";
                             res.render('forums/post', datas);
-                        })
-                    }
-                    else {
-                        datas.userId = "userId";
-                        datas.disableUpdate = "disabled";
-                        res.render('forums/post', datas);
-                    }
-                })
-            }
-        })
+                        }
+                    })
+                }
+            })
+        });
     });
 });
 
@@ -66,12 +68,16 @@ router.get('/:item_code/post/:post_id/edit', function (req, res) {
                 })
             }
             else {
-                res.redirect('/');
+                res.send(`<script>
+                alert('내가 작성한 글이 아닙니다.');
+                location.href='/'; </script>`);
             }
         })
     }
     else {
-        res.redirect('/auth/loginRequired');
+        res.send(`<script>
+                alert('You are not allowed to access this page.');
+                location.href='/'; </script>`);
     }
 });
 
@@ -118,9 +124,7 @@ router.get('/:item_code/create', function (req, res) {
     if (auth.isOwner(req, res)) {
         datas.userId = req.user.user_id;
         res.render('forums/create', datas);
-    } else {
-        res.redirect('/auth/loginRequired');
-    }
+    } 
 });
 
 router.post('/:item_code/post/:post_id/create_comment', function (req, res) {
@@ -138,9 +142,7 @@ router.post('/:item_code/post/:post_id/create_comment', function (req, res) {
         forumController.CreateComment(board_id, post_id, req.user.user_id, post.content, function() {
             res.redirect(`/forums/${board_id}/post/${post_id}`);
         })
-    } else {
-        res.redirect('/auth/loginRequired');
-    }
+    } 
 });
 
 router.post('/:item_code/post/:post_id/delete_comment', function (req, res) {
@@ -188,7 +190,7 @@ router.get('/:item_code/:page_num', function (req, res) {
             forumController.GetPostListByPage(board_id, current_page_num, function (postList, page_post_num, max_page_num) {
                 
                 var pageStartIndex, pageLastIndex;
-                var pwl = forumController.PAGE_WINDOW_LENGTH;
+                var pwl = constants.PAGE_WINDOW_LENGTH;
 
                 if (pwl < max_page_num) {
                     if(current_page_num + Math.floor(pwl / 2) >= max_page_num) {

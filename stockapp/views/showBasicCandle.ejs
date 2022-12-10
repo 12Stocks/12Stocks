@@ -1,0 +1,43 @@
+<!-- https://www.highcharts.com/demo/stock/hollow-candlestick -->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        #container {
+            height: 100%;
+            min-width: 165px;
+        }
+    </style>
+    <title>markets</title>
+    <script src="https://code.highcharts.com/stock/highstock.js"></script>
+    <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/stock/modules/hollowcandlestick.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+</head>
+
+<body>
+    <div id="container"></div>
+<script>
+    const cvtChartData = (rows) => {
+        // data = [ [time(ms), open, high, low, close, volume], ... ]
+        return rows.map(row => {return Object.values(row);});  
+    }
+    const chartData = <%- JSON.stringify(cData) %>;
+    Highcharts.stockChart('container', {
+        rangeSelector: {
+            selected: 1
+        },
+        navigator: {
+            series: {
+                color: Highcharts.getOptions().colors[0]
+            }
+        },
+        series: [{
+            type: 'hollowcandlestick',
+            name: 'Hollow Candlestick',
+            data: cvtChartData(chartData),
+        }]
+    });
+</script>
+</html>

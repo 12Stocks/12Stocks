@@ -57,7 +57,7 @@
                   <a class="nav-link active" aria-current="page" href="#">시세</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="#">차트</a>
+                  <button type='button' class="nav-link" href="#" id="Order">주문</button>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" href="/forums/<%= item.code %>/1">게시판</a>
@@ -89,12 +89,7 @@
             </div>
             <button type='button' id="AddToWL" onclick="AddToWatchList()" <%= disabled %>>관심목록에 추가</button>
             <!-- 시간별 시세, 일별 시세 보여주는 탭  -->
-            <button type='button' onclick="">시세</button>
-            <button type='button' onclick="">차트</button>
-            <button type='button' onclick="">뉴스</button>
-            <button type='button' onclick="">기업정보</button>
-            <button type='button' id="Order">주문하기</button>
-        
+                    
             <div>
                 <p>시간별 시세</p>
             </div>

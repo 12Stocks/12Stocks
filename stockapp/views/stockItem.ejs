@@ -11,6 +11,9 @@
         .chart {
             display:block; 
         }
+        .btn.btn-primary:disabled{
+            background-color: #a6a9a685;
+        }
     </style>
 
     <script>
@@ -66,6 +69,14 @@
             </div>
 
             <div class="row justify-content-center align-items-center gx-3">
+                <div class="row justify-content-end">
+                    <div class="col-2 px-0">
+                        <button class="btn btn-primary border-0 text-nowrap" type='button' id="AddToWL" onclick="AddToWatchList()" <%= disabled %> style="font-size: 12px;">
+                                관심목록에 추가
+                        </button>
+                    </div>
+                </div>
+
                 <div class="col-lg-9 col-md-12">
                     <iframe src="/markets/showBasicCandle/<%= item.code %>" style="width: 100%;" frameborder="0" scrolling="no" onload="resizeIframe(this)">
                         <p>현재 사용 중인 브라우저는 iframe 요소를 지원하지 않습니다!</p>
@@ -87,17 +98,8 @@
                 
               </div>
             </div>
-            <button type='button' id="AddToWL" onclick="AddToWatchList()" <%= disabled %>>관심목록에 추가</button>
             <!-- 시간별 시세, 일별 시세 보여주는 탭  -->
-                    
-            <div>
-                <p>시간별 시세</p>
-            </div>
-        
-            <div>
-                <p>일별 시세</p>
-            </div>
-  
+                      
           </div>
       </div>
     </div>

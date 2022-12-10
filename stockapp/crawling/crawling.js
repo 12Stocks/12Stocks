@@ -156,5 +156,45 @@ module.exports = {
                 })
             }
         });
+    },
+
+    curPrice : async function(req, res, next) {
+        var curP = {};
+        return new Promise(resolve => { 
+            for (let i = 1; i < 21; i++) {
+                axios({
+                    url: 'https://finance.naver.com/sise/entryJongmok.naver?&page=' + i,
+                    method: 'GET',
+                    responseType: 'arraybuffer',
+                })
+                .then(response => {
+                    try {
+                        const content = iconv.decode(response.data, 'EUC-KR');
+                        const $ = cheerio.load(content);
+                        const $bodyList = $("div.box_type_m table.type_1 tbody").children('tr');
+    
+                        $bodyList.each(function (i, elm) {
+                            let c_name = $(this).find('td.ctg').text();
+                            let link = $(this).find('td.ctg').find('a').attr('href');
+                            let now = $(this).find('td.number_2')[0];
+                            let s = $(this).find('td.rate_down2').find('img').attr('alt') == "상승" ? 1 : 0;
+    
+                            if (typeof (link) == 'string')
+                                link = link.split('=')[1];
+    
+                            curP[c_name] = {
+                                now_val : $(now).text(),
+                                s : s,
+                            };
+                        });
+                        console.log(curP);
+                        resolve();
+
+                    } catch (err) {
+                        console.error(err);
+                    }
+                })
+            }
+        });
     }
 }

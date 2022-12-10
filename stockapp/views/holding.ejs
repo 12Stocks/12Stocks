@@ -47,14 +47,17 @@
                     </thead>
                     <tbody class="table-group-divider">
                         <% for(var i = 0; i < holdings.length; i++) { 
-                            var rate = (1 - (holdings[i].price) / (59800 * holdings[i].shares)).toFixed(2);
+                            var cP = holdings[i].price;
+                            var rate = (1 - (holdings[i].price) / (cP * holdings[i].shares)).toFixed(2);
                             var op = rate < 0 ? '-' : '+'; %>
-                            <td><%= i+1 %></td>
-                            <td><a href="/markets/<%=holdings[i].stock_code%>"><%= holdings[i].stock_name %></a></td>
-                            <td>59800</td>
-                            <td><%= holdings[i].shares %></td>
-                            <td><%= holdings[i].price / 10000 %></td>
-                            <td><%= op%><%= rate %> </td> <%
+                            <tr>
+                                <td><%= i+1 %></td>
+                                <td><a href="/markets/<%=holdings[i].stock_code%>"><%= holdings[i].stock_name %></a></td>
+                                <td><%= cP %></td>
+                                <td><%= holdings[i].shares %></td>
+                                <td><%= holdings[i].price / 10000 %></td>
+                                <td><%= op%><%= rate %> </td> 
+                            </tr> <%
                         } %>
                     </tbody>
                 </table>
@@ -62,7 +65,6 @@
         </div>
 
     </div>
-
 
     <%-include('base/footer.ejs')%>
     

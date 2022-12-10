@@ -12,9 +12,8 @@ const sorting = async (array) => {
 }
 
 router.get('/:item_code', async function (req, res) {
-    let itemPrice = await crawling.ItemPrice(req, res);
-    // this is for test
-    let pbd = await crawling.PriceByDay(req, res);
+    let itemPrice = await crawling.ItemPrice(req.params.item_code);
+    await crawling.PriceByDay(req.params.item_code);
 
     if (req.headers.cookie !== undefined) {
         var cookies = cookie.parse(req.headers.cookie);

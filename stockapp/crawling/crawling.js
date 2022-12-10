@@ -1,6 +1,7 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 const iconv = require('iconv-lite');
+const db = require('../config/DB');
 
 module.exports = {
     KOSPI200: async function(req, res, next) {
@@ -57,10 +58,10 @@ module.exports = {
         }
     },
 
-    ItemPrice: async function(req, res) {
+    ItemPrice: async function(code) {
         return new Promise(resolve => {
             axios({
-                url: 'https://finance.naver.com/item/main.naver?code=' + req.params.item_code,
+                url: 'https://finance.naver.com/item/main.naver?code=' + code,
                 method: 'GET',
                 responseType: 'arraybuffer',
             })
@@ -87,7 +88,7 @@ module.exports = {
                     let val = $($val).text();
 
                     var item_info = {
-                        code: req.params.item_code,
+                        code: code,
                         name: name,
                         now: now,
                         closed: closed,
@@ -104,57 +105,44 @@ module.exports = {
                     console.error(err);
                 }
             })
-        }) 
+        })
     },
 
-    PriceByDay: async function (req, res, next) {
-        var priceByDay = [];
-        return new Promise(resolve => { 
-            for (let i = 1; i < 31; i++) {
-                axios({
-                    url: `https://finance.naver.com/item/sise_day.naver?code=${req.params.item_code}&page=${i}`,
-                    method: 'GET',
-                    responseType: 'arraybuffer',
-                    headers: {'User-agent': 'Mozilla/5.0'}
-                })
-                .then(response => {
-                    try {
-                        const content = iconv.decode(response.data, 'EUC-KR');
-                        const $ = cheerio.load(content);
+    PriceByDay: async function (code) {
+        return new Promise(resolve => {
+            axios({
+                url: `https://finance.naver.com/item/sise_day.naver?code=${code}&page=1`,
+                method: 'GET',
+                responseType: 'arraybuffer',
+                headers: {'User-agent': 'Mozilla/5.0'}
+            })
+            .then(response => {
+                try {
+                    const content = iconv.decode(response.data, 'EUC-KR');
+                    const $ = cheerio.load(content);
 
-                        for(var i = 3; i < 8; i++) {
-                            const $tr = $(`body > table.type2 > tbody > tr:nth-child(${i})`).children("td");
-                            let trArr = [];
+                    const $tr = $(`body > table.type2 > tbody > tr:nth-child(${3})`).children("td");
+                    let trArr = [];
 
-                            $tr.each(function (i, elm) {
-                                trArr.push($(this).find('span').text().trim());
-                            });
-                            trArr.push($tr.find('img').attr('alt'));
-                            priceByDay.push(trArr);
-                        }
+                    $tr.each(function (i, elm) {
+                        trArr.push($(this).find('span').text().trim().replace(',', ''));
+                    });
+                    if($tr.find('img').attr('alt') == '하락') trArr[2] = "-" + trArr[2];
 
-                        for (var i = 11; i < 16; i++) {
-                            const $tr = $(`body > table.type2 > tbody > tr:nth-child(${i})`).children("td");
-                            let trArr = [];
+                    var sql = "INSERT IGNORE INTO price_by_day (stock_code, date, c_prc, CHG, o_prc, h_prc, l_prc, vol) "
+                            + "VALUES (?, CURDATE(), ?, ?, ?, ?, ?, ?);"
+                    params = [code, parseInt(trArr[1]),
+                        parseInt(trArr[2]), parseInt(trArr[3]), parseInt(trArr[4]), parseInt(trArr[5]), parseInt(trArr[6])];
+                    db.query(sql, params, function (err, result) {
+                        console.log('price by day insert 성공');
+                    })
 
-                            $tr.each(function (i, elm) {
-                                trArr.push($(this).find('span').text().trim());
-                            });
-                            trArr.push($tr.find('img').attr('alt'));
-                            priceByDay.push(trArr);
-                        }
+                    resolve();
 
-                        if(priceByDay.length == 300) {
-                            console.log(priceByDay);
-                        }
-
-                        resolve();
-
-                    } catch (err) {
-                        console.error(err);
-                    }
-                })
-            }
+                } catch (err) {
+                    console.error(err);
+                }
+            })
         });
     }
 }

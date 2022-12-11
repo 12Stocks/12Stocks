@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <%-include('base/header.ejs') %>
+
+        <title>
+            <%= userId %>'s info</title>
+</head>
+<style>
+    table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+    }
+    
+    td,
+    th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+    
+    tr:nth-child(even) {
+        background-color: #dddddd;
+    }
+</style>
+
+<body>
+    <%-include('base/navbarTop.ejs')-%>
+        <div class="container w-75 border py-5">
+            <div class="row justify-content-center">
+                <div class="col-9 p-2">
+                    <h2 class="text-center form-text text-muted">
+                        <%= userId %> 정보 확인
+                    </h2>
+        
+                    <br>
+                    <table>
+                        <td>이름</td>
+                        <td>
+                            <%= user.user_name %>
+                        </td>
+                        </tr>
+                        <tr>
+                            <td>나이</td>
+                            <td>
+                                <%= user.user_age %>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>이메일</td>
+                            <td>
+                                <%= user.user_email %>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>가입일</td>
+                            <td>
+                                <%=user.reg_date %>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="1">
+                                <a class="btn btn-primary" href="/users/user_edit/<%= userId %>">나의 정보를 수정하기</a>
+                            </td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <%-include('base/footer.ejs')%>
+
+</body>
+
+</html>

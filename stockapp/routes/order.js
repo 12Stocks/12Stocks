@@ -62,7 +62,7 @@ router.post('/search/:search_input', function (req, res) {
 });
 
 router.get('/:item_code', async function (req, res) {
-    let itemPrice = await crawling.ItemPrice(req, res);
+    let itemPrice = await crawling.ItemPrice(req.params.item_code);
 
     var tickSize = orderController.GetTickSize(itemPrice.now);
     var datas = {

@@ -29,13 +29,16 @@
     <%-include('base/navbarTop.ejs')-%>
         <div class="container w-75 border py-5">
             <h2 class="text-center form-text text-muted">
-                회원 전체 조회</h2>
+                <a href="/users/user_add/" class="btn btn-success">ADD user</a></h2>
             <br>
 
             <table>
                 <th>번호</th>
                 <th>이름</th>
                 <th>나이</th>
+                <th>에마일</th>
+                <th>정보를 수정하기</th>
+                <th>삭제하기</th>
                 <% var j = 1; %>
                     <% for( var i in users ) { %>
                         <tr>
@@ -50,6 +53,11 @@
                             <td>
                                 <%= users[i].user_age %>
                             </td>
+                            <td>
+                                <%= users[i].user_email %>
+                            </td>
+                            <td><a href="/users/users_admin/<%= users[i].user_id%>" class="btn btn-success">수정하기</a></td>
+                            <td><a href="/users/<%= users[i].user_id%>" class="btn btn-danger">삭제하기</a></td>
                         </tr>
                         <% j++; } %>
             </table>

@@ -18,7 +18,6 @@ const marketsRouter = require('./routes/markets');
 const orderRouter = require('./routes/order');
 const orderListRouter = require('./routes/orderlist');
 const holdingRouter = require('./routes/holding');
-const user_edit = require('./routes/userupdate');
 
 
 // view engine setup
@@ -75,8 +74,6 @@ app.use('/markets', marketsRouter);
 app.use('/order', orderRouter);
 app.use('/orderlist', orderListRouter);
 app.use('/holding', holdingRouter);
-app.use('/userupdate', user_edit);
-
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
     next(createError(404));
@@ -89,11 +86,11 @@ app.use(function(err, req, res, next) {
     res.locals.error = req.app.get('env') === 'development' ? err : {};
 
     // render the error page
-    res.status(err.status || 500);
+    res.status(err.status || 8800);
     res.render('error');
 });
 
-const port = process.env.APP_PORT || 3000;
+const port = process.env.APP_PORT || 8800;
 
 app.listen(port, function() {
     console.log('Example app listening on port ' + port);

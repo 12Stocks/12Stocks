@@ -68,9 +68,8 @@ router.get('/:item_code/add_to_watchlist', function (req, res) {
 
 
 router.get('/showBasicCandle/:item_code', function (req, res) {
-    let sql = "SELECT (UNIX_TIMESTAMP(s.DT)*1000) as T_MS, s.O_PRC, s.H_PRC, s.L_PRC, s.C_PRC, s.VOL " +
-                    "FROM stockapp.stock_prices as s WHERE s.STK_CD = ?"; 
-    
+    let sql = "SELECT (UNIX_TIMESTAMP(s.date)*1000) as tStamp, s.o_prc, s.h_prc, s.l_prc, s.c_prc, s.vol " +
+                    "FROM price_by_day as s WHERE s.stock_code = ?"; 
     db.query(sql, [req.params.item_code], function (err, rows) {
         if (err) throw err;
         if (rows.length == 0) {

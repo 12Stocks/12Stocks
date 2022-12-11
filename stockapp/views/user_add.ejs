@@ -17,12 +17,13 @@
                 <h2 class="font-weight-bold text-center">Add user</h2>
 
                 <form action="/users/user_add" method="post"><br>
-                    <input type="text" placeholder="ID 네임" class="form-control" name="user_id" id="user_id" required><br>
-                    <input type="text" placeholder="이매일 주소" class="form-control" name="user_email" id="user_email" required><br>
+                    <input type="hidden" placeholder="auth" class="form-control" name="user_auth" id="user_auth" value="1"><br>
+
+                    <input type="text" placeholder="ID" class="form-control" name="user_id" id="user_id" required><br>
+                    <input type="email" placeholder="이메일 주소" class="form-control" name="user_email" id="user_email" required><br>
                     <input type="text" placeholder="이름" class="form-control" name="user_name" id="user_name" required><br>
-                    <input type="text" placeholder="나이 입력" class="form-control form-control-sm" name="user_age" id="user_age" required><br>
-                    <input type="text" placeholder="auth 입력" class="form-control" name="user_auth" id="user_auth" required><br>
-                    <input type="text" placeholder="비밀번호" class="form-control" name="user_pw" id="user_pw" required>
+                    <input type="number" placeholder="나이" class="form-control form-control-sm" name="user_age" id="user_age" required><br>
+                    <input type="password" placeholder="비밀번호" class="form-control" name="user_pw" id="user_pw" required>
                     <br>
                     <button type="button" class="btn btn-secondary" onclick="location.href='/users'">back</button>
                     <button type="submit" class="btn btn-success">add user</button><br>

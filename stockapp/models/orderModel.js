@@ -113,4 +113,20 @@ module.exports = {
             }
         })
     },
+
+    getPriceList : async function(code, cb) {
+        var buyList = [];
+        var sellList = [];
+        var sql = "select stock_code, sum(quantity) quantity, buysell, price from offers where stock_code = ? and buysell = 0 group by stock_code, price order by stock_code, price DESC;";
+        var sql2 = "select stock_code, sum(quantity) quantity, buysell, price from offers where stock_code = ? and buysell = 1 group by stock_code, price order by stock_code, price DESC;";
+        db.query(sql, code, (err, rows, fields) => {
+            if (err) throw err;
+            buyList = rows;
+        })
+        db.query(sql2, code, (err, rows, fields) => {
+            if(err) throw err;
+            sellList = rows;
+            cb(buyList, sellList);
+        })
+    },
 }

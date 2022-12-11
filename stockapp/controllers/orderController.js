@@ -87,5 +87,11 @@ module.exports = {
     cancelOrder : function (offer_id, cb) {
         orderModel.deleteOrder(offer_id);
         cb();
+    },
+
+    getPriceList : function (code, cb) {
+        orderModel.getPriceList(code, (bl, sl) => {
+            cb(bl, sl);
+        })
     }
 }

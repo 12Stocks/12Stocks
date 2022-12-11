@@ -77,8 +77,13 @@ router.get('/:item_code', async function (req, res) {
         });
         orderController.getConclusionList(req.user.user_id, function (conclusionList) {
             datas.conclusionList = conclusionList;
-            res.render('order', datas);
         });
+        orderController.getPriceList(req.params.item_code, (buyList, sellList) => {
+            datas.buyList = buyList;
+            datas.sellList = sellList;
+            console.log(buyList, sellList);
+            res.render('order', datas);
+        })
     }
 });
 

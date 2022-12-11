@@ -1,18 +1,41 @@
 <!DOCTYPE html>
+
 <html>
     <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
         <%-include('base/header.ejs') %>
 
         <title>portfolios</title>
     </head>
     <body>
         <%-include('base/navbarTop.ejs')-%>
+        <div class="container-md">
+            <h1 class="text-center">내 관심 목록</h1>
+            <div class="container text-center p-3">
+                <div class="row row-cols-2 row-cols-lg-3 g-2 g-lg-3 mx-4">
+                  <% for( var i in watchlist ) { %>
+                    <div class="col">
+                      <div class="p-3 border bg-light">
+                        <p class="m-0">
+                            <h2>
+                                <span class="p-1 border border-4 font-monospace">
+                                    <%= watchlist[i].stock_name %>
+                                </span>
+                            </h2>
 
-        <h1>내 관심 목록</h1>
-        <% for( var i in watchlist ) { %>
-        <label><%= watchlist[i].stock_code %></label>
-        <button onclick="location.href='/portfolios/<%= watchlist[i].stock_code %>/delete_from_watchlist'" >관심목록에서 제거</button><br>
-        <% } %>
+                            <label><%= watchlist[i].stock_code %></label>
+                        </p>
+                        <a class="btn btn-primary btn-sm" href="/markets/<%= watchlist[i].stock_code %>">바로가기</a>
+                        <button class="btn btn-danger btn-sm" onclick="location.href='/portfolios/<%= watchlist[i].stock_code %>/delete_from_watchlist'" >제거</button><br>
+                      </div>
+                    </div>
+                <% } %>
+                </div>
+              </div>
+        </div>
 
         <%-include('base/footer.ejs')%>
     </body>

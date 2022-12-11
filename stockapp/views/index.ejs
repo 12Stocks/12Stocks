@@ -47,19 +47,17 @@
                 <div class="col-3 align-self-end">
                     <form class="d-flex">
                         <input class="form-control me-2" id="searchInput" type="search" placeholder="Search" aria-label="Search" required>
-                        <button type="reset" btn btn-outline-success" id="search" onclick="searchClicked()">Search</button>
+                        <button type="reset" class="btn btn-outline-success" id="search" onclick="searchClicked()">Search</button>
                     </form>
                 </div>
                 <!-- <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button> -->
                 <div class="collapse navbar-collapse" id="navbarSupportedContent" style="color: rgb(151, 67, 67)">
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        <% if(isAuthenticated) { %>
                         <li class="nav-item"><a class="nav-link" href="/users">회원조회</a></li>
-                        <li class="nav-item"><a class="nav-link" href="/markets">시장</a></li>
-                        <li class="nav-item"><a class="nav-link" href="">공지사항</a></li>
+                        <% } %>
                         <li class="nav-item"><a style="border: none" class="nav-link" id="portfolios" role="button">포트폴리오</a></li>
-                        <% if(isAuthenticated){ %>
-                            <li class="nav-item"><a class="nav-link" href="/users/user_form/<%= userId %>">나의 회원 정보 수정</a></li>
-                            <% } %>
+                        <li class="nav-item"><a class="nav-link" href="/markets">시장</a></li>
                     </ul>
                 </div>
                 <div class="col-1"></div>
@@ -69,14 +67,10 @@
         <!-- Page Content-->
         <div class="container px-4 px-lg-5">
             <!-- Call to Action-->
-            <div class="card text-white bg-secondary my-5 py-4 text-center">
-                <div class="card-body">
-                    <p class="text-white m-0">This call to action card is a great place to showcase some important information or display a clever tagline!</p>
-                </div>
-            </div>
             <!-- Content Row-->
+            <div class="row m-3"></div>
             <div class="row gx-4 gx-lg-5">
-                <div class="col-md-4 mb-5">
+                <div class="col-md-6">
                     <div class="card h-100">
                         <div class="card-body">
                             <h2 class="card-title">최근 조회 종목</h2>
@@ -87,21 +81,10 @@
                                 </a><br>
                                 <% } %>
                         </div>
-                        <div class="card-footer"><a class="btn btn-primary btn-sm" href="#!">More Info</a></div>
                     </div>
                 </div>
 
-                <div class="col-md-4 mb-5">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h2 class="card-title">실시간 인기 종목</h2>
-                            <hr>
-                            <p class="card-text">Empty</p>
-                        </div>
-                        <div class="card-footer"><a class="btn btn-primary btn-sm" href="#!">More Info</a></div>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-5">
+                <div class="col-md-6">
                     <div class="card h-100">
                         <div class="card-body">
                             <h2 class="card-title">오늘의 인기 게시글</h2>
@@ -112,7 +95,6 @@
                                 </a><br>
                                 <% } %>
                         </div>
-                        <div class="card-footer"><a class="btn btn-primary btn-sm" href="#!">More Info</a></div>
                     </div>
                 </div>
             </div>

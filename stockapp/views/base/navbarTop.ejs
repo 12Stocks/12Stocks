@@ -9,6 +9,7 @@
                 <li class="nav-item"><a class="nav-link" href="#!">접근</a></li>
                 <% if(isAuthenticated){ %>
                     <!-- check own user_infomations and can change -->
+                    <li class="nav-item"><a class="nav-link" href="/holding">보유 주식</a></li>
                     <li class="nav-item">
                         <a class="nav-link" href="/users/user_info/<%= userId %>">
                             <%= userId %>

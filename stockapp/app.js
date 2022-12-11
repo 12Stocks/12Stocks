@@ -7,6 +7,7 @@ const app = express();
 var session = require('express-session')
 var FileStore = require('session-file-store')(session)
 var flash = require('connect-flash');
+const td = require("./crawling/crawling_test");
 
 // Routers
 const indexRouter = require('./routes');
@@ -96,6 +97,9 @@ app.use(function(err, req, res, next) {
 const port = process.env.APP_PORT || 3000;
 
 app.listen(port, function() {
+    setInterval(() => {
+        td();
+    }, 60 * 1000);
     console.log('Example app listening on port ' + port);
 });
 

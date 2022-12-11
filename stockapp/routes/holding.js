@@ -1,16 +1,18 @@
-var express = require('express')
+var express = require('express');
 var router = express.Router();
 var auth = require('../lib/auth');
-var watchListController = require('../controllers/watchListController'); 
+var holdingController = require("../controllers/holdingController");
 var cookie = require('cookie');
 var crawling = require('../crawling/crawling');
 
-router.get('/', function(req, res) {
+router.get('/', async function(req, res) {
     if (auth.isOwner(req, res)) {
-        res.render('holding', { userId: req.user.user_id, prc : 56000 + 100 * Math.round((Math.random() - 0.5) * 10)});
+        holdingController.getHolding(req.user.user_id, async (rows) => {
+            res.render('holding', {userId : req.user.user_id, holdings : rows});
+        });
     }
     else {
-        res.render('holding');
+        res.redirect('/auth/loginRequired');
     }
 });
 

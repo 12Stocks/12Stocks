@@ -38,4 +38,17 @@ Index Page에서 게시판을 공지사항으로 바꾸고 종목 페이지에�
     주문 시 채결된 내역들을 웹에 띄워 실시간으로 갱신  
 
   - [x] Not Conclusion Order List  
-    주문 후 아직 채결이 진행되지 않은 내역들을 갱신  
+    주문 후 아직 채결이 진행되지 않은 내역들을 갱신 
+
+### Holdings Page  
+
+- get Holdings  
+  DB에서 현재 로그인 된 유저가 보유한 주식 목록들을 가져옴  
+
+- Update
+  주가 변동에 따른 변동률을 실시간으로 갱신  
+  서버에서 DB에 1분 주기로 현재주가 갱신
+
+[TODO]  
+- [x] get holdings
+- [x] update periodically

@@ -1,7 +1,7 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 const iconv = require('iconv-lite');
-const db = require('../config/DB');
+const db = require("../config/DB");
 
 module.exports = {
     KOSPI200: async function(req, res, next) {
@@ -72,6 +72,8 @@ module.exports = {
 
                     const $now = $("#chart_area > div.rate_info > div > p.no_today > em").children("span")[0];
                     const $closed = $("#chart_area > div.rate_info > table > tbody > tr:nth-child(1) > td.first > em").children("span")[0];
+                    const $chg = $("#chart_area > div.rate_info > div > p.no_exday").children("em")[0];
+                    const $chgp = $("#chart_area > div.rate_info > div > p.no_exday").children("em")[1];
                     const $open = $("#chart_area > div.rate_info > table > tbody > tr:nth-child(2) > td.first > em").children("span")[0];
                     const $high = $("#chart_area > div.rate_info > table > tbody > tr:nth-child(1) > td:nth-child(2) > em").children("span")[0];
                     const $low = $("#chart_area > div.rate_info > table > tbody > tr:nth-child(2) > td:nth-child(2) > em:nth-child(2)").children("span")[0];
@@ -81,6 +83,9 @@ module.exports = {
                     let name = $("#middle > div.h_company > div.wrap_company > h2 > a").text();
                     let now = $($now).text();
                     let closed = $($closed).text();
+                    let chg = $($chg).children("span")[1];
+                    let ud = $($chgp).children("span")[0];
+                    let chgp = $($chgp).children("span")[1];
                     let open = $($open).text();
                     let high = $($high).text();
                     let low = $($low).text();
@@ -92,13 +97,15 @@ module.exports = {
                         name: name,
                         now: now,
                         closed: closed,
+                        chg : $(chg).text(),
+                        chgp : $(ud).text() + $(chgp).text() + '%',
                         open: open,
                         high: high,
                         low: low,
                         vol: vol,
                         val: val
                     }
-
+                    console.log(item_info);
                     resolve(item_info);
 
                 } catch (err) {
@@ -144,5 +151,5 @@ module.exports = {
                 }
             })
         });
-    }
+    },
 }

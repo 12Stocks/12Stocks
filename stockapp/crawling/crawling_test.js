@@ -4,83 +4,112 @@ const iconv = require('iconv-lite');
 const log = console.log;
 const db = require('../config/DB');
 
-var idx = 0;
-var result = [];
-
-for(let i = 1; i < 21; i++) {
-    axios({
-        url: 'https://finance.naver.com/sise/entryJongmok.naver?&page=' + i,
-        method: 'GET',
-        responseType: 'arraybuffer',
-    })
-    .then(response => {
-        try {
-            let list = [];
-            const content = iconv.decode(response.data, 'EUC-KR');
-            const $ = cheerio.load(content);
-            const $bodyList = $("div.box_type_m table.type_1 tbody").children('tr');
-            
-            $bodyList.each(function(i, elm) {
-                let c_name = $(this).find('td.ctg').text();
-                let link = $(this).find('td.ctg').find('a').attr('href');
-                if(typeof(link) == 'string')
-                    link = link.split('=')[1];
-
-                list[i] = {
-                    name : c_name, 
-                    code : link,
-                };
-            });
-    
-            const data = list.filter(n => n.code);
-            return data;
-        } catch(err) {
-            console.error(err);
-        }
-    })
-    .then(res => {
-        for(let j = 0; j < 10; j++) {
-            axios({
-                url: 'https://navercomp.wisereport.co.kr/v2/company/c1010001.aspx?cmp_cd=' + res[j].code,
-                method: 'GET',
-                responseType: 'arraybuffer',
-            })
-            .then(response => {
-                const content = response.data;
+const autoCrawler = async function(cb) {
+    var codes = [];
+    for (let i = 1; i < 21; i++) {
+        axios({
+            url: 'https://finance.naver.com/sise/entryJongmok.naver?&page=' + i,
+            method: 'GET',
+            responseType: 'arraybuffer',
+        })
+        .then(response => {
+            try {
+                const content = iconv.decode(response.data, 'EUC-KR');
                 const $ = cheerio.load(content);
-                const $bodyList = $('div.body-section form#Form1 div#all_contentWrap div#contentWrap div#pArea div.PageContainer div.PageContentContainer').children('div#wrapper');
+                const $bodyList = $("div.box_type_m table.type_1 tbody").children('tr');
 
-                let d = $($bodyList).find('div.all-width').find('div.cmp_comment').find('ul.dot_cmp').find('li').text().split('.')[0];
-                let is = $($bodyList).find('div.wrapper-row').find('div.fl_le.half').find('div.body').find('table').find('tbody').find('tr')[6];
-
-                result.push(
-                    {
-                        idx : idx,
-                        stock_code : res[j].code,
-                        c_name : res[j].name,
-                        c_description : d,
-                        issued_shares : Number($(is).children('td.num').text().trim().split('주')[0]
-                        .match(/[\d,]+/)[0]
-                        .replace(/,/g, '')),
+                $bodyList.each(function (idx, elm) {
+                    let link = $(this).find('td.ctg').find('a').attr('href');
+                    if (typeof (link) == 'string') {
+                        link = link.split('=')[1];
+                        codes.push(link);
                     }
-                );
-                idx++;
-                
-                if(idx == 200) {
-                    for(let i = 0; i < 200; i++) {
-                        var code = result[i].stock_code;
-                        var name = result[i].c_name;
-                        var desc = result[i].c_description;
-                        var shares = result[i].issued_shares;
-
-                        const datas = [code, name, desc, shares, shares];
-
-                        db.query('INSERT INTO c_info VALUES(?, ?, ?, ?) ON DUPLICATE KEY UPDATE issued_shares = ?', datas);
-                    }
-                    log("successfully inserted !");
-                    db.end();
+                });
+                if(codes.length == 200) {
+                    console.log("codes", codes.length);
+                    cb(codes);
                 }
-            });
-        }
+            } catch (err) {
+                console.error(err);
+            }
+        })
+    }
+};
+    
+const getInfo = async function(codes, cb) {
+    var info = [];
+    for(var i = 0; i < codes.length; i++) {
+        await axios({
+            url: 'https://finance.naver.com/item/main.naver?code=' + codes[i],
+            method: 'GET',
+            responseType: 'arraybuffer',
+        })
+        .then(response => {
+            try {
+                const content = iconv.decode(response.data, 'EUC-KR');
+                const $ = cheerio.load(content);
+
+                const $now = $("#chart_area > div.rate_info > div > p.no_today > em").children("span")[0];
+                const $closed = $("#chart_area > div.rate_info > table > tbody > tr:nth-child(1) > td.first > em").children("span")[0];
+                const $chg = $("#chart_area > div.rate_info > div > p.no_exday").children("em")[0];
+                const $chgp = $("#chart_area > div.rate_info > div > p.no_exday").children("em")[1];
+                const $open = $("#chart_area > div.rate_info > table > tbody > tr:nth-child(2) > td.first > em").children("span")[0];
+                const $high = $("#chart_area > div.rate_info > table > tbody > tr:nth-child(1) > td:nth-child(2) > em").children("span")[0];
+                const $low = $("#chart_area > div.rate_info > table > tbody > tr:nth-child(2) > td:nth-child(2) > em:nth-child(2)").children("span")[0];
+                const $vol = $("#chart_area > div.rate_info > table > tbody > tr:nth-child(1) > td:nth-child(3) > em").children("span")[0];
+                const $val = $("#chart_area > div.rate_info > table > tbody > tr:nth-child(2) > td:nth-child(3) > em").children("span")[0];
+
+                let name = $("#middle > div.h_company > div.wrap_company > h2 > a").text();
+                let now = $($now).text();
+                let closed = $($closed).text();
+                let chg = $($chg).children("span")[1];
+                let ud = $($chgp).children("span")[0];
+                let chgp = $($chgp).children("span")[1];
+                let open = $($open).text();
+                let high = $($high).text();
+                let low = $($low).text();
+                let vol = $($vol).text();
+                let val = $($val).text();
+                
+                info.push({
+                    stock_code: codes[i],
+                    STK_NAME : name,
+                    NOW : Number(now.replace('\,', '')),
+                    C_PRC : Number(closed.replace('\,', '')),
+                    CHG : Number($(chg).text().replace('\,', '')),
+                    CHGP : $(ud).text() + $(chgp).text(),
+                    O_PRC : Number(open.replace('\,', '')),
+                    H_PRC : Number(high.replace('\,', '')),
+                    L_PRC : Number(low.replace('\,', '')),
+                    VAL : Number(val.replace('\,', ''))
+                })
+                if(info.length == 200) {
+                    console.log(info.length);
+                    cb(info);
+                }
+                
+            } catch (err) {
+                console.error(err);
+            }
+        });
+    }
+};
+    
+const tp = async () => {
+    autoCrawler((codes) => {
+        getInfo(codes, (info) => {
+            var sql = "INSERT INTO today_prices VALUES(?, ?, DATE_FORMAT(CURRENT_TIMESTAMP(), \"%Y-%m-%d %H:%m\"), ?, ?, ?, ?, ?, ?, ?, ?)";
+            var sql2 = " ON DUPLICATE KEY UPDATE DT = DATE_FORMAT(CURRENT_TIMESTAMP(), \"%Y-%m-%d %H:%m\"), NOW = ?, C_PRC = ?, CHG = ?, CHGP = ?, O_PRC = ?, H_PRC = ?, L_PRC = ?, VAL = ?;";
+            for(var i = 0; i < info.length; i++) {
+                db.query(sql+sql2, [info[i].stock_code, info[i].STK_NAME, info[i].NOW, info[i].C_PRC, info[i].CHG, info[i].CHGP, info[i].O_PRC,
+                    info[i].H_PRC, info[i].L_PRC, info[i].VAL, info[i].NOW, info[i].C_PRC, info[i].CHG, info[i].CHGP, info[i].O_PRC,
+                    info[i].H_PRC, info[i].L_PRC, info[i].VAL], (err, row, fields) => {
+                    if(err) throw err;
+                });
+            };
+        });
     });
-}
+};
+
+module.exports = tp;
+

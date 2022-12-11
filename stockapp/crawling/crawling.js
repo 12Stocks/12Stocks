@@ -1,6 +1,7 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 const iconv = require('iconv-lite');
+const db = require('../config/DB');
 
 module.exports = {
     KOSPI200: async function(req, res, next) {
@@ -57,52 +58,91 @@ module.exports = {
         }
     },
 
-    ItemPrice: async function(req, res, next) {
-        await axios({
-            url: 'https://finance.naver.com/item/main.naver?code=' + req.params.item_code,
-            method: 'GET',
-            responseType: 'arraybuffer',
-        })
-        .then(response => {
-            try {
-                const content = iconv.decode(response.data, 'EUC-KR');
-                const $ = cheerio.load(content);
+    ItemPrice: async function(code) {
+        return new Promise(resolve => {
+            axios({
+                url: 'https://finance.naver.com/item/main.naver?code=' + code,
+                method: 'GET',
+                responseType: 'arraybuffer',
+            })
+            .then(response => {
+                try {
+                    const content = iconv.decode(response.data, 'EUC-KR');
+                    const $ = cheerio.load(content);
 
-                const $now = $("#chart_area > div.rate_info > div > p.no_today > em").children("span")[0];
-                const $closed = $("#chart_area > div.rate_info > table > tbody > tr:nth-child(1) > td.first > em").children("span")[0];
-                const $open = $("#chart_area > div.rate_info > table > tbody > tr:nth-child(2) > td.first > em").children("span")[0];
-                const $high = $("#chart_area > div.rate_info > table > tbody > tr:nth-child(1) > td:nth-child(2) > em").children("span")[0];
-                const $low = $("#chart_area > div.rate_info > table > tbody > tr:nth-child(2) > td:nth-child(2) > em:nth-child(2)").children("span")[0];
-                const $vol = $("#chart_area > div.rate_info > table > tbody > tr:nth-child(1) > td:nth-child(3) > em").children("span")[0];
-                const $val = $("#chart_area > div.rate_info > table > tbody > tr:nth-child(2) > td:nth-child(3) > em").children("span")[0];
+                    const $now = $("#chart_area > div.rate_info > div > p.no_today > em").children("span")[0];
+                    const $closed = $("#chart_area > div.rate_info > table > tbody > tr:nth-child(1) > td.first > em").children("span")[0];
+                    const $open = $("#chart_area > div.rate_info > table > tbody > tr:nth-child(2) > td.first > em").children("span")[0];
+                    const $high = $("#chart_area > div.rate_info > table > tbody > tr:nth-child(1) > td:nth-child(2) > em").children("span")[0];
+                    const $low = $("#chart_area > div.rate_info > table > tbody > tr:nth-child(2) > td:nth-child(2) > em:nth-child(2)").children("span")[0];
+                    const $vol = $("#chart_area > div.rate_info > table > tbody > tr:nth-child(1) > td:nth-child(3) > em").children("span")[0];
+                    const $val = $("#chart_area > div.rate_info > table > tbody > tr:nth-child(2) > td:nth-child(3) > em").children("span")[0];
 
-                let name = $("#middle > div.h_company > div.wrap_company > h2 > a").text();
-                let now = $($now).text();
-                let closed = $($closed).text();
-                let open = $($open).text();
-                let high = $($high).text();
-                let low = $($low).text();
-                let vol = $($vol).text();
-                let val = $($val).text();
+                    let name = $("#middle > div.h_company > div.wrap_company > h2 > a").text();
+                    let now = $($now).text();
+                    let closed = $($closed).text();
+                    let open = $($open).text();
+                    let high = $($high).text();
+                    let low = $($low).text();
+                    let vol = $($vol).text();
+                    let val = $($val).text();
 
-                var item_info = {
-                    code: req.params.item_code,
-                    name: name,
-                    now: now,
-                    closed: closed,
-                    open: open,
-                    high: high,
-                    low: low,
-                    vol: vol,
-                    val: val
+                    var item_info = {
+                        code: code,
+                        name: name,
+                        now: now,
+                        closed: closed,
+                        open: open,
+                        high: high,
+                        low: low,
+                        vol: vol,
+                        val: val
+                    }
+
+                    resolve(item_info);
+
+                } catch (err) {
+                    console.error(err);
                 }
-
-                req.itemInfo = item_info;
-                next();
-                
-            } catch (err) {
-                console.error(err);
-            }
+            })
         })
+    },
+
+    PriceByDay: async function (code) {
+        return new Promise(resolve => {
+            axios({
+                url: `https://finance.naver.com/item/sise_day.naver?code=${code}&page=1`,
+                method: 'GET',
+                responseType: 'arraybuffer',
+                headers: {'User-agent': 'Mozilla/5.0'}
+            })
+            .then(response => {
+                try {
+                    const content = iconv.decode(response.data, 'EUC-KR');
+                    const $ = cheerio.load(content);
+
+                    const $tr = $(`body > table.type2 > tbody > tr:nth-child(${3})`).children("td");
+                    let trArr = [];
+
+                    $tr.each(function (i, elm) {
+                        trArr.push($(this).find('span').text().trim().replace(',', ''));
+                    });
+                    if($tr.find('img').attr('alt') == '하락') trArr[2] = "-" + trArr[2];
+
+                    var sql = "INSERT IGNORE INTO price_by_day (stock_code, date, c_prc, CHG, o_prc, h_prc, l_prc, vol) "
+                            + "VALUES (?, CURDATE(), ?, ?, ?, ?, ?, ?);"
+                    params = [code, parseInt(trArr[1]),
+                        parseInt(trArr[2]), parseInt(trArr[3]), parseInt(trArr[4]), parseInt(trArr[5]), parseInt(trArr[6])];
+                    db.query(sql, params, function (err, result) {
+                        console.log('price by day insert 성공');
+                    })
+
+                    resolve();
+
+                } catch (err) {
+                    console.error(err);
+                }
+            })
+        });
     }
 }

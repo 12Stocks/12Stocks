@@ -13,18 +13,18 @@
             <div class="container w-25 border py-5" style="width: 120px; background-color: rgb(255, 255, 255)">
                 <div class="title bp-5">
                     <h2 class="font-weight-bold">Login</h2>
-                    <small class="form-text text-muted">선택하신 서비스는 로그인 후 이용할 수 있습니다.</small>
+                    <small class="form-text text-muted">아이디와 비밀번호를 입력해주세요.</small>
 
                     <form action="/auth/login_process" method="post"><br>
 
-                        <input type="text" placeholder="ID 네임" class="form-control" name="userId" required><br>
+                        <input type="text" placeholder="ID 이름" class="form-control" name="userId" required><br>
 
                         <input type="password" placeholder="비밀번호" class="form-control" name="psw" required><br>
 
                         <button type="submit" class="btn btn-success">로그인</button><br>
                     </form>
                 </div>
-                <br><small class="form-text text-muted">아이디가 없는 경우 회원가입해주세요. </small><a href="/auth/register" class="btn btn-primary">회원가입</a>
+                <br><small class="form-text text-muted">계정이 없는 경우 회원가입 해주세요. </small><a href="/auth/register" class="btn btn-primary">회원가입</a>
             </div>
         </div>
         </div>

@@ -48,7 +48,7 @@
                     <tbody class="table-group-divider">
                         <% for(var i = 0; i < holdings.length; i++) { 
                             var cP = holdings[i].NOW;
-                            var rate = (((cP * holdings[i].shares) / holdings[i].price) - 1).toFixed(2); %>
+                            var rate = ((( cP * holdings[i].shares / holdings[i].price ) - 1) * 100).toFixed(2); %>
                             <tr>
                                 <td><%= i+1 %></td>
                                 <td><a href="/markets/<%=holdings[i].stock_code%>"><%= holdings[i].STK_NAME %></a></td>

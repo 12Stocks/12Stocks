@@ -1,5 +1,5 @@
 const db = require("../config/DB");
-const orderModel = require("../models/orderModel");
+const orderController = require("../controllers/orderController");
 
 function sz(p) {
     if (p.length < 4) return 1;
@@ -23,13 +23,17 @@ const autoOrder = async () => {
     getPrices((rows) => {
         rows.forEach(elm => {
             var q = Math.random().toFixed(1)*300 + 10;
-            var tick = sz(elm.NOW) * (Math.round(Math.random().toFixed(1)*6) - 3);
-            orderModel.insertOrder("orderbot", elm.stock_code, q, Math.round(Math.random()), elm.NOW + tick);
+            var tick = sz(elm.NOW) * (Math.round(Math.random().toFixed(1)*10) - 5);
+            orderController.limitOrder("orderbot", elm.stock_code, q, Math.round(Math.random()), elm.NOW + tick, () => {
+                
+            });
         });
     });
 }
 
-setInterval(() => {
+const auto = async () => {
     autoOrder();
     console.log("order");
-}, 5000);
+}
+
+module.exports = auto;

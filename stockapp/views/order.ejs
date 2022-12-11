@@ -11,6 +11,7 @@
         table.type02 td.num{padding:5px 10px 5px 0;text-align:right}
         table.type02 td.bg01{background:#EBF2FC}
         table.type02 td.bg02{background:#FCEBEB}
+        table.type02 td.space{background-color:rgba(229, 229, 229, 0.812);}
         table.type03 td {border: 1px solid black;}
         table.type03 th {border: 1px solid black;}
 
@@ -119,35 +120,33 @@
                             <tr>
                                 <td colspan="2" height="6" class="bg01"></td>
                                 <td width="1"></td>
-                                <td></td>
-                                <td></td>
+                                <td class="space"></td>
+                                <td class="space"></td>
                             </tr>
-                            <% for(var i = 4; i >= 0; i--) {
-                                var bidprice = parseInt(itemInfo.now.replace(/,/g, '')) + parseInt(tickSize) * i;
+                            <% for(var i = 0; i < sellList.length; i++) {
                                 %>
                                 <tr>
-                                    <td class="num bg01">240</td>
-                                    <td class="num bg01"><%= bidprice.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ","); %></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
+                                    <td class="num bg01"><%= sellList[i].quantity %></td>
+                                    <td class="num bg01"><%= sellList[i].price %></td>
+                                    <td class="space"> </td>
+                                    <td class="space"> </td>
+                                    <td class="space"></td>
                                 </tr> <%
                             } %>
                             <tr>
                                 <td colspan="2" height="4" class="bg01"></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                                <td class="space"></td>
+                                <td class="space"></td>
+                                <td class="space"></td>
                             </tr>
-                            <% for(var i = 1; i <= 5; i++) {
-                                var bidprice = parseInt(itemInfo.now.replace(/,/g, '')) - parseInt(tickSize) * i;
+                            <% for(var i = 0; i < buyList.length; i++) {
                                 %>
                                 <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td class="num bg02"><%= bidprice.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ","); %></td>
-                                    <td class="num bg02">360</td>
+                                    <td class="space"></td>
+                                    <td class="space"></td>
+                                    <td class="space"></td>
+                                    <td class="num bg02"><%= buyList[i].price%></td>
+                                    <td class="num bg02"><%= buyList[i].quantity %></td>
                                 </tr> <%
                             } %>
                         </table>
